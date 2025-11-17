@@ -73,11 +73,15 @@ internal abstract class RegisterPreflightChecksPlugin : Plugin<Project> {
                 taskName = "compileKotlinIosSimulatorArm64",
                 projects = currentProject.subprojects,
             )
+            // KMP JVM + JVM-only modules
+            dependsOnTaskFromProjects(
+                taskName = "jvmMainClasses",
+                projects = currentProject.subprojects,
+            )
             // Android library modules
             dependsOnTaskFromProjects(
                 taskName = "assembleRelease",
                 projects = currentProject.subprojects.filterNot { it.name == SAMPLE_APP_NAME },
-                // TODO There will be retrofit, so this can be removed in the future
                 // There are currently no Android library modules in the project, so we don't want
                 // to fail the check because of this, but we want to be sure that it will run if
                 // there are any in the future.
@@ -91,16 +95,25 @@ internal abstract class RegisterPreflightChecksPlugin : Plugin<Project> {
                 taskName = "testAndroidHostTest",
                 projects = currentProject.subprojects,
             )
-            // KMP modules' iOS host tests
+            // KMP modules' iOS tests
             dependsOnTaskFromProjects(
                 taskName = "iosSimulatorArm64Test",
                 projects = currentProject.subprojects,
+            )
+            // KMP modules' JVM tests
+            dependsOnTaskFromProjects(
+                taskName = "jvmTest",
+                projects = currentProject.subprojects,
+            )
+            // JVM-only modules' tests
+            dependsOnTaskFromProjects(
+                taskName = "test",
+                projects = currentProject.subprojects.filterNot { it.name == SAMPLE_APP_NAME },
             )
             // Android library modules' unit tests
             dependsOnTaskFromProjects(
                 taskName = "testReleaseUnitTest",
                 projects = currentProject.subprojects.filterNot { it.name == SAMPLE_APP_NAME },
-                // TODO There will be retrofit, so this can be removed in the future
                 // There are currently no Android library modules in the project, so we don't want
                 // to fail the check because of this, but we want to be sure that it will run if
                 // there are any in the future.
@@ -178,7 +191,7 @@ internal abstract class RegisterPreflightChecksPlugin : Plugin<Project> {
         private const val PRE_MERGE_REQUEST_CHECK_TASK_NAME = "preMergeRequestCheck"
         private const val PRE_PUBLISH_CHECK_TASK_NAME = "prePublishCheck"
 
-        private const val SAMPLE_APP_NAME = "app"
+        private const val SAMPLE_APP_NAME = "sample-app"
         private const val BUILD_LOGIC_ROOT_PROJECT_NAME = "build-logic"
         private const val BUILD_LOGIC_SUBPROJECT_NAME = "logic"
     }

@@ -58,27 +58,37 @@ dependencies {
 gradlePlugin {
     plugins {
         plugin(
-            dependency = libs.plugins.ackeecz.apythia.android.application,
+            dependency = libs.plugins.apythia.android.application,
             pluginClassSimpleName = "AndroidApplicationPlugin",
         )
 
         plugin(
-            dependency = libs.plugins.ackeecz.apythia.kmp.library,
+            dependency = libs.plugins.apythia.kotlin.multiplatform.library,
             pluginClassSimpleName = "KmpLibraryPlugin",
         )
 
         plugin(
-            dependency = libs.plugins.ackeecz.apythia.kmp.testing,
-            pluginClassSimpleName = "KmpTestingPlugin",
+            dependency = libs.plugins.apythia.kotlin.multiplatform.librarywithtesting,
+            pluginClassSimpleName = "KmpLibraryWithTestingPlugin",
         )
 
         plugin(
-            dependency = libs.plugins.ackeecz.apythia.publishing,
+            dependency = libs.plugins.apythia.kotlin.jvm.library,
+            pluginClassSimpleName = "KotlinJvmLibraryPlugin",
+        )
+
+        plugin(
+            dependency = libs.plugins.apythia.kotlin.jvm.librarywithtesting,
+            pluginClassSimpleName = "KotlinJvmLibraryWithTestingPlugin",
+        )
+
+        plugin(
+            dependency = libs.plugins.apythia.publishing,
             pluginClassSimpleName = "PublishingPlugin",
         )
 
         plugin(
-            dependency = libs.plugins.ackeecz.apythia.preflightchecks,
+            dependency = libs.plugins.apythia.preflightchecks,
             pluginClassSimpleName = "RegisterPreflightChecksPlugin",
         )
     }

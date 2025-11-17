@@ -33,6 +33,16 @@ public sealed class ArtifactProperties(
         defaultPropertyPrefix = "HTTP",
     )
 
+    public class HttpKtor(properties: Properties) : ArtifactProperties(
+        properties = properties,
+        defaultPropertyPrefix = "HTTP_KTOR",
+    )
+
+    public class HttpOkhttp(properties: Properties) : ArtifactProperties(
+        properties = properties,
+        defaultPropertyPrefix = "HTTP_OKHTTP",
+    )
+
     internal companion object {
 
         fun getFor(
@@ -41,6 +51,8 @@ public sealed class ArtifactProperties(
         ): ArtifactProperties = when (projectName) {
             PublishableProject.Bom.projectName -> Bom(properties)
             PublishableProject.Http.projectName -> Http(properties)
+            PublishableProject.HttpKtor.projectName -> HttpKtor(properties)
+            PublishableProject.HttpOkhttp.projectName -> HttpOkhttp(properties)
             else -> throw IllegalStateException("Unknown Gradle module with name $projectName. Please " +
                 "add artifact properties for this module and corresponding mapping in " +
                 "${ArtifactProperties::class.simpleName}. It is also possible that you changed module " +

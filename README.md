@@ -17,7 +17,7 @@ Apythia helps you test your API/network logic confidently with a clear, expressi
 - Assert requests elegantly – verify that the requests your code sent match your expectations.
 - DSL-first approach – both mocking and assertions are intuitive, readable, and powerful.
 - Single unified API – interact with one DSL, regardless of whether your underlying implementation is Ktor, OkHttp, any other API library or custom implementation.
-- Kotlin Multiplatform support – works on Android and iOS projects.
+- Kotlin Multiplatform support – works for Android, iOS, and JVM targets.
 
 With Apythia, your API logic is predictable, testable, and clearly defined.
 
@@ -25,8 +25,16 @@ With Apythia, your API logic is predictable, testable, and clearly defined.
 
 Library consists of several modules:
 - `http` contains HTTP-related code that is not tied to a specific library
+- `http-ktor` contains `http` implementation backed by Ktor
+- `http-okhttp` contains `http` implementation backed by OkHttp
 
 ### http
+# TODO Add description
+
+### http-ktor
+# TODO Add description
+
+### http-okhttp
 # TODO Add description
 
 ## Setup
@@ -40,17 +48,38 @@ apythia-bom = "SPECIFY_VERSION"
 
 [libraries]
 apythia-bom = { module = "io.github.ackeecz:apythia-bom", version.ref = "apythia-bom" }
-apythia-http = { module = "io.github.ackeecz:apythia-http" }
+apythia-http-ktor = { module = "io.github.ackeecz:apythia-http-ktor" }
+apythia-http-okhttp = { module = "io.github.ackeecz:apythia-http-okhttp" }
 ```
 
 Then specify dependencies in your `build.gradle.kts`:
+
+Android and JVM modules:
 
 ```kotlin
 dependencies {
 
     // Always use BOM
-    implementation(platform(libs.apythia.bom))
-    implementation(libs.apythia.http)
+    testImplementation(platform(libs.apythia.bom))
+    // For Ktor
+    testImplementation(libs.apythia.http.ktor)
+    // For OkHttp
+    testImplementation(libs.apythia.http.okhttp)
+}
+```
+
+KMP modules:
+
+```kotlin
+commonTest {
+    dependencies {
+        // Always use BOM
+        implementation(dependencies.platform(libs.apythia.bom))
+        // For Ktor
+        implementation(libs.apythia.http.ktor)
+        // For OkHttp
+        implementation(libs.apythia.http.okhttp)
+    }
 }
 ```
 

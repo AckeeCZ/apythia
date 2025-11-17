@@ -28,6 +28,7 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
                 targetSdk = Constants.TARGET_SDK
                 versionCode = 1
                 versionName = "1.0"
+                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
             }
 
             buildTypes {
@@ -36,13 +37,19 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
                     proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
                 }
             }
+
+            testOptions {
+                unitTests.all {
+                    it.useJUnitPlatform()
+                }
+            }
         }
     }
 
     private fun Project.configureKotlin() {
         tasks.withType<KotlinCompile>().configureEach {
             compilerOptions {
-                configureApplicationOptions()
+                configureAllOptions()
             }
         }
     }

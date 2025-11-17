@@ -9,10 +9,12 @@ description: Action that contains basic checks like running Detekt or library te
 runs:
   using: "composite"
   steps:
+    # Detekt
     - name: Detekt
       shell: bash
       run: ./gradlew detekt
 
+    # Assemble
     - name: Assemble KMP Android
       shell: bash
       run: ./gradlew assembleAndroidMain
@@ -21,10 +23,15 @@ runs:
       shell: bash
       run: ./gradlew compileKotlinIosSimulatorArm64
 
+    - name: Assemble KMP JVM + JVM-only modules
+      shell: bash
+      run: ./gradlew jvmMainClasses
+
     - name: Assemble Android library
       shell: bash
-      run: ./gradlew assembleRelease -x :app:assembleRelease
+      run: ./gradlew assembleRelease -x :sample-app:assembleRelease
 
+    # Library tests
     - name: KMP Android tests
       shell: bash
       run: ./gradlew testAndroidHostTest
@@ -33,14 +40,24 @@ runs:
       shell: bash
       run: ./gradlew iosSimulatorArm64Test
 
+    - name: KMP JVM tests
+      shell: bash
+      run: ./gradlew jvmTest
+
+    - name: JVM-only tests
+      shell: bash
+      run: ./gradlew test -x :sample-app:test
+
     - name: Android library tests
       shell: bash
-      run: ./gradlew testReleaseUnitTest -x :app:testReleaseUnitTest
+      run: ./gradlew testReleaseUnitTest -x :sample-app:testReleaseUnitTest
 
+    # Binary compatibility check
     - name: Binary compatibility check
       shell: bash
       run: ./gradlew checkLegacyAbi
 
+    # Build logic tests
     - name: Build logic tests
       shell: bash
       run: ./gradlew build-logic:logic:test

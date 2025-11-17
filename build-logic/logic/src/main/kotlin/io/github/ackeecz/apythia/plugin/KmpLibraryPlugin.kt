@@ -4,6 +4,8 @@ import com.android.build.api.dsl.androidLibrary
 import io.github.ackeecz.apythia.util.Constants
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.provider.Property
+import org.gradle.kotlin.dsl.create
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 internal class KmpLibraryPlugin : Plugin<Project> {
@@ -11,29 +13,33 @@ internal class KmpLibraryPlugin : Plugin<Project> {
     private val detektPlugin = DetektPlugin()
 
     override fun apply(target: Project) {
-        target.configureKmp()
-        target.configureDetekt()
+        applyPlugins(target)
+        configurePlugins(target)
+    }
+
+    fun applyPlugins(target: Project) = with(target) {
+        pluginManager.apply(libs.plugins.kotlin.multiplatform)
+        pluginManager.apply(libs.plugins.android.kmp.library)
     }
 
     @Suppress("UnstableApiUsage")
-    private fun Project.configureKmp() {
-        pluginManager.apply(libs.plugins.kotlin.multiplatform)
-        pluginManager.apply(libs.plugins.android.kmp.library)
+    fun configurePlugins(target: Project) = with(target) {
+        val extension = createExtension()
 
-        kotlin {
-            explicitApi()
+        kotlinMultiplatform {
+            commonConfiguration()
+
+            compilerOptions {
+                configureCommonOptions()
+            }
 
             @OptIn(ExperimentalAbiValidation::class)
             abiValidation {
-                enabled.set(true)
+                enabled.set(extension.abiValidationEnabled)
                 klib {
                     enabled.set(true)
                     keepUnsupportedTargets.set(false)
                 }
-            }
-
-            compilerOptions {
-                configureCommonOptions()
             }
 
             androidLibrary {
@@ -42,7 +48,7 @@ internal class KmpLibraryPlugin : Plugin<Project> {
 
                 compilations.configureEach {
                     compileTaskProvider.configure {
-                        compilerOptions.configureLibraryOptions()
+                        compilerOptions.configureJvmSpecificOptions()
                     }
                 }
 
@@ -53,7 +59,7 @@ internal class KmpLibraryPlugin : Plugin<Project> {
                 }
             }
 
-            val xcfName = "${project.name}Kit"
+            val xcfName = "${target.name}Kit"
             iosX64 {
                 binaries.framework {
                     baseName = xcfName
@@ -69,6 +75,22 @@ internal class KmpLibraryPlugin : Plugin<Project> {
                     baseName = xcfName
                 }
             }
+
+            jvm {
+                compilations.configureEach {
+                    compileTaskProvider.configure {
+                        compilerOptions.configureJvmSpecificOptions()
+                    }
+                }
+            }
+        }
+
+        configureDetekt()
+    }
+
+    private fun Project.createExtension(): KmpLibraryExtension {
+        return extensions.create<KmpLibraryExtension>("kmpLibrary").also {
+            it.abiValidationEnabled.convention(true)
         }
     }
 
@@ -88,4 +110,9 @@ internal class KmpLibraryPlugin : Plugin<Project> {
             source.setFrom(allKmpSources)
         }
     }
+}
+
+public interface KmpLibraryExtension {
+
+    public val abiValidationEnabled: Property<Boolean>
 }

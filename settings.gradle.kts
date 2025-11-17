@@ -27,6 +27,9 @@ rootProject.name = "apythia"
 
 includeBuild("build-logic")
 
-include(":app")
 include(":bom")
 include(":http")
+include(":http-ktor")
+include(":http-okhttp")
+include(":http-testing")
+include(":sample-app")
