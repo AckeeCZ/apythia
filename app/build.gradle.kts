@@ -1,43 +1,28 @@
+import io.github.ackeecz.apythia.properties.LibraryProperties
+import io.github.ackeecz.apythia.util.Constants
+
+repositories {
+    google()
+    mavenLocal()
+    mavenCentral()
+}
+
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ackeecz.apythia.android.application)
 }
 
 android {
-    namespace = "io.github.ackeecz.revelio"
-    compileSdk = 36
+    namespace = "${Constants.NAMESPACE_PREFIX}.sample"
 
     defaultConfig {
-        applicationId = "io.github.ackeecz.revelio"
-        minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
+        applicationId = Constants.NAMESPACE_PREFIX
     }
 }
 
+@Suppress("UseTomlInstead")
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    val bomVersion = LibraryProperties(project).bomArtifactProperties.version
+    implementation(platform("io.github.ackeecz:apythia-bom:$bomVersion"))
+    implementation("io.github.ackeecz:apythia-http")
 }
