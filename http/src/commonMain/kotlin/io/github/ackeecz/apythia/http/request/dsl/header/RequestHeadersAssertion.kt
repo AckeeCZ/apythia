@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.request.dsl.headers
+package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.request.ExpectedRequest

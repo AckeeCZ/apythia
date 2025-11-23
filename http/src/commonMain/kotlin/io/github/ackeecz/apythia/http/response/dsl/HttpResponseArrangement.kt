@@ -5,8 +5,8 @@ import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
 import io.github.ackeecz.apythia.http.response.HttpResponse
 import io.github.ackeecz.apythia.http.util.CallCountChecker
-import io.github.ackeecz.apythia.http.util.Headers
-import io.github.ackeecz.apythia.http.util.containsContentType
+import io.github.ackeecz.apythia.http.util.header.Headers
+import io.github.ackeecz.apythia.http.util.header.containsContentType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArrayBuilder
 import kotlinx.serialization.json.JsonElement

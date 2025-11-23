@@ -6,9 +6,9 @@ import io.github.ackeecz.apythia.http.request.HttpMethod
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertionImpl
 import io.github.ackeecz.apythia.http.request.dsl.body.RequestBodyAssertion
 import io.github.ackeecz.apythia.http.request.dsl.body.RequestBodyAssertionImpl
-import io.github.ackeecz.apythia.http.request.dsl.headers.HeadersAssertionImpl
-import io.github.ackeecz.apythia.http.request.dsl.headers.RequestHeadersAssertion
-import io.github.ackeecz.apythia.http.request.dsl.headers.RequestHeadersAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.header.HeadersAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.header.RequestHeadersAssertion
+import io.github.ackeecz.apythia.http.request.dsl.header.RequestHeadersAssertionImpl
 import io.github.ackeecz.apythia.http.request.dsl.url.UrlAssertion
 import io.github.ackeecz.apythia.http.request.dsl.url.UrlAssertionImpl
 import io.github.ackeecz.apythia.http.util.CallCountChecker

@@ -1,6 +1,6 @@
 package io.github.ackeecz.apythia.http.request.body
 
-import io.github.ackeecz.apythia.http.request.headers.ExpectedHeaders
+import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 
 internal data class ExpectedFormDataPart(
     val name: String,

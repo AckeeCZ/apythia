@@ -1,5 +1,6 @@
 package io.github.ackeecz.apythia.http.response
 
+import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
 import io.github.ackeecz.apythia.http.util.ByteArrayWrapper
 import io.github.ackeecz.apythia.http.util.wrap
@@ -7,6 +8,7 @@ import io.github.ackeecz.apythia.http.util.wrap
 /**
  * Http response data to be arranged by [HttpApythia].
  */
+@ExperimentalHttpApi
 public class HttpResponse internal constructor(
     public val statusCode: Int,
     public val headers: Map<String, List<String>>,

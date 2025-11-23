@@ -1,6 +1,10 @@
 package io.github.ackeecz.apythia.http.ktor
 
+import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.request.ActualHttpMessage
+import io.github.ackeecz.apythia.http.request.ActualRequest
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.response.HttpResponse
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
@@ -48,5 +52,17 @@ public class KtorHttpApythia(json: Json = Json) : HttpApythia(json) {
                 },
             )
         }
+    }
+
+    override fun getNextActualRequest(): ActualRequest {
+        TODO()
+    }
+
+    @ExperimentalHttpApi
+    override suspend fun forEachMultipartFormDataPart(
+        message: ActualHttpMessage,
+        onPart: suspend (ActualPart) -> Unit,
+    ) {
+        TODO()
     }
 }

@@ -3,9 +3,6 @@ package io.github.ackeecz.apythia.http.request.body
 import io.github.ackeecz.apythia.http.util.ByteArrayWrapper
 import io.github.ackeecz.apythia.http.util.wrap
 
-/**
- * Expected body of a request used in assertions.
- */
 internal sealed interface ExpectedBody {
 
     data object Empty : ExpectedBody

@@ -5,8 +5,13 @@ package io.github.ackeecz.apythia.http.request
  */
 public enum class HttpMethod(internal val value: String) {
 
-    GET("GET"),
-    PUT("PUT"),
-    POST("POST"),
+    CONNECT("CONNECT"),
     DELETE("DELETE"),
+    GET("GET"),
+    HEAD("HEAD"),
+    OPTIONS("OPTIONS"),
+    PATCH("PATCH"),
+    POST("POST"),
+    PUT("PUT"),
+    TRACE("TRACE"),
 }

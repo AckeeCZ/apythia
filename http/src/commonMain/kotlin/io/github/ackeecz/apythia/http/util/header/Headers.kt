@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.util
+package io.github.ackeecz.apythia.http.util.header
 
 internal object Headers {
 

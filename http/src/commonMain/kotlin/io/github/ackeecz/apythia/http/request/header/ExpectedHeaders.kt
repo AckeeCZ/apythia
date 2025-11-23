@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.request.headers
+package io.github.ackeecz.apythia.http.request.header
 
 /**
  * Represents expected HTTP headers. `null` value means that the corresponding part is not asserted.

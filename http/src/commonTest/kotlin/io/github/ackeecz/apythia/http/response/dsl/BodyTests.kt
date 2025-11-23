@@ -3,9 +3,9 @@ package io.github.ackeecz.apythia.http.response.dsl
 import io.github.ackeecz.apythia.http.Charset
 import io.github.ackeecz.apythia.http.callOnceTest
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangementTest.Fixture.Companion.JsonContentTypeValue
-import io.github.ackeecz.apythia.http.util.Headers
-import io.github.ackeecz.apythia.http.util.contentType
-import io.github.ackeecz.apythia.http.util.randomCase
+import io.github.ackeecz.apythia.http.util.header.Headers
+import io.github.ackeecz.apythia.http.util.header.contentType
+import io.github.ackeecz.apythia.http.util.header.randomCase
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope

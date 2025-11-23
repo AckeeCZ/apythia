@@ -1,9 +1,9 @@
-package io.github.ackeecz.apythia.http.request.dsl.headers
+package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
 import io.github.ackeecz.apythia.http.request.dsl.body.firstFormDataPartHeaders
-import io.github.ackeecz.apythia.http.request.headers.ExpectedHeaders
+import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 import io.kotest.core.spec.style.FunSpec
 
 internal class FormDataPartHeadersAssertionTest : FunSpec({
