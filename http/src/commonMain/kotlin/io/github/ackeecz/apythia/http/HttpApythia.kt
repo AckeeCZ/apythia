@@ -113,7 +113,7 @@ public abstract class HttpApythia(private val json: Json = Json) {
      * Returns the next actual HTTP request made by the HTTP client.
      * The returned [ActualRequest] is then used to verify the expectations defined in [assertNextRequest].
      */
-    protected abstract fun getNextActualRequest(): ActualRequest
+    protected abstract suspend fun getNextActualRequest(): ActualRequest
 
     private fun assertMethod(request: ActualRequest, expectedMethod: HttpMethod?) {
         expectedMethod?.let { request.method.lowercase() shouldBe it.value.lowercase() }

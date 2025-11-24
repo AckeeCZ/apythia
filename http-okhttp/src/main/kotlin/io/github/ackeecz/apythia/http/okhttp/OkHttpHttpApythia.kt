@@ -10,6 +10,9 @@ import kotlinx.serialization.json.Json
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import okhttp3.Headers
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartReader
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okio.Buffer
 
 /**
@@ -58,8 +61,15 @@ public class OkHttpHttpApythia(json: Json = Json) : HttpApythia(json) {
         mockWebServer.enqueue(mockedResponse)
     }
 
-    override fun getNextActualRequest(): ActualRequest {
-        TODO()
+    override suspend fun getNextActualRequest(): ActualRequest {
+        return with(mockWebServer.takeRequest()) {
+            ActualRequest(
+                method = method,
+                url = url.toString(),
+                headers = headers.toMultimap(),
+                body = body?.toByteArray() ?: byteArrayOf(),
+            )
+        }
     }
 
     @ExperimentalHttpApi
@@ -67,6 +77,18 @@ public class OkHttpHttpApythia(json: Json = Json) : HttpApythia(json) {
         message: ActualHttpMessage,
         onPart: suspend (ActualPart) -> Unit,
     ) {
-        TODO()
+        message.body.toResponseBody(message.contentType?.toMediaType())
+            .let { MultipartReader(it) }
+            .use { reader ->
+                var nextPart = reader.nextPart()
+                while (nextPart != null) {
+                    val part = ActualPart(
+                        headers = nextPart.headers.toMultimap(),
+                        body = nextPart.body.readByteArray(),
+                    )
+                    onPart(part)
+                    nextPart = reader.nextPart()
+                }
+            }
     }
 }

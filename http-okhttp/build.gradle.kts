@@ -10,5 +10,6 @@ dependencies {
     implementation(libs.okhttp.mockWebServer)
 
     testImplementation(projects.httpTesting)
+    testImplementation(libs.okhttp.loggingInterceptor)
     testImplementation(libs.retrofit)
 }
