@@ -24,9 +24,7 @@ kotlin {
             dependencies {
                 implementation(projects.httpTesting)
 
-                implementation(libs.ktor.contentNegotiation)
                 implementation(libs.ktor.logging)
-                implementation(libs.ktor.serialization.json)
             }
         }
     }

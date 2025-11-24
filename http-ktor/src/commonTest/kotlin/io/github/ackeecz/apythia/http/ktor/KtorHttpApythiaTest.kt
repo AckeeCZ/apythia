@@ -6,7 +6,6 @@ import io.github.ackeecz.apythia.http.testing.RemoteDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
@@ -19,20 +18,13 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.client.statement.bodyAsBytes
-import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
-import io.ktor.http.contentType
 import io.ktor.http.headers
-import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.appendAll
 import io.ktor.util.toMap
-import io.ktor.utils.io.InternalAPI
 import io.ktor.utils.io.core.buildPacket
 import kotlinx.io.readByteArray
 import kotlinx.io.writeString
-import kotlinx.serialization.json.Json
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 class KtorHttpApythiaTest : BaseHttpApythiaImplTest<KtorHttpApythia>() {
 
@@ -49,27 +41,12 @@ private class KtorRemoteDataSource(engine: MockEngine) : RemoteDataSource {
 
     private val ktorClient = HttpClient(engine).config {
         setUpDefaultRequest()
-        setUpContentNegotiation()
         setUpLogging()
     }
 
     private fun HttpClientConfig<*>.setUpDefaultRequest() {
         defaultRequest {
-            contentType(ContentType.Application.Json)
             url(BASE_URL)
-        }
-    }
-
-    private fun HttpClientConfig<*>.setUpContentNegotiation() {
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                    explicitNulls = false
-                    encodeDefaults = true
-                }
-            )
         }
     }
 
@@ -123,7 +100,6 @@ private class KtorRemoteDataSource(engine: MockEngine) : RemoteDataSource {
         }
     }
 
-    @OptIn(InternalAPI::class)
     override suspend fun sendNestedMultipartRequest(
         nestedPartNamesToBodies: Map<String, Map<String, ByteArray>>
     ) {
