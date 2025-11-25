@@ -48,7 +48,9 @@ apythia-bom = "SPECIFY_VERSION"
 
 [libraries]
 apythia-bom = { module = "io.github.ackeecz:apythia-bom", version.ref = "apythia-bom" }
+# For Ktor
 apythia-http-ktor = { module = "io.github.ackeecz:apythia-http-ktor" }
+# For OkHttp
 apythia-http-okhttp = { module = "io.github.ackeecz:apythia-http-okhttp" }
 ```
 
@@ -77,8 +79,6 @@ commonTest {
         implementation(dependencies.platform(libs.apythia.bom))
         // For Ktor
         implementation(libs.apythia.http.ktor)
-        // For OkHttp
-        implementation(libs.apythia.http.okhttp)
     }
 }
 ```

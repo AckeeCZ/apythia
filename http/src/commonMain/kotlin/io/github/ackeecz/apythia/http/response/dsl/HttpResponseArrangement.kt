@@ -3,22 +3,17 @@ package io.github.ackeecz.apythia.http.response.dsl
 import io.github.ackeecz.apythia.http.Charset
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.response.HttpResponse
 import io.github.ackeecz.apythia.http.util.CallCountChecker
 import io.github.ackeecz.apythia.http.util.header.Headers
 import io.github.ackeecz.apythia.http.util.header.containsContentType
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonArrayBuilder
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObjectBuilder
-import kotlinx.serialization.json.buildJsonArray
-import kotlinx.serialization.json.buildJsonObject
 
 /**
  * Entry point for building a HTTP response.
  */
-@HttpResponseDsl
-public interface HttpResponseArrangement {
+@HttpResponseDslMarker
+public interface HttpResponseArrangement : DslExtensionConfigProvider {
 
     /**
      * Sets the HTTP status [code] for the response.
@@ -53,44 +48,11 @@ public interface HttpResponseArrangement {
      */
     @ExperimentalHttpApi
     public fun plainTextBody(value: String, charset: Charset = Charset.UTF_8)
-
-    /**
-     * Sets the [value] as JSON response body.
-     *
-     * Content type header is set to "application/json" by default. If you want to omit this header
-     * set [includeContentTypeHeader] to false.
-     */
-    @ExperimentalHttpApi
-    public fun jsonBody(value: JsonElement, includeContentTypeHeader: Boolean = true)
-
-    /**
-     * Same as [jsonBody] accepting [JsonElement] but takes a JSON string as input.
-     */
-    @ExperimentalHttpApi
-    public fun jsonBody(value: String, includeContentTypeHeader: Boolean = true)
-
-    /**
-     * Same as [jsonBody] but uses a builder block to create a JSON object.
-     */
-    @ExperimentalHttpApi
-    public fun jsonObjectBody(
-        includeContentTypeHeader: Boolean = true,
-        build: JsonObjectBuilder.() -> Unit,
-    )
-
-    /**
-     * Same as [jsonBody] but uses a builder block to create a JSON array.
-     */
-    @ExperimentalHttpApi
-    public fun jsonArrayBody(
-        includeContentTypeHeader: Boolean = true,
-        build: JsonArrayBuilder.() -> Unit,
-    )
 }
 
 internal class HttpResponseArrangementImpl(
-    private val json: Json,
-) : HttpResponseArrangement {
+    private val dslExtensionConfigProvider: DslExtensionConfigProvider,
+) : HttpResponseArrangement, DslExtensionConfigProvider by dslExtensionConfigProvider {
 
     private val statusCodeCallCountChecker = CallCountChecker("statusCode", maxCallCount = 1)
     private val headersCallCountChecker = CallCountChecker("headers", maxCallCount = 1)
@@ -145,40 +107,6 @@ internal class HttpResponseArrangementImpl(
         bytesBody(
             value = encodedValue,
             contentType = "text/plain; charset=${charset.name}",
-        )
-    }
-
-    override fun jsonBody(value: JsonElement, includeContentTypeHeader: Boolean) {
-        jsonBody(
-            value = json.encodeToString(value),
-            includeContentTypeHeader = includeContentTypeHeader,
-        )
-    }
-
-    override fun jsonBody(value: String, includeContentTypeHeader: Boolean) {
-        bytesBody(
-            value = value.encodeToByteArray(),
-            contentType = if (includeContentTypeHeader) "application/json" else null
-        )
-    }
-
-    override fun jsonObjectBody(
-        includeContentTypeHeader: Boolean,
-        build: JsonObjectBuilder.() -> Unit,
-    ) {
-        jsonBody(
-            value = buildJsonObject(build),
-            includeContentTypeHeader = includeContentTypeHeader,
-        )
-    }
-
-    override fun jsonArrayBody(
-        includeContentTypeHeader: Boolean,
-        build: JsonArrayBuilder.() -> Unit,
-    ) {
-        jsonBody(
-            value = buildJsonArray(build),
-            includeContentTypeHeader = includeContentTypeHeader,
         )
     }
 }

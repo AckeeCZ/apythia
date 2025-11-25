@@ -6,12 +6,16 @@
 // - Show declarations: true
 
 // Library unique name: <io.github.ackeecz:http>
-open annotation class io.github.ackeecz.apythia.http.request.dsl/HttpRequestDsl : kotlin/Annotation { // io.github.ackeecz.apythia.http.request.dsl/HttpRequestDsl|null[0]
-    constructor <init>() // io.github.ackeecz.apythia.http.request.dsl/HttpRequestDsl.<init>|<init>(){}[0]
+open annotation class io.github.ackeecz.apythia.http.extension/ConfigsDslMarker : kotlin/Annotation { // io.github.ackeecz.apythia.http.extension/ConfigsDslMarker|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http.extension/ConfigsDslMarker.<init>|<init>(){}[0]
 }
 
-open annotation class io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl : kotlin/Annotation { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl|null[0]
-    constructor <init>() // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl.<init>|<init>(){}[0]
+open annotation class io.github.ackeecz.apythia.http.request.dsl/HttpRequestDslMarker : kotlin/Annotation { // io.github.ackeecz.apythia.http.request.dsl/HttpRequestDslMarker|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http.request.dsl/HttpRequestDslMarker.<init>|<init>(){}[0]
+}
+
+open annotation class io.github.ackeecz.apythia.http.response.dsl/HttpResponseDslMarker : kotlin/Annotation { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDslMarker|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDslMarker.<init>|<init>(){}[0]
 }
 
 open annotation class io.github.ackeecz.apythia.http/ExperimentalHttpApi : kotlin/Annotation { // io.github.ackeecz.apythia.http/ExperimentalHttpApi|null[0]
@@ -46,8 +50,23 @@ final enum class io.github.ackeecz.apythia.http/Charset : kotlin/Enum<io.github.
     final fun values(): kotlin/Array<io.github.ackeecz.apythia.http/Charset> // io.github.ackeecz.apythia.http/Charset.values|values#static(){}[0]
 }
 
-abstract interface io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion { // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion|null[0]
+abstract interface io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider|null[0]
+    abstract fun <#A1: io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config> getDslExtensionConfig(kotlin.reflect/KClass<#A1>): #A1? // io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider.getDslExtensionConfig|getDslExtensionConfig(kotlin.reflect.KClass<0:0>){0§<io.github.ackeecz.apythia.http.extension.HttpDslExtension.Config>}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.extension/DslExtensionConfigs { // io.github.ackeecz.apythia.http.extension/DslExtensionConfigs|null[0]
+    abstract fun dslExtensionConfig(io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config) // io.github.ackeecz.apythia.http.extension/DslExtensionConfigs.dslExtensionConfig|dslExtensionConfig(io.github.ackeecz.apythia.http.extension.HttpDslExtension.Config){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.extension/HttpDslExtension { // io.github.ackeecz.apythia.http.extension/HttpDslExtension|null[0]
+    abstract fun assert(kotlin/String, kotlin/String, io.github.ackeecz.apythia.http.request/ActualHttpMessage) // io.github.ackeecz.apythia.http.extension/HttpDslExtension.assert|assert(kotlin.String;kotlin.String;io.github.ackeecz.apythia.http.request.ActualHttpMessage){}[0]
+
+    abstract interface Config // io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config|null[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion|null[0]
     abstract fun bytes(kotlin/ByteArray) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.bytes|bytes(kotlin.ByteArray){}[0]
+    abstract fun dslExtension(io.github.ackeecz.apythia.http.extension/HttpDslExtension) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.dslExtension|dslExtension(io.github.ackeecz.apythia.http.extension.HttpDslExtension){}[0]
     abstract fun empty() // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.empty|empty(){}[0]
     abstract fun multipartFormData(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.multipartFormData|multipartFormData(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.MultipartFormDataAssertion,kotlin.Unit>){}[0]
     abstract fun partialMultipartFormData(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/PartialMultipartFormDataAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.partialMultipartFormData|partialMultipartFormData(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.PartialMultipartFormDataAssertion,kotlin.Unit>){}[0]
@@ -113,19 +132,15 @@ abstract interface io.github.ackeecz.apythia.http.response.dsl/HeadersArrangemen
     abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
 }
 
-abstract interface io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement|null[0]
+abstract interface io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement|null[0]
     abstract fun bytesBody(kotlin/ByteArray, kotlin/String?) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.bytesBody|bytesBody(kotlin.ByteArray;kotlin.String?){}[0]
     abstract fun headers(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.headers|headers(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HeadersArrangement,kotlin.Unit>){}[0]
-    abstract fun jsonArrayBody(kotlin/Boolean = ..., kotlin/Function1<kotlinx.serialization.json/JsonArrayBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonArrayBody|jsonArrayBody(kotlin.Boolean;kotlin.Function1<kotlinx.serialization.json.JsonArrayBuilder,kotlin.Unit>){}[0]
-    abstract fun jsonBody(kotlin/String, kotlin/Boolean = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonBody|jsonBody(kotlin.String;kotlin.Boolean){}[0]
-    abstract fun jsonBody(kotlinx.serialization.json/JsonElement, kotlin/Boolean = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonBody|jsonBody(kotlinx.serialization.json.JsonElement;kotlin.Boolean){}[0]
-    abstract fun jsonObjectBody(kotlin/Boolean = ..., kotlin/Function1<kotlinx.serialization.json/JsonObjectBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonObjectBody|jsonObjectBody(kotlin.Boolean;kotlin.Function1<kotlinx.serialization.json.JsonObjectBuilder,kotlin.Unit>){}[0]
     abstract fun plainTextBody(kotlin/String, io.github.ackeecz.apythia.http/Charset = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.plainTextBody|plainTextBody(kotlin.String;io.github.ackeecz.apythia.http.Charset){}[0]
     abstract fun statusCode(kotlin/Int) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.statusCode|statusCode(kotlin.Int){}[0]
 }
 
 abstract class io.github.ackeecz.apythia.http/HttpApythia { // io.github.ackeecz.apythia.http/HttpApythia|null[0]
-    constructor <init>(kotlinx.serialization.json/Json = ...) // io.github.ackeecz.apythia.http/HttpApythia.<init>|<init>(kotlinx.serialization.json.Json){}[0]
+    constructor <init>(kotlin/Function1<io.github.ackeecz.apythia.http.extension/DslExtensionConfigs, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.<init>|<init>(kotlin.Function1<io.github.ackeecz.apythia.http.extension.DslExtensionConfigs,kotlin.Unit>){}[0]
 
     abstract fun afterEachTest() // io.github.ackeecz.apythia.http/HttpApythia.afterEachTest|afterEachTest(){}[0]
     abstract fun arrangeNextResponse(io.github.ackeecz.apythia.http.response/HttpResponse) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(io.github.ackeecz.apythia.http.response.HttpResponse){}[0]
@@ -152,10 +167,18 @@ final class io.github.ackeecz.apythia.http.request/ActualHttpMessage { // io.git
         final fun <get-contentType>(): kotlin/String? // io.github.ackeecz.apythia.http.request/ActualHttpMessage.contentType.<get-contentType>|<get-contentType>(){}[0]
     final val headers // io.github.ackeecz.apythia.http.request/ActualHttpMessage.headers|{}headers[0]
         final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.request/ActualHttpMessage.headers.<get-headers>|<get-headers>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // io.github.ackeecz.apythia.http.request/ActualHttpMessage.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // io.github.ackeecz.apythia.http.request/ActualHttpMessage.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualHttpMessage.toString|toString(){}[0]
 }
 
 final class io.github.ackeecz.apythia.http.request/ActualRequest { // io.github.ackeecz.apythia.http.request/ActualRequest|null[0]
     constructor <init>(kotlin/String, kotlin/String, kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin/ByteArray) // io.github.ackeecz.apythia.http.request/ActualRequest.<init>|<init>(kotlin.String;kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>;kotlin.ByteArray){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // io.github.ackeecz.apythia.http.request/ActualRequest.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // io.github.ackeecz.apythia.http.request/ActualRequest.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.toString|toString(){}[0]
 }
 
 final class io.github.ackeecz.apythia.http.response/HttpResponse { // io.github.ackeecz.apythia.http.response/HttpResponse|null[0]
@@ -166,3 +189,5 @@ final class io.github.ackeecz.apythia.http.response/HttpResponse { // io.github.
     final val statusCode // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode|{}statusCode[0]
         final fun <get-statusCode>(): kotlin/Int // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
 }
+
+final inline fun <#A: reified io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config> (io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider).io.github.ackeecz.apythia.http.extension/getDslExtensionConfig(): #A? // io.github.ackeecz.apythia.http.extension/getDslExtensionConfig|getDslExtensionConfig@io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider(){0§<io.github.ackeecz.apythia.http.extension.HttpDslExtension.Config>}[0]

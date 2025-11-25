@@ -1,5 +1,6 @@
 package io.github.ackeecz.apythia.http.request.body
 
+import io.github.ackeecz.apythia.http.extension.HttpDslExtension
 import io.github.ackeecz.apythia.http.util.ByteArrayWrapper
 import io.github.ackeecz.apythia.http.util.wrap
 
@@ -25,4 +26,6 @@ internal sealed interface ExpectedBody {
         val parts: List<ExpectedFormDataPart>?,
         val missingParts: Set<String>? = null,
     ) : ExpectedBody
+
+    data class DslExtension(val dslExtension: HttpDslExtension) : ExpectedBody
 }

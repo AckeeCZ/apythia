@@ -1,6 +1,7 @@
 package io.github.ackeecz.apythia.http.request.dsl
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.ExpectedRequest
 import io.github.ackeecz.apythia.http.request.HttpMethod
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertionImpl
@@ -16,7 +17,7 @@ import io.github.ackeecz.apythia.http.util.CallCountChecker
 /**
  * Main entry point for HTTP request assertion DSL that allows to assert HTTP request properties.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
 public interface HttpRequestAssertion {
 
@@ -41,7 +42,9 @@ public interface HttpRequestAssertion {
     public fun body(assertBody: RequestBodyAssertion.() -> Unit)
 }
 
-internal class HttpRequestAssertionImpl : HttpRequestAssertion {
+internal class HttpRequestAssertionImpl(
+    private val configProvider: DslExtensionConfigProvider,
+) : HttpRequestAssertion {
 
     var expectedRequest = ExpectedRequest()
         private set
@@ -70,7 +73,8 @@ internal class HttpRequestAssertionImpl : HttpRequestAssertion {
 
     override fun body(assertBody: RequestBodyAssertion.() -> Unit) {
         bodyCallCountChecker.incrementOrFail()
-        val bodyAssertion = RequestBodyAssertionImpl(BodyAssertionImpl()).apply(assertBody)
-        expectedRequest = expectedRequest.copy(body = bodyAssertion.expectedBody)
+        val bodyAssertion = BodyAssertionImpl(configProvider)
+        val requestBodyAssertion = RequestBodyAssertionImpl(bodyAssertion).apply(assertBody)
+        expectedRequest = expectedRequest.copy(body = requestBodyAssertion.expectedBody)
     }
 }

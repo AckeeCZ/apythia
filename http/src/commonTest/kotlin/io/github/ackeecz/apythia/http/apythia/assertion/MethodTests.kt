@@ -1,9 +1,12 @@
-package io.github.ackeecz.apythia.http.apythia
+package io.github.ackeecz.apythia.http.apythia.assertion
 
+import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.request.HttpMethod
-import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
-internal fun FunSpec.methodTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
+internal suspend fun FunSpecContainerScope.methodTests(
+    fixture: HttpApythiaTest.Fixture
+) = with(fixture) {
     context("method") {
         test("failure") {
             underTest.actualMethod = "POST"

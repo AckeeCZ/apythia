@@ -1,5 +1,6 @@
-package io.github.ackeecz.apythia.http.apythia
+package io.github.ackeecz.apythia.http.apythia.assertion
 
+import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.request.body.createActualFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.request.dsl.body.MultipartFormDataAssertion

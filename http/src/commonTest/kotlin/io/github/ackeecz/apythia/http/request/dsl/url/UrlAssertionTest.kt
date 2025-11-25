@@ -1,6 +1,7 @@
 package io.github.ackeecz.apythia.http.request.dsl.url
 
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.createHttpRequestAssertionImpl
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
@@ -12,7 +13,7 @@ private lateinit var underTest: HttpRequestAssertionImpl
 class UrlAssertionTest : FunSpec({
 
     beforeEach {
-        underTest = HttpRequestAssertionImpl()
+        underTest = createHttpRequestAssertionImpl()
     }
 
     urlTests()

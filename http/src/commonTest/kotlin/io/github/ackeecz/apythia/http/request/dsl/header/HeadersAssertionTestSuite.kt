@@ -4,6 +4,7 @@ package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.createHttpRequestAssertionImpl
 import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 import io.github.ackeecz.apythia.http.util.header.lowercaseKeys
 import io.kotest.assertions.throwables.shouldThrow
@@ -21,7 +22,7 @@ internal abstract class HeadersAssertionFixture {
         get() = expectedHeaders.headers
 
     fun beforeEach() {
-        underTest = HttpRequestAssertionImpl()
+        underTest = createHttpRequestAssertionImpl()
     }
 
     abstract fun HttpRequestAssertion.headersTest(test: HeadersAssertion.() -> Unit)

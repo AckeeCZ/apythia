@@ -2,12 +2,12 @@ package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.request.ExpectedRequest
-import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
+import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 
 /**
  * Provides various methods for HTTP request headers assertions.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
 public interface RequestHeadersAssertion : HeadersAssertion
 

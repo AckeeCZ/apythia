@@ -1,5 +1,6 @@
 package io.github.ackeecz.apythia.http
 
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ActualPart
@@ -10,7 +11,11 @@ import io.github.ackeecz.apythia.http.response.HttpResponse
  * [HttpApythia] implementation for testing purposes. This allows to test abstract [HttpApythia]
  * without using a real implementation.
  */
-internal class HttpApythiaImpl : HttpApythia() {
+internal class HttpApythiaImpl(
+    dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},
+) : HttpApythia(
+    dslExtensionConfigs = dslExtensionConfigs,
+) {
 
     var actualRequest: ActualRequest = createActualRequest()
 
@@ -27,13 +32,13 @@ internal class HttpApythiaImpl : HttpApythia() {
         }
 
     var actualHeaders: Map<String, List<String>>
-        get() = actualRequest.message.headers
+        get() = actualRequest.headers
         set(value) {
             actualRequest = actualRequest.copy(headers = value)
         }
 
     var actualBody: ByteArray
-        get() = actualRequest.message.body
+        get() = actualRequest.body
         set(value) {
             actualRequest = actualRequest.copy(body = value)
         }
@@ -44,9 +49,7 @@ internal class HttpApythiaImpl : HttpApythia() {
 
     override fun afterEachTest() = Unit
 
-    override fun arrangeNextResponse(response: HttpResponse) {
-        throw NotImplementedError()
-    }
+    override fun arrangeNextResponse(response: HttpResponse) = Unit
 
     override suspend fun getNextActualRequest(): ActualRequest = actualRequest
 

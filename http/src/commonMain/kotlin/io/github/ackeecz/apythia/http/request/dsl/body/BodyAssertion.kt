@@ -1,16 +1,18 @@
 package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
+import io.github.ackeecz.apythia.http.extension.HttpDslExtension
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
-import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
+import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.util.CallCountChecker
 
 /**
  * Provides various methods for HTTP body assertions.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
-public interface BodyAssertion {
+public interface BodyAssertion : DslExtensionConfigProvider {
 
     /**
      * Asserts an empty body.
@@ -48,9 +50,20 @@ public interface BodyAssertion {
      * selected part of the multipart body, ignoring the rest without a failure unlike [multipartFormData].
      */
     public fun partialMultipartFormData(assertPartialMultipart: PartialMultipartFormDataAssertion.() -> Unit)
+
+    /**
+     * Asserts a body using the specified [extension]. This API is meant to be used for custom
+     * extensions that extend the [BodyAssertion] DSL by adding more content types to check, e.g.
+     * JSON, XML, etc. It has the same semantic as other [BodyAssertion] methods like [empty], [bytes],
+     * etc, so you should use it **only** for checking particular body data using a custom content type
+     * and not for anything else.
+     */
+    public fun dslExtension(extension: HttpDslExtension)
 }
 
-internal class BodyAssertionImpl : BodyAssertion {
+internal class BodyAssertionImpl(
+    private val configProvider: DslExtensionConfigProvider,
+) : BodyAssertion, DslExtensionConfigProvider by configProvider {
 
     var expectedBody: ExpectedBody? = null
         private set
@@ -82,7 +95,7 @@ internal class BodyAssertionImpl : BodyAssertion {
 
     override fun multipartFormData(assertMultipart: MultipartFormDataAssertion.() -> Unit) {
         contentTypeCallCountChecker.incrementOrFail()
-        val assertion = MultipartFormDataAssertionImpl().apply(assertMultipart)
+        val assertion = MultipartFormDataAssertionImpl(configProvider).apply(assertMultipart)
         val parts = assertion.expectedParts
         check(parts.isNotEmpty()) { "multipart/form-data must have at least one part" }
         expectedBody = ExpectedBody.MultipartFormData(parts)
@@ -90,10 +103,15 @@ internal class BodyAssertionImpl : BodyAssertion {
 
     override fun partialMultipartFormData(assertPartialMultipart: PartialMultipartFormDataAssertion.() -> Unit) {
         contentTypeCallCountChecker.incrementOrFail()
-        val assertion = PartialMultipartFormDataAssertionImpl().apply(assertPartialMultipart)
+        val assertion = PartialMultipartFormDataAssertionImpl(configProvider).apply(assertPartialMultipart)
         expectedBody = ExpectedBody.PartialMultipartFormData(
             parts = assertion.expectedParts,
             missingParts = assertion.missingParts,
         )
+    }
+
+    override fun dslExtension(extension: HttpDslExtension) {
+        contentTypeCallCountChecker.incrementOrFail()
+        expectedBody = ExpectedBody.DslExtension(extension)
     }
 }

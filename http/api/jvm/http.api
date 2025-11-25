@@ -9,9 +9,7 @@ public abstract interface annotation class io/github/ackeecz/apythia/http/Experi
 }
 
 public abstract class io/github/ackeecz/apythia/http/HttpApythia {
-	public fun <init> ()V
-	public fun <init> (Lkotlinx/serialization/json/Json;)V
-	public synthetic fun <init> (Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun afterEachTest ()V
 	public final fun arrangeNext200Response ()V
 	protected abstract fun arrangeNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
@@ -22,16 +20,40 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract interface annotation class io/github/ackeecz/apythia/http/extension/ConfigsDslMarker : java/lang/annotation/Annotation {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+	public abstract fun getDslExtensionConfig (Lkotlin/reflect/KClass;)Lio/github/ackeecz/apythia/http/extension/HttpDslExtension$Config;
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/extension/DslExtensionConfigs {
+	public abstract fun dslExtensionConfig (Lio/github/ackeecz/apythia/http/extension/HttpDslExtension$Config;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/extension/HttpDslExtension {
+	public abstract fun assert (Ljava/lang/String;Ljava/lang/String;Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/extension/HttpDslExtension$Config {
+}
+
 public final class io/github/ackeecz/apythia/http/request/ActualHttpMessage {
 	public fun <init> (Ljava/util/Map;[B)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBody ()[B
 	public final fun getContentLength ()I
 	public final fun getContentType ()Ljava/lang/String;
 	public final fun getHeaders ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/github/ackeecz/apythia/http/request/ActualRequest {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;[B)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/github/ackeecz/apythia/http/request/HttpMethod : java/lang/Enum {
@@ -60,11 +82,12 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/HttpR
 	public abstract fun url (Lkotlin/jvm/functions/Function1;)V
 }
 
-public abstract interface annotation class io/github/ackeecz/apythia/http/request/dsl/HttpRequestDsl : java/lang/annotation/Annotation {
+public abstract interface annotation class io/github/ackeecz/apythia/http/request/dsl/HttpRequestDslMarker : java/lang/annotation/Annotation {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
 	public abstract fun bytes ([B)V
+	public abstract fun dslExtension (Lio/github/ackeecz/apythia/http/extension/HttpDslExtension;)V
 	public abstract fun empty ()V
 	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function1;)V
@@ -143,30 +166,18 @@ public abstract interface class io/github/ackeecz/apythia/http/response/dsl/Head
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement {
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
 	public abstract fun bytesBody ([BLjava/lang/String;)V
 	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun jsonArrayBody (ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public abstract fun jsonBody (Ljava/lang/String;Z)V
-	public abstract fun jsonBody (Lkotlinx/serialization/json/JsonElement;Z)V
-	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;ZILjava/lang/Object;)V
-	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
-	public abstract fun jsonObjectBody (ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public abstract fun plainTextBody (Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;)V
 	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
 	public abstract fun statusCode (I)V
 }
 
 public final class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement$DefaultImpls {
-	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;ZILjava/lang/Object;)V
-	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
-	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
 }
 
-public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDsl : java/lang/annotation/Annotation {
+public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDslMarker : java/lang/annotation/Annotation {
 }
 

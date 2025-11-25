@@ -3,7 +3,7 @@ package io.github.ackeecz.apythia.http.response.dsl
 /**
  * Arrangement for HTTP response headers.
  */
-@HttpResponseDsl
+@HttpResponseDslMarker
 public interface HeadersArrangement {
 
     /**

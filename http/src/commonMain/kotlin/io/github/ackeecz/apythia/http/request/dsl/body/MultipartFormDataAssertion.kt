@@ -1,13 +1,14 @@
 package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
-import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
+import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 
 /**
  * Provides various methods for multipart/form-data assertions.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
 public interface MultipartFormDataAssertion {
 
@@ -25,7 +26,9 @@ public interface MultipartFormDataAssertion {
     )
 }
 
-internal class MultipartFormDataAssertionImpl : MultipartFormDataAssertion {
+internal class MultipartFormDataAssertionImpl(
+    private val configProvider: DslExtensionConfigProvider,
+) : MultipartFormDataAssertion {
 
     private val _expectedParts: MutableList<ExpectedFormDataPart> = mutableListOf()
     val expectedParts: List<ExpectedFormDataPart> get() = _expectedParts.toList()
@@ -35,7 +38,7 @@ internal class MultipartFormDataAssertionImpl : MultipartFormDataAssertion {
         filename: String?,
         assertPart: FormDataPartAssertion.() -> Unit,
     ) {
-        val partAssertion = FormDataPartAssertionImpl().apply(assertPart)
+        val partAssertion = FormDataPartAssertionImpl(configProvider).apply(assertPart)
         val part = ExpectedFormDataPart(
             name = name,
             filename = filename,

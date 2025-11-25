@@ -2,9 +2,11 @@
 
 package io.github.ackeecz.apythia.http.request.dsl.body
 
+import io.github.ackeecz.apythia.http.extension.HttpDslExtensionMock
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.createHttpRequestAssertionImpl
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
@@ -18,7 +20,7 @@ internal abstract class BodyAssertionFixture {
     abstract val HttpRequestAssertionImpl.expectedBody: ExpectedBody?
 
     fun beforeEach() {
-        underTest = HttpRequestAssertionImpl()
+        underTest = createHttpRequestAssertionImpl()
     }
 
     abstract fun HttpRequestAssertion.bodyTest(test: BodyAssertion.() -> Unit)
@@ -36,6 +38,7 @@ internal fun FunSpec.bodyAssertionTestSuite(fixture: BodyAssertionFixture) = wit
     plainTextTests(fixture)
     formDataMultipartTests(fixture)
     partialFormDataMultipartTests(fixture)
+    dslExtensionTests(fixture)
 }
 
 private fun FunSpec.emptyTests(fixture: BodyAssertionFixture) = with(fixture) {
@@ -123,6 +126,20 @@ private fun FunSpec.formDataMultipartTests(fixture: BodyAssertionFixture) = with
 private fun FunSpec.partialFormDataMultipartTests(fixture: BodyAssertionFixture) = with(fixture) {
     context("partialFormDataMultipart") {
         callOnceTest(fixture) { partialMultipartFormData {} }
+    }
+}
+
+private fun FunSpec.dslExtensionTests(fixture: BodyAssertionFixture) = with(fixture) {
+    context("dslExtension") {
+        callOnceTest(fixture) { dslExtension(HttpDslExtensionMock()) }
+
+        test("set") {
+            val expectedExtension = HttpDslExtensionMock()
+
+            underTest.bodyTest { dslExtension(expectedExtension) }
+
+            underTest.expectedBody shouldBe ExpectedBody.DslExtension(expectedExtension)
+        }
     }
 }
 
