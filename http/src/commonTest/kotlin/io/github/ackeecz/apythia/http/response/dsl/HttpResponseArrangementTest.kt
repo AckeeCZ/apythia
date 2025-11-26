@@ -8,6 +8,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
+// TODO Move these tests under HttpApythiaTest as well
 internal class HttpResponseArrangementTest : FunSpec({
 
     val testFixture = Fixture()

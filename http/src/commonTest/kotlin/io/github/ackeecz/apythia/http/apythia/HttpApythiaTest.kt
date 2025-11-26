@@ -1,9 +1,10 @@
 package io.github.ackeecz.apythia.http.apythia
 
 import io.github.ackeecz.apythia.http.HttpApythia
-import io.github.ackeecz.apythia.http.apythia.assertion.bodyTests
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
-import io.github.ackeecz.apythia.http.apythia.assertion.rootHeadersTests
+import io.github.ackeecz.apythia.http.apythia.assertion.queryTests
+import io.github.ackeecz.apythia.http.apythia.assertion.requestBodyTests
+import io.github.ackeecz.apythia.http.apythia.assertion.requestHeadersTests
 import io.github.ackeecz.apythia.http.apythia.assertion.urlTests
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigMock
@@ -127,13 +128,10 @@ private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
 
 private fun FunSpec.assertionTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
     context("assertion") {
-        test("don't assert anything by default if not explicitly specified") {
-            fixture.underTest.assertNextRequest {}
-        }
-
         methodTests(fixture)
         urlTests(fixture)
-        rootHeadersTests(fixture)
-        bodyTests(fixture)
+        queryTests(fixture)
+        requestHeadersTests(fixture)
+        requestBodyTests(fixture)
     }
 }

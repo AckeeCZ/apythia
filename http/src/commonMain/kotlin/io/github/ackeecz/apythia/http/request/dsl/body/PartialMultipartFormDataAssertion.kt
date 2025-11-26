@@ -2,9 +2,11 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
-import io.github.ackeecz.apythia.http.request.ActualRequest
-import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
+import io.github.ackeecz.apythia.http.request.ActualHttpMessage
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
+import io.kotest.assertions.withClue
+import io.kotest.matchers.booleans.shouldBeFalse
 
 /**
  * Provides various methods for partial multipart/form-data assertions.
@@ -22,31 +24,43 @@ public interface PartialMultipartFormDataAssertion : MultipartFormDataAssertion 
     public fun missingParts(vararg name: String)
 }
 
-internal class PartialMultipartFormDataAssertionImpl(
-    configProvider: DslExtensionConfigProvider,
-    actualRequest: ActualRequest,
+internal class PartialMultipartFormDataAssertionImpl private constructor(
+    private val multipartFormDataAssertion: MultipartFormDataAssertionImpl,
 ) : PartialMultipartFormDataAssertion {
 
-    private var _missingParts: MutableSet<String>? = null
-    val missingParts: Set<String>? get() = _missingParts?.toSet()
+    private val allActualParts = multipartFormDataAssertion.remainingActualParts
 
-    private val multipartFormDataAssertion = MultipartFormDataAssertionImpl(configProvider, actualRequest)
-
-    val expectedParts: List<ExpectedFormDataPart>?
-        get() = multipartFormDataAssertion.expectedParts.ifEmpty { null }
-
-    override fun part(
+    override suspend fun part(
         name: String,
         filename: String?,
-        assertPart: FormDataPartAssertion.() -> Unit,
+        assertPart: suspend FormDataPartAssertion.() -> Unit,
     ) {
         multipartFormDataAssertion.part(name, filename, assertPart)
     }
 
     override fun missingParts(vararg name: String) {
-        if (_missingParts == null) {
-            _missingParts = mutableSetOf()
+        name.forEach { expectedMissingName ->
+            withClue("Multipart parts '$expectedMissingName' should be missing but are present.") {
+                allActualParts.map { it.name }.contains(expectedMissingName).shouldBeFalse()
+            }
         }
-        checkNotNull(_missingParts).addAll(name)
+    }
+
+    companion object {
+
+        suspend operator fun invoke(
+            configProvider: DslExtensionConfigProvider,
+            collectParts: suspend (ActualHttpMessage) -> List<ActualPart>,
+            actualMessage: ActualHttpMessage,
+        ): PartialMultipartFormDataAssertionImpl {
+            val multipartFormDataAssertion = MultipartFormDataAssertionImpl(
+                configProvider = configProvider,
+                collectParts = collectParts,
+                actualMessage = actualMessage,
+            )
+            return PartialMultipartFormDataAssertionImpl(
+                multipartFormDataAssertion = multipartFormDataAssertion,
+            )
+        }
     }
 }

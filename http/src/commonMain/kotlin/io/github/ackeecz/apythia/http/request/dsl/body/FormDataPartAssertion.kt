@@ -2,8 +2,9 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
-import io.github.ackeecz.apythia.http.request.ActualRequest
-import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
+import io.github.ackeecz.apythia.http.request.ActualHttpMessage
+import io.github.ackeecz.apythia.http.request.body.ActualFormDataPart
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.dsl.header.FormDataPartHeadersAssertion
 import io.github.ackeecz.apythia.http.request.dsl.header.FormDataPartHeadersAssertionImpl
@@ -25,19 +26,14 @@ public interface FormDataPartAssertion {
     /**
      * Asserts HTTP body of the multipart/form-data part.
      */
-    public fun body(assertBody: FormDataPartBodyAssertion.() -> Unit)
+    public suspend fun body(assertBody: suspend FormDataPartBodyAssertion.() -> Unit)
 }
 
 internal class FormDataPartAssertionImpl(
     private val configProvider: DslExtensionConfigProvider,
-    private val actualRequest: ActualRequest,
+    private val actualPart: ActualFormDataPart,
+    private val collectNestedParts: suspend (ActualHttpMessage) -> List<ActualPart>,
 ) : FormDataPartAssertion {
-
-    var expectedHeaders: ExpectedFormDataPart.Headers = ExpectedFormDataPart.Headers()
-        private set
-
-    var expectedBody: ExpectedFormDataPart.Body = ExpectedFormDataPart.Body()
-        private set
 
     private val headersCallCountChecker = CallCountChecker(actionName = "headers")
     private val bodyCallCountChecker = CallCountChecker(actionName = "body")
@@ -46,16 +42,18 @@ internal class FormDataPartAssertionImpl(
         headersCallCountChecker.incrementOrFail()
         val headersAssertion = HeadersAssertionImpl(
             configProvider = configProvider,
-            actualHeaders = actualRequest.headers,
+            actualHeaders = actualPart.message.headers,
         )
-        val partHeadersAssertion = FormDataPartHeadersAssertionImpl(headersAssertion).apply(assertHeaders)
-        expectedHeaders = partHeadersAssertion.expectedHeaders
+        FormDataPartHeadersAssertionImpl(headersAssertion).assertHeaders()
     }
 
-    override fun body(assertBody: FormDataPartBodyAssertion.() -> Unit) {
+    override suspend fun body(assertBody: suspend FormDataPartBodyAssertion.() -> Unit) {
         bodyCallCountChecker.incrementOrFail()
-        val bodyAssertion = BodyAssertionImpl(configProvider, actualRequest)
-        val partBodyAssertion = FormDataPartBodyAssertionImpl(bodyAssertion).apply(assertBody)
-        expectedBody = partBodyAssertion.expectedBody
+        val bodyAssertion = BodyAssertionImpl(
+            configProvider = configProvider,
+            actualMessage = actualPart.message,
+            collectMultipartParts = collectNestedParts,
+        )
+        FormDataPartBodyAssertionImpl(bodyAssertion).assertBody()
     }
 }

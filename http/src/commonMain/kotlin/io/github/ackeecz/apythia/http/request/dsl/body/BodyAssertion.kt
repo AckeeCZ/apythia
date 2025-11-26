@@ -1,11 +1,15 @@
 package io.github.ackeecz.apythia.http.request.dsl.body
 
+import io.github.ackeecz.apythia.http.Charset
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
-import io.github.ackeecz.apythia.http.request.ActualRequest
-import io.github.ackeecz.apythia.http.request.body.ExpectedBody
+import io.github.ackeecz.apythia.http.request.ActualHttpMessage
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
-import io.github.ackeecz.apythia.http.util.CallCountChecker
+import io.kotest.assertions.withClue
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.shouldBe
 
 /**
  * Provides various methods for HTTP body assertions.
@@ -15,7 +19,7 @@ import io.github.ackeecz.apythia.http.util.CallCountChecker
 public interface BodyAssertion : DslExtensionConfigProvider {
 
     /**
-     * The actual body of a HTTP request. This can be used to extend the [BodyAssertion] DSL with
+     * The actual HTTP body. This can be used to extend the [BodyAssertion] DSL with
      * custom assertions. You can retrieve this value just once the same as you can call body
      * assertions just once.
      */
@@ -50,47 +54,38 @@ public interface BodyAssertion : DslExtensionConfigProvider {
      * Asserts whole multipart/form-data body. Expected multipart parts have to match the actual ones,
      * i.e. their count has to be the same and each actual part has to match the expected one.
      */
-    public fun multipartFormData(assertMultipart: MultipartFormDataAssertion.() -> Unit)
+    public suspend fun multipartFormData(assertMultipart: suspend MultipartFormDataAssertion.() -> Unit)
 
     /**
      * Allows to assert multipart/form-data body partially, i.e. you can assert only a specific
      * selected part of the multipart body, ignoring the rest without a failure unlike [multipartFormData].
      */
-    public fun partialMultipartFormData(assertPartialMultipart: PartialMultipartFormDataAssertion.() -> Unit)
+    public suspend fun partialMultipartFormData(assertPartialMultipart: suspend PartialMultipartFormDataAssertion.() -> Unit)
 }
 
 internal class BodyAssertionImpl(
     private val configProvider: DslExtensionConfigProvider,
-    private val actualRequest: ActualRequest,
+    private val actualMessage: ActualHttpMessage,
+    private val collectMultipartParts: suspend (ActualHttpMessage) -> List<ActualPart>,
 ) : BodyAssertion, DslExtensionConfigProvider by configProvider {
 
-    var expectedBody: ExpectedBody? = null
-        private set
-
-    private val contentTypeCallCountChecker = CallCountChecker(actionName = "content type assertion")
-
-    override val actualBody: ActualBody
-        get() {
-            contentTypeCallCountChecker.incrementOrFail()
-            return ActualBody(
-                data = actualRequest.message.body,
-                contentType = actualRequest.message.contentType,
-            )
-        }
+    override val actualBody = ActualBody(
+        data = actualMessage.body,
+        contentType = actualMessage.contentType,
+    )
 
     override fun empty() {
-        contentTypeCallCountChecker.incrementOrFail()
-        expectedBody = ExpectedBody.Empty
+        actualMessage.body.shouldBeEmpty()
     }
 
     override fun bytes(value: ByteArray) {
-        contentTypeCallCountChecker.incrementOrFail()
-        expectedBody = ExpectedBody.Bytes(value)
+        actualMessage.body shouldBe value
     }
 
+    @Suppress("DEPRECATION_ERROR")
     override fun plainText(value: String) {
-        contentTypeCallCountChecker.incrementOrFail()
-        expectedBody = ExpectedBody.PlainText(value)
+        Charset.checkCharsetSupported(contentType = actualMessage.contentType)
+        actualMessage.body.decodeToString() shouldBeEqual value
     }
 
     override fun plainText(value: Int) {
@@ -101,20 +96,23 @@ internal class BodyAssertionImpl(
         plainText(value.toString())
     }
 
-    override fun multipartFormData(assertMultipart: MultipartFormDataAssertion.() -> Unit) {
-        contentTypeCallCountChecker.incrementOrFail()
-        val assertion = MultipartFormDataAssertionImpl(configProvider, actualRequest).apply(assertMultipart)
-        val parts = assertion.expectedParts
-        check(parts.isNotEmpty()) { "multipart/form-data must have at least one part" }
-        expectedBody = ExpectedBody.MultipartFormData(parts)
+    override suspend fun multipartFormData(assertMultipart: suspend MultipartFormDataAssertion.() -> Unit) {
+        val assertion = MultipartFormDataAssertionImpl(
+            configProvider = configProvider,
+            collectParts = collectMultipartParts,
+            actualMessage = actualMessage,
+        ).apply { assertMultipart() }
+        val actualParts = assertion.remainingActualParts
+        withClue("multipart/form-data body contains unexpected parts: $actualParts") {
+            actualParts.shouldBeEmpty()
+        }
     }
 
-    override fun partialMultipartFormData(assertPartialMultipart: PartialMultipartFormDataAssertion.() -> Unit) {
-        contentTypeCallCountChecker.incrementOrFail()
-        val assertion = PartialMultipartFormDataAssertionImpl(configProvider, actualRequest).apply(assertPartialMultipart)
-        expectedBody = ExpectedBody.PartialMultipartFormData(
-            parts = assertion.expectedParts,
-            missingParts = assertion.missingParts,
-        )
+    override suspend fun partialMultipartFormData(assertPartialMultipart: suspend PartialMultipartFormDataAssertion.() -> Unit) {
+        PartialMultipartFormDataAssertionImpl(
+            configProvider = configProvider,
+            collectParts = collectMultipartParts,
+            actualMessage = actualMessage,
+        ).assertPartialMultipart()
     }
 }

@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.okhttp
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
@@ -22,7 +23,7 @@ import okio.Buffer
  *
  * For more information check [HttpApythia] documentation.
  *
- * @param dslExtensionConfigs DSL for adding [io.github.ackeecz.apythia.http.extension.DslExtensionConfig]s.
+ * @param dslExtensionConfigs DSL for adding [DslExtensionConfig]s.
  */
 public class OkHttpHttpApythia(
     dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},

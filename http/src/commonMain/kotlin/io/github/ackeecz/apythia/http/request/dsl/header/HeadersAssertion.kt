@@ -3,10 +3,14 @@ package io.github.ackeecz.apythia.http.request.dsl.header
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
-import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 import io.github.ackeecz.apythia.http.util.CallCountChecker
 import io.github.ackeecz.apythia.http.util.header.Headers
 import io.github.ackeecz.apythia.http.util.header.appendHeaderParameters
+import io.github.ackeecz.apythia.http.util.header.lowercaseKeys
+import io.kotest.assertions.withClue
+import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.nulls.shouldNotBeNull
 
 /**
  * Provides various methods for HTTP headers assertions.
@@ -47,29 +51,25 @@ internal class HeadersAssertionImpl(
     override val actualHeaders: Map<String, List<String>>,
 ) : HeadersAssertion, DslExtensionConfigProvider by configProvider {
 
-    var expectedHeaders: ExpectedHeaders = ExpectedHeaders()
-        private set
-
-    private var headers: Map<String, List<String>>?
-        get() = expectedHeaders.headers
-        set(value) {
-            expectedHeaders = expectedHeaders.copy(headers = value)
-        }
-
     private val contentTypeCallCountChecker = CallCountChecker(actionName = "Content-Type")
 
     override fun header(name: String, value: String) {
-        headers(name, listOf(value))
+        assertCommonProperties(name) shouldContain value
+    }
+
+    private fun assertCommonProperties(name: String): List<String> {
+        return assertHeaderIsNotMissing(name)
+    }
+
+    private fun assertHeaderIsNotMissing(name: String): List<String> {
+        return withClue("Header '$name' is missing") {
+            actualHeaders.lowercaseKeys()[name.lowercase()].shouldNotBeNull()
+        }
     }
 
     override fun headers(name: String, values: List<String>) {
         require(values.isNotEmpty()) { "values must not be empty" }
-        if (headers == null) {
-            headers = mutableMapOf()
-        }
-        headers = checkNotNull(headers).toMutableMap().also {
-            it[name] = it.getOrElse(name) { emptyList() } + values
-        }
+        assertCommonProperties(name) shouldContainAll values
     }
 
     override fun contentType(mimeType: String, parameters: Map<String, String>) {

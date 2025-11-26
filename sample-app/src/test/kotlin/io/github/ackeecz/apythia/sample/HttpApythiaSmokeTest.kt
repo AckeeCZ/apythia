@@ -1,9 +1,11 @@
 package io.github.ackeecz.apythia.sample
 
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.json.kotlinx.serialization.jsonObjectBody
 import io.github.ackeecz.apythia.http.ktor.KtorHttpApythia
 import io.github.ackeecz.apythia.http.okhttp.OkHttpHttpApythia
 import io.kotest.core.spec.style.FunSpec
+import kotlinx.serialization.json.put
 
 /**
  * This serves only as smoke tests of [HttpApythia] implementations to ensure that published
@@ -28,7 +30,9 @@ abstract class HttpApythiaSmokeTest : FunSpec() {
                 headers {
                     headers("X-Custom-Header", listOf("value"))
                 }
-                bytesBody(byteArrayOf(1, 2, 3), contentType = null)
+                jsonObjectBody {
+                    put("key", 1.0)
+                }
             }
         }
     }

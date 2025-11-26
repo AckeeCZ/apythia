@@ -19,7 +19,7 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public final fun arrangeNext200Response ()V
 	protected abstract fun arrangeNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
 	public final fun arrangeNextResponse (Lkotlin/jvm/functions/Function1;)V
-	public final fun assertNextRequest (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun assertNextRequest (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeEachTest ()V
 	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -82,10 +82,11 @@ public final class io/github/ackeecz/apythia/http/request/HttpMethod : java/lang
 
 public final class io/github/ackeecz/apythia/http/request/body/ActualPart {
 	public fun <init> (Ljava/util/Map;[B)V
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/HttpRequestAssertion {
-	public abstract fun body (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun body (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun method (Lio/github/ackeecz/apythia/http/request/HttpMethod;)V
 	public abstract fun url (Lkotlin/jvm/functions/Function1;)V
@@ -104,15 +105,15 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 	public abstract fun bytes ([B)V
 	public abstract fun empty ()V
 	public abstract fun getActualBody ()Lio/github/ackeecz/apythia/http/request/dsl/body/ActualBody;
-	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun plainText (D)V
 	public abstract fun plainText (I)V
 	public abstract fun plainText (Ljava/lang/String;)V
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/FormDataPartAssertion {
-	public abstract fun body (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun body (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -120,12 +121,12 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion {
-	public abstract fun part (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun part (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion$DefaultImpls {
-	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/PartialMultipartFormDataAssertion : io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion {
@@ -157,11 +158,11 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/Q
 	public abstract fun getActualQueryParameters ()Ljava/util/Map;
 	public abstract fun missingParameters ([Ljava/lang/String;)V
 	public abstract fun noParameters ()V
+	public abstract fun noValueParameter (Ljava/lang/String;)V
 	public abstract fun parameter (Ljava/lang/String;D)V
 	public abstract fun parameter (Ljava/lang/String;I)V
 	public abstract fun parameter (Ljava/lang/String;J)V
 	public abstract fun parameter (Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun parameterWithoutValue (Ljava/lang/String;)V
 	public abstract fun parameters (Ljava/lang/String;Ljava/util/List;)V
 }
 
