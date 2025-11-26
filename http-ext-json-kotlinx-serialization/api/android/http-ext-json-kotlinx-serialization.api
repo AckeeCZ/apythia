@@ -1,0 +1,41 @@
+public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/ArrangementDslExtensionsKt {
+	public static final fun jsonArrayBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun jsonBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Z)V
+	public static final fun jsonBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;Z)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
+	public static final fun jsonObjectBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/AssertionDslExtensionsKt {
+	public static final fun json (Lio/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion;Ljava/lang/String;)V
+	public static final fun jsonElement (Lio/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion;Lkotlinx/serialization/json/JsonElement;)V
+	public static final fun jsonObject (Lio/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion;Lkotlin/jvm/functions/Function1;)V
+	public static final fun partialJsonObject (Lio/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/KotlinxSerializationJsonConfigKt {
+	public static final fun kotlinxSerializationJsonConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfigs;Lkotlin/jvm/functions/Function1;)V
+	public static final fun kotlinxSerializationJsonConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfigs;Lkotlinx/serialization/json/Json;)V
+	public static final fun kotlinxSerializationJsonConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfigs;Lkotlinx/serialization/json/Json;Lkotlinx/serialization/json/Json;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/PartialJsonObjectAssertion {
+	public abstract fun missingProperties ([Ljava/lang/String;)V
+	public abstract fun nullProperty (Ljava/lang/String;)V
+	public abstract fun property (Ljava/lang/String;D)V
+	public abstract fun property (Ljava/lang/String;F)V
+	public abstract fun property (Ljava/lang/String;I)V
+	public abstract fun property (Ljava/lang/String;J)V
+	public abstract fun property (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun property (Ljava/lang/String;Z)V
+	public abstract fun propertyWithPresentValueOrMissing (Ljava/lang/String;Ljava/lang/Boolean;)V
+	public abstract fun propertyWithPresentValueOrMissing (Ljava/lang/String;Ljava/lang/Double;)V
+	public abstract fun propertyWithPresentValueOrMissing (Ljava/lang/String;Ljava/lang/Float;)V
+	public abstract fun propertyWithPresentValueOrMissing (Ljava/lang/String;Ljava/lang/Integer;)V
+	public abstract fun propertyWithPresentValueOrMissing (Ljava/lang/String;Ljava/lang/Long;)V
+	public abstract fun propertyWithPresentValueOrMissing (Ljava/lang/String;Ljava/lang/String;)V
+}
+

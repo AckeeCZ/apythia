@@ -48,6 +48,10 @@ final enum class io.github.ackeecz.apythia.http/Charset : kotlin/Enum<io.github.
 
     final fun valueOf(kotlin/String): io.github.ackeecz.apythia.http/Charset // io.github.ackeecz.apythia.http/Charset.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<io.github.ackeecz.apythia.http/Charset> // io.github.ackeecz.apythia.http/Charset.values|values#static(){}[0]
+
+    final object Companion { // io.github.ackeecz.apythia.http/Charset.Companion|null[0]
+        final fun checkCharsetSupported(kotlin/String?) // io.github.ackeecz.apythia.http/Charset.Companion.checkCharsetSupported|checkCharsetSupported(kotlin.String?){}[0]
+    }
 }
 
 abstract interface io.github.ackeecz.apythia.http.extension/DslExtensionConfig // io.github.ackeecz.apythia.http.extension/DslExtensionConfig|null[0]
@@ -183,6 +187,15 @@ final class io.github.ackeecz.apythia.http.request/ActualHttpMessage { // io.git
 final class io.github.ackeecz.apythia.http.request/ActualRequest { // io.github.ackeecz.apythia.http.request/ActualRequest|null[0]
     constructor <init>(kotlin/String, kotlin/String, kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin/ByteArray) // io.github.ackeecz.apythia.http.request/ActualRequest.<init>|<init>(kotlin.String;kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>;kotlin.ByteArray){}[0]
 
+    final val body // io.github.ackeecz.apythia.http.request/ActualRequest.body|{}body[0]
+        final fun <get-body>(): kotlin/ByteArray // io.github.ackeecz.apythia.http.request/ActualRequest.body.<get-body>|<get-body>(){}[0]
+    final val headers // io.github.ackeecz.apythia.http.request/ActualRequest.headers|{}headers[0]
+        final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.request/ActualRequest.headers.<get-headers>|<get-headers>(){}[0]
+    final val method // io.github.ackeecz.apythia.http.request/ActualRequest.method|{}method[0]
+        final fun <get-method>(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.method.<get-method>|<get-method>(){}[0]
+    final val urlString // io.github.ackeecz.apythia.http.request/ActualRequest.urlString|{}urlString[0]
+        final fun <get-urlString>(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.urlString.<get-urlString>|<get-urlString>(){}[0]
+
     final fun equals(kotlin/Any?): kotlin/Boolean // io.github.ackeecz.apythia.http.request/ActualRequest.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // io.github.ackeecz.apythia.http.request/ActualRequest.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.toString|toString(){}[0]
@@ -195,6 +208,10 @@ final class io.github.ackeecz.apythia.http.response/HttpResponse { // io.github.
         final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.response/HttpResponse.headers.<get-headers>|<get-headers>(){}[0]
     final val statusCode // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode|{}statusCode[0]
         final fun <get-statusCode>(): kotlin/Int // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
+}
+
+final class io.github.ackeecz.apythia.http/UnsupportedEncodingException : kotlin/RuntimeException { // io.github.ackeecz.apythia.http/UnsupportedEncodingException|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http/UnsupportedEncodingException.<init>|<init>(){}[0]
 }
 
 final inline fun <#A: reified io.github.ackeecz.apythia.http.extension/DslExtensionConfig> (io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider).io.github.ackeecz.apythia.http.extension/getDslExtensionConfig(): #A? // io.github.ackeecz.apythia.http.extension/getDslExtensionConfig|getDslExtensionConfig@io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider(){0§<io.github.ackeecz.apythia.http.extension.DslExtensionConfig>}[0]

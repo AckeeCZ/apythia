@@ -4,6 +4,8 @@ import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.request.body.createActualFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.request.dsl.body.MultipartFormDataAssertion
+import io.github.ackeecz.apythia.testing.http.shouldFail
+import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
 internal suspend fun FunSpecContainerScope.multipartFormDataBodyTests(

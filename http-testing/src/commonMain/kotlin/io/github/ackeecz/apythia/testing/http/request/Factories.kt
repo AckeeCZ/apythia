@@ -1,6 +1,8 @@
-package io.github.ackeecz.apythia.http.request
+package io.github.ackeecz.apythia.testing.http.request
 
-internal fun createActualRequest(
+import io.github.ackeecz.apythia.http.request.ActualRequest
+
+public fun createActualRequest(
     method: String = "GET",
     url: String = "http://example.com",
     headers: Map<String, List<String>> = emptyMap(),

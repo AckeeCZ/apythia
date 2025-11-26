@@ -1,8 +1,8 @@
 package io.github.ackeecz.apythia.http.okhttp
 
-import io.github.ackeecz.apythia.http.testing.ArrangedResponse
-import io.github.ackeecz.apythia.http.testing.BaseHttpApythiaImplTest
-import io.github.ackeecz.apythia.http.testing.RemoteDataSource
+import io.github.ackeecz.apythia.testing.http.ArrangedResponse
+import io.github.ackeecz.apythia.testing.http.BaseHttpApythiaImplTest
+import io.github.ackeecz.apythia.testing.http.RemoteDataSource
 import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody

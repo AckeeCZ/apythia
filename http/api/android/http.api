@@ -1,8 +1,13 @@
 public final class io/github/ackeecz/apythia/http/Charset : java/lang/Enum {
+	public static final field Companion Lio/github/ackeecz/apythia/http/Charset$Companion;
 	public static final field UTF_8 Lio/github/ackeecz/apythia/http/Charset;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/github/ackeecz/apythia/http/Charset;
 	public static fun values ()[Lio/github/ackeecz/apythia/http/Charset;
+}
+
+public final class io/github/ackeecz/apythia/http/Charset$Companion {
+	public final fun checkCharsetSupported (Ljava/lang/String;)V
 }
 
 public abstract interface annotation class io/github/ackeecz/apythia/http/ExperimentalHttpApi : java/lang/annotation/Annotation {
@@ -18,6 +23,10 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public abstract fun beforeEachTest ()V
 	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/github/ackeecz/apythia/http/UnsupportedEncodingException : java/lang/RuntimeException {
+	public fun <init> ()V
 }
 
 public abstract interface annotation class io/github/ackeecz/apythia/http/extension/ConfigsDslMarker : java/lang/annotation/Annotation {
@@ -48,6 +57,10 @@ public final class io/github/ackeecz/apythia/http/request/ActualHttpMessage {
 public final class io/github/ackeecz/apythia/http/request/ActualRequest {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;[B)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBody ()[B
+	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getMethod ()Ljava/lang/String;
+	public final fun getUrlString ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

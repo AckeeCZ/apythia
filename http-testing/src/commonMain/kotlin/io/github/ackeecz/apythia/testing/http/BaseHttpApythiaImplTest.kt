@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.testing
+package io.github.ackeecz.apythia.testing.http
 
 import io.github.ackeecz.apythia.http.HttpApythia
 import io.github.ackeecz.apythia.http.request.HttpMethod

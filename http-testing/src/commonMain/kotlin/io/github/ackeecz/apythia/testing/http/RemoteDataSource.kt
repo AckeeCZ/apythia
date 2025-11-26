@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.testing
+package io.github.ackeecz.apythia.testing.http
 
 public interface RemoteDataSource {
 

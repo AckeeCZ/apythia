@@ -1,7 +1,6 @@
 package io.github.ackeecz.apythia.http.apythia
 
 import io.github.ackeecz.apythia.http.HttpApythia
-import io.github.ackeecz.apythia.http.HttpApythiaImpl
 import io.github.ackeecz.apythia.http.apythia.assertion.bodyTests
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
 import io.github.ackeecz.apythia.http.apythia.assertion.rootHeadersTests
@@ -12,7 +11,7 @@ import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.extension.getDslExtensionConfig
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
-import io.kotest.assertions.throwables.shouldNotThrow
+import io.github.ackeecz.apythia.testing.http.HttpApythiaMock
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
@@ -34,18 +33,10 @@ internal class HttpApythiaTest : FunSpec({
 
     class Fixture {
 
-        lateinit var underTest: HttpApythiaImpl
+        lateinit var underTest: HttpApythiaMock
 
         fun beforeEach() {
-            underTest = HttpApythiaImpl()
-        }
-
-        inline fun shouldNotFail(block: () -> Unit) {
-            shouldNotThrow<AssertionError> { block() }
-        }
-
-        inline fun shouldFail(block: () -> Unit) {
-            shouldThrow<AssertionError> { block() }
+            underTest = HttpApythiaMock()
         }
     }
 }
@@ -56,7 +47,7 @@ private fun FunSpec.dslExtensionConfigTests(fixture: HttpApythiaTest.Fixture) = 
             val config1 = DslExtensionConfigMock()
             val config2 = DslExtensionConfigMock()
 
-            HttpApythiaImpl {
+            HttpApythiaMock {
                 dslExtensionConfig(config1)
                 shouldThrow<IllegalStateException> {
                     dslExtensionConfig(config2)
@@ -87,7 +78,7 @@ private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
         val expected = Random.nextInt()
         val config = DslExtensionConfigMock().also { it.data = expected }
 
-        HttpApythiaImpl {
+        HttpApythiaMock {
             dslExtensionConfig(object : DslExtensionConfig {})
             dslExtensionConfig(config)
         }.callDslExtensionConfigProvider {
@@ -99,7 +90,7 @@ private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
     }
 
     test("get null config if not set") {
-        HttpApythiaImpl().callDslExtensionConfigProvider {
+        HttpApythiaMock().callDslExtensionConfigProvider {
             getDslExtensionConfig<DslExtensionConfigMock>().shouldBeNull()
         }
     }
