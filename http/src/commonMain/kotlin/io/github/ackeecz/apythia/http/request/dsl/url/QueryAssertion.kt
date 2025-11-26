@@ -1,6 +1,8 @@
 package io.github.ackeecz.apythia.http.request.dsl.url
 
+import com.eygraber.uri.Url
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.url.ExpectedQuery
 import io.github.ackeecz.apythia.http.util.MutualExclusivityChecker
@@ -10,7 +12,15 @@ import io.github.ackeecz.apythia.http.util.MutualExclusivityChecker
  */
 @HttpRequestDslMarker
 @ExperimentalHttpApi
-public interface QueryAssertion {
+public interface QueryAssertion : DslExtensionConfigProvider {
+
+    /**
+     * The actual URL query parameters of a HTTP request. Each key is a query parameter name and
+     * the value is a list of query parameter values, e.g. "name=value1&name=value2". `null` value
+     * means that the query parameter has no value, e.g. "name" or "name=".
+     * This can be used to extend the [QueryAssertion] DSL with custom assertions.
+     */
+    public val actualQueryParameters: Map<String, List<String?>>
 
     /**
      * Asserts that a query parameter with the given [name] has no value,
@@ -56,7 +66,10 @@ public interface QueryAssertion {
     public fun noParameters()
 }
 
-internal class QueryAssertionImpl : QueryAssertion {
+internal class QueryAssertionImpl(
+    configProvider: DslExtensionConfigProvider,
+    actualUrl: Url,
+) : QueryAssertion, DslExtensionConfigProvider by configProvider {
 
     var expectedQuery = ExpectedQuery()
         private set
@@ -74,6 +87,16 @@ internal class QueryAssertionImpl : QueryAssertion {
         }
 
     private val paramsAssertionExclusivityChecker = MutualExclusivityChecker<ParamsAssertionGroup>()
+
+    override val actualQueryParameters = actualUrl.getQueryParameters()
+
+    private fun Url.getQueryParameters(): Map<String, List<String?>> {
+        return getQueryParameterNames().associateWith { name ->
+            getQueryParameters(name).map {
+                it.ifEmpty { null }
+            }
+        }
+    }
 
     override fun parameterWithoutValue(name: String) {
         parametersInternal(name, listOf(null))

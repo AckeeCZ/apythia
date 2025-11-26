@@ -10,6 +10,9 @@ import io.github.ackeecz.apythia.http.extension.DslExtensionConfigMock
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.extension.getDslExtensionConfig
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
+import io.github.ackeecz.apythia.http.request.dsl.header.HeadersAssertion
+import io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion
+import io.github.ackeecz.apythia.http.request.dsl.url.UrlAssertion
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
 import io.github.ackeecz.apythia.testing.http.HttpApythiaMock
 import io.kotest.assertions.throwables.shouldThrow
@@ -55,17 +58,43 @@ private fun FunSpec.dslExtensionConfigTests(fixture: HttpApythiaTest.Fixture) = 
             }
         }
 
+        context("in ${HttpResponseArrangement::class.simpleName}") {
+            dslExtensionConfigTestSuite(
+                callDslExtensionConfigProvider = { arrangeNextResponse(it) }
+            )
+        }
+
+        context("in ${UrlAssertion::class.simpleName}") {
+            dslExtensionConfigTestSuite(
+                callDslExtensionConfigProvider = {
+                    assertNextRequest { url(it) }
+                }
+            )
+        }
+
+        context("in ${QueryAssertion::class.simpleName}") {
+            dslExtensionConfigTestSuite(
+                callDslExtensionConfigProvider = {
+                    assertNextRequest {
+                        url { query(it) }
+                    }
+                }
+            )
+        }
+
+        context("in ${HeadersAssertion::class.simpleName}") {
+            dslExtensionConfigTestSuite(
+                callDslExtensionConfigProvider = {
+                    assertNextRequest { headers(it) }
+                }
+            )
+        }
+
         context("in ${BodyAssertion::class.simpleName}") {
             dslExtensionConfigTestSuite(
                 callDslExtensionConfigProvider = {
                     assertNextRequest { body(it) }
                 }
-            )
-        }
-
-        context("in ${HttpResponseArrangement::class.simpleName}") {
-            dslExtensionConfigTestSuite(
-                callDslExtensionConfigProvider = { arrangeNextResponse(it) }
             )
         }
     }

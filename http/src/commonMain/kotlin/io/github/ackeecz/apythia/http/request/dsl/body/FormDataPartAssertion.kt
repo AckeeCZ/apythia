@@ -44,8 +44,12 @@ internal class FormDataPartAssertionImpl(
 
     override fun headers(assertHeaders: FormDataPartHeadersAssertion.() -> Unit) {
         headersCallCountChecker.incrementOrFail()
-        val headersAssertion = FormDataPartHeadersAssertionImpl(HeadersAssertionImpl()).apply(assertHeaders)
-        expectedHeaders = headersAssertion.expectedHeaders
+        val headersAssertion = HeadersAssertionImpl(
+            configProvider = configProvider,
+            actualHeaders = actualRequest.headers,
+        )
+        val partHeadersAssertion = FormDataPartHeadersAssertionImpl(headersAssertion).apply(assertHeaders)
+        expectedHeaders = partHeadersAssertion.expectedHeaders
     }
 
     override fun body(assertBody: FormDataPartBodyAssertion.() -> Unit) {

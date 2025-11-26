@@ -1,6 +1,7 @@
 package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 import io.github.ackeecz.apythia.http.util.CallCountChecker
@@ -12,7 +13,13 @@ import io.github.ackeecz.apythia.http.util.header.appendHeaderParameters
  */
 @HttpRequestDslMarker
 @ExperimentalHttpApi
-public interface HeadersAssertion {
+public interface HeadersAssertion : DslExtensionConfigProvider {
+
+    /**
+     * The actual headers of the request or multipart part. This can be used to extend the
+     * [HeadersAssertion] DSL with custom assertions.
+     */
+    public val actualHeaders: Map<String, List<String>>
 
     /**
      * Asserts a [value] for a header with the given [name].
@@ -35,7 +42,10 @@ public interface HeadersAssertion {
     public fun contentType(mimeType: String, parameters: Map<String, String> = emptyMap())
 }
 
-internal class HeadersAssertionImpl : HeadersAssertion {
+internal class HeadersAssertionImpl(
+    private val configProvider: DslExtensionConfigProvider,
+    override val actualHeaders: Map<String, List<String>>,
+) : HeadersAssertion, DslExtensionConfigProvider by configProvider {
 
     var expectedHeaders: ExpectedHeaders = ExpectedHeaders()
         private set

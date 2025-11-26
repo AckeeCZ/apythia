@@ -5,11 +5,23 @@ import io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion
 import io.github.ackeecz.apythia.testing.http.shouldFail
 import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
+import io.kotest.matchers.shouldBe
 
 internal suspend fun FunSpecContainerScope.urlTests(
     fixture: HttpApythiaTest.Fixture
 ) = with(fixture) {
     context("url") {
+        test("get actual url") {
+            val expected = "http://example.com/path?key=value"
+            underTest.actualRequestUrl = expected
+
+            underTest.assertNextRequest {
+                url {
+                    actualUrl shouldBe expected
+                }
+            }
+        }
+
         test("url failure") {
             underTest.actualRequestUrl = "http://example.com"
 
@@ -117,6 +129,23 @@ private suspend fun FunSpecContainerScope.queryTests(fixture: HttpApythiaTest.Fi
                             parameter(key, value2)
                             parameter(key, value1)
                         }
+                    }
+                }
+            }
+        }
+
+        test("get actual query parameters") {
+            val expected = mapOf(
+                "key" to listOf("value1", "value2"),
+                "key2" to listOf("value3"),
+                "key3" to listOf(null, "value4"),
+            )
+            underTest.actualRequestUrl = "http://example.com/path?key=value1&key=value2&key2=value3&key3&key3=value4"
+
+            underTest.assertNextRequest {
+                url {
+                    query {
+                        actualQueryParameters shouldBe expected
                     }
                 }
             }

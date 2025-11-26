@@ -138,9 +138,10 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/FormDataPartHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
 	public abstract fun contentType (Ljava/lang/String;Ljava/util/Map;)V
 	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+	public abstract fun getActualHeaders ()Ljava/util/Map;
 	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
 }
@@ -152,7 +153,8 @@ public final class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAsse
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/RequestHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/QueryAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/QueryAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+	public abstract fun getActualQueryParameters ()Ljava/util/Map;
 	public abstract fun missingParameters ([Ljava/lang/String;)V
 	public abstract fun noParameters ()V
 	public abstract fun parameter (Ljava/lang/String;D)V
@@ -163,7 +165,8 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/Q
 	public abstract fun parameters (Ljava/lang/String;Ljava/util/List;)V
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/UrlAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/UrlAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+	public abstract fun getActualUrl ()Ljava/lang/String;
 	public abstract fun path (Ljava/lang/String;)V
 	public abstract fun pathSuffix (Ljava/lang/String;)V
 	public abstract fun query (Lkotlin/jvm/functions/Function1;)V

@@ -96,7 +96,10 @@ abstract interface io.github.ackeecz.apythia.http.request.dsl.body/RequestBodyAs
 
 abstract interface io.github.ackeecz.apythia.http.request.dsl.header/FormDataPartHeadersAssertion : io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion // io.github.ackeecz.apythia.http.request.dsl.header/FormDataPartHeadersAssertion|null[0]
 
-abstract interface io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion { // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion|null[0]
+abstract interface io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion|null[0]
+    abstract val actualHeaders // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion.actualHeaders|{}actualHeaders[0]
+        abstract fun <get-actualHeaders>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion.actualHeaders.<get-actualHeaders>|<get-actualHeaders>(){}[0]
+
     abstract fun contentType(kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/String> = ...) // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion.contentType|contentType(kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
     abstract fun header(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion.header|header(kotlin.String;kotlin.String){}[0]
     abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
@@ -104,7 +107,10 @@ abstract interface io.github.ackeecz.apythia.http.request.dsl.header/HeadersAsse
 
 abstract interface io.github.ackeecz.apythia.http.request.dsl.header/RequestHeadersAssertion : io.github.ackeecz.apythia.http.request.dsl.header/HeadersAssertion // io.github.ackeecz.apythia.http.request.dsl.header/RequestHeadersAssertion|null[0]
 
-abstract interface io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion { // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion|null[0]
+abstract interface io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion|null[0]
+    abstract val actualQueryParameters // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.actualQueryParameters|{}actualQueryParameters[0]
+        abstract fun <get-actualQueryParameters>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String?>> // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.actualQueryParameters.<get-actualQueryParameters>|<get-actualQueryParameters>(){}[0]
+
     abstract fun missingParameters(kotlin/Array<out kotlin/String>...) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.missingParameters|missingParameters(kotlin.Array<out|kotlin.String>...){}[0]
     abstract fun noParameters() // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.noParameters|noParameters(){}[0]
     abstract fun parameter(kotlin/String, kotlin/Double) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameter|parameter(kotlin.String;kotlin.Double){}[0]
@@ -115,7 +121,10 @@ abstract interface io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion
     abstract fun parameters(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameters|parameters(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
 }
 
-abstract interface io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion { // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion|null[0]
+abstract interface io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion|null[0]
+    abstract val actualUrl // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.actualUrl|{}actualUrl[0]
+        abstract fun <get-actualUrl>(): kotlin/String // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.actualUrl.<get-actualUrl>|<get-actualUrl>(){}[0]
+
     abstract fun path(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.path|path(kotlin.String){}[0]
     abstract fun pathSuffix(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.pathSuffix|pathSuffix(kotlin.String){}[0]
     abstract fun query(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.query|query(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion,kotlin.Unit>){}[0]

@@ -16,7 +16,8 @@ public interface BodyAssertion : DslExtensionConfigProvider {
 
     /**
      * The actual body of a HTTP request. This can be used to extend the [BodyAssertion] DSL with
-     * custom assertions.
+     * custom assertions. You can retrieve this value just once the same as you can call body
+     * assertions just once.
      */
     public val actualBody: ActualBody
 

@@ -1,6 +1,8 @@
 package io.github.ackeecz.apythia.http.request.dsl.url
 
+import com.eygraber.uri.Url
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.url.ExpectedUrl
 import io.github.ackeecz.apythia.http.util.CallCountChecker
@@ -10,7 +12,13 @@ import io.github.ackeecz.apythia.http.util.CallCountChecker
  */
 @HttpRequestDslMarker
 @ExperimentalHttpApi
-public interface UrlAssertion {
+public interface UrlAssertion : DslExtensionConfigProvider {
+
+    /**
+     * The actual URL of a HTTP request. This can be used to extend the [UrlAssertion] DSL with
+     * custom assertions.
+     */
+    public val actualUrl: String
 
     /**
      * Asserts full request [url].
@@ -33,7 +41,10 @@ public interface UrlAssertion {
     public fun query(assertQuery: QueryAssertion.() -> Unit)
 }
 
-internal class UrlAssertionImpl : UrlAssertion {
+internal class UrlAssertionImpl(
+    private val configProvider: DslExtensionConfigProvider,
+    private val actualTypedUrl: Url,
+) : UrlAssertion, DslExtensionConfigProvider by configProvider {
 
     var expectedUrl = ExpectedUrl()
 
@@ -41,6 +52,8 @@ internal class UrlAssertionImpl : UrlAssertion {
     private val pathCallCountChecker = CallCountChecker(actionName = "path")
     private val pathSuffixCallCountChecker = CallCountChecker(actionName = "pathSuffix")
     private val queryCallCountChecker = CallCountChecker(actionName = "query")
+
+    override val actualUrl = actualTypedUrl.toString()
 
     override fun url(url: String) {
         urlCallCountChecker.incrementOrFail()
@@ -59,7 +72,10 @@ internal class UrlAssertionImpl : UrlAssertion {
 
     override fun query(assertQuery: QueryAssertion.() -> Unit) {
         queryCallCountChecker.incrementOrFail()
-        val queryAssertion = QueryAssertionImpl().apply(assertQuery)
+        val queryAssertion = QueryAssertionImpl(
+            configProvider = configProvider,
+            actualUrl = actualTypedUrl,
+        ).apply(assertQuery)
         expectedUrl = expectedUrl.copy(query = queryAssertion.expectedQuery)
     }
 }

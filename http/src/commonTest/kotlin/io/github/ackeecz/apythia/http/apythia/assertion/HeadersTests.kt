@@ -5,6 +5,7 @@ import io.github.ackeecz.apythia.http.util.header.Headers
 import io.github.ackeecz.apythia.testing.http.shouldFail
 import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
+import io.kotest.matchers.shouldBe
 
 internal suspend fun FunSpecContainerScope.rootHeadersTests(
     fixture: HttpApythiaTest.Fixture
@@ -23,6 +24,20 @@ internal suspend fun FunSpecContainerScope.rootHeadersTests(
                     headers {
                         headers(expectedHeader.first.lowercase(), expectedHeader.second)
                     }
+                }
+            }
+        }
+
+        test("get actual headers") {
+            val expected = mapOf(
+                "Accept-Encoding" to listOf("gzip", "deflate"),
+                "cOnTeNT-TYPe" to listOf("application/json"),
+            )
+            underTest.actualRequestHeaders = expected
+
+            underTest.assertNextRequest {
+                headers {
+                    actualHeaders shouldBe expected
                 }
             }
         }

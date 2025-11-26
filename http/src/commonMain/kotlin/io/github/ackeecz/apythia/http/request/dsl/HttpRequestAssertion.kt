@@ -63,14 +63,21 @@ internal class HttpRequestAssertionImpl(
 
     override fun url(assertUrl: UrlAssertion.() -> Unit) {
         urlCallCountChecker.incrementOrFail()
-        val urlAssertion = UrlAssertionImpl().apply(assertUrl)
+        val urlAssertion = UrlAssertionImpl(
+            configProvider = configProvider,
+            actualTypedUrl = actualRequest.url,
+        ).apply(assertUrl)
         expectedRequest = expectedRequest.copy(url = urlAssertion.expectedUrl)
     }
 
     override fun headers(assertHeaders: RequestHeadersAssertion.() -> Unit) {
         headersCallCountChecker.incrementOrFail()
-        val headersAssertion = RequestHeadersAssertionImpl(HeadersAssertionImpl()).apply(assertHeaders)
-        expectedRequest = expectedRequest.copy(headers = headersAssertion.expectedHeaders)
+        val headersAssertion = HeadersAssertionImpl(
+            configProvider = configProvider,
+            actualHeaders = actualRequest.headers,
+        )
+        val requestHeadersAssertion = RequestHeadersAssertionImpl(headersAssertion).apply(assertHeaders)
+        expectedRequest = expectedRequest.copy(headers = requestHeadersAssertion.expectedHeaders)
     }
 
     override fun body(assertBody: RequestBodyAssertion.() -> Unit) {

@@ -27,6 +27,18 @@ private suspend fun FunSpecContainerScope.actualBodyTests(
     fixture: HttpApythiaTest.Fixture,
 ) = with(fixture) {
     context("actual body") {
+        test("can be called only once") {
+            underTest.assertNextRequest {
+                body {
+                    actualBody
+
+                    shouldThrow<IllegalStateException> {
+                        actualBody
+                    }
+                }
+            }
+        }
+
         test("get body data") {
             val expected = byteArrayOf(1, 2, 3)
             underTest.actualRequestBody = expected
