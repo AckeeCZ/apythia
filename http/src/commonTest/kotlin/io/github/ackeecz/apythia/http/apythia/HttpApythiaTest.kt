@@ -6,9 +6,9 @@ import io.github.ackeecz.apythia.http.apythia.assertion.bodyTests
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
 import io.github.ackeecz.apythia.http.apythia.assertion.rootHeadersTests
 import io.github.ackeecz.apythia.http.apythia.assertion.urlTests
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigMock
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
-import io.github.ackeecz.apythia.http.extension.HttpDslExtension
-import io.github.ackeecz.apythia.http.extension.HttpDslExtensionMock
 import io.github.ackeecz.apythia.http.extension.getDslExtensionConfig
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
@@ -53,8 +53,8 @@ internal class HttpApythiaTest : FunSpec({
 private fun FunSpec.dslExtensionConfigTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
     context("DSL extension config") {
         test("fail if same config type is set twice") {
-            val config1 = HttpDslExtensionMock.Config()
-            val config2 = HttpDslExtensionMock.Config()
+            val config1 = DslExtensionConfigMock()
+            val config2 = DslExtensionConfigMock()
 
             HttpApythiaImpl {
                 dslExtensionConfig(config1)
@@ -85,13 +85,13 @@ private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
 ) {
     test("set config and retrieve it") {
         val expected = Random.nextInt()
-        val config = HttpDslExtensionMock.Config().also { it.data = expected }
+        val config = DslExtensionConfigMock().also { it.data = expected }
 
         HttpApythiaImpl {
-            dslExtensionConfig(object : HttpDslExtension.Config {})
+            dslExtensionConfig(object : DslExtensionConfig {})
             dslExtensionConfig(config)
         }.callDslExtensionConfigProvider {
-            getDslExtensionConfig<HttpDslExtensionMock.Config>()
+            getDslExtensionConfig<DslExtensionConfigMock>()
                 .let(::checkNotNull)
                 .data
                 .shouldBe(expected)
@@ -100,7 +100,7 @@ private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
 
     test("get null config if not set") {
         HttpApythiaImpl().callDslExtensionConfigProvider {
-            getDslExtensionConfig<HttpDslExtensionMock.Config>().shouldBeNull()
+            getDslExtensionConfig<DslExtensionConfigMock>().shouldBeNull()
         }
     }
 }

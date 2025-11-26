@@ -23,19 +23,15 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 public abstract interface annotation class io/github/ackeecz/apythia/http/extension/ConfigsDslMarker : java/lang/annotation/Annotation {
 }
 
+public abstract interface class io/github/ackeecz/apythia/http/extension/DslExtensionConfig {
+}
+
 public abstract interface class io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
-	public abstract fun getDslExtensionConfig (Lkotlin/reflect/KClass;)Lio/github/ackeecz/apythia/http/extension/HttpDslExtension$Config;
+	public abstract fun getDslExtensionConfig (Lkotlin/reflect/KClass;)Lio/github/ackeecz/apythia/http/extension/DslExtensionConfig;
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/extension/DslExtensionConfigs {
-	public abstract fun dslExtensionConfig (Lio/github/ackeecz/apythia/http/extension/HttpDslExtension$Config;)V
-}
-
-public abstract interface class io/github/ackeecz/apythia/http/extension/HttpDslExtension {
-	public abstract fun assert (Ljava/lang/String;Ljava/lang/String;Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;)V
-}
-
-public abstract interface class io/github/ackeecz/apythia/http/extension/HttpDslExtension$Config {
+	public abstract fun dslExtensionConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfig;)V
 }
 
 public final class io/github/ackeecz/apythia/http/request/ActualHttpMessage {
@@ -85,10 +81,16 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/HttpR
 public abstract interface annotation class io/github/ackeecz/apythia/http/request/dsl/HttpRequestDslMarker : java/lang/annotation/Annotation {
 }
 
+public final class io/github/ackeecz/apythia/http/request/dsl/body/ActualBody {
+	public fun <init> ([BLjava/lang/String;)V
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getData ()[B
+}
+
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
 	public abstract fun bytes ([B)V
-	public abstract fun dslExtension (Lio/github/ackeecz/apythia/http/extension/HttpDslExtension;)V
 	public abstract fun empty ()V
+	public abstract fun getActualBody ()Lio/github/ackeecz/apythia/http/request/dsl/body/ActualBody;
 	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun plainText (D)V

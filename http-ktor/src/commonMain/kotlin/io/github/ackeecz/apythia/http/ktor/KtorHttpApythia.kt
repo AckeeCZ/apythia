@@ -3,7 +3,6 @@ package io.github.ackeecz.apythia.http.ktor
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
-import io.github.ackeecz.apythia.http.extension.HttpDslExtension
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ActualPart
@@ -32,7 +31,7 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * For more information check [HttpApythia] documentation.
  *
- * @param dslExtensionConfigs DSL for adding [HttpDslExtension.Config]s.
+ * @param dslExtensionConfigs DSL for adding [io.github.ackeecz.apythia.http.extension.DslExtensionConfig]s.
  */
 public class KtorHttpApythia(
     dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},

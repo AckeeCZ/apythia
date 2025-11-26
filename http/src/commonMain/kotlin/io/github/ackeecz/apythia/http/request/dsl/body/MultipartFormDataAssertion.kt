@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
+import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 
@@ -28,6 +29,7 @@ public interface MultipartFormDataAssertion {
 
 internal class MultipartFormDataAssertionImpl(
     private val configProvider: DslExtensionConfigProvider,
+    private val actualRequest: ActualRequest,
 ) : MultipartFormDataAssertion {
 
     private val _expectedParts: MutableList<ExpectedFormDataPart> = mutableListOf()
@@ -38,7 +40,7 @@ internal class MultipartFormDataAssertionImpl(
         filename: String?,
         assertPart: FormDataPartAssertion.() -> Unit,
     ) {
-        val partAssertion = FormDataPartAssertionImpl(configProvider).apply(assertPart)
+        val partAssertion = FormDataPartAssertionImpl(configProvider, actualRequest).apply(assertPart)
         val part = ExpectedFormDataPart(
             name = name,
             filename = filename,

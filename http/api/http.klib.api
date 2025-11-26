@@ -50,23 +50,21 @@ final enum class io.github.ackeecz.apythia.http/Charset : kotlin/Enum<io.github.
     final fun values(): kotlin/Array<io.github.ackeecz.apythia.http/Charset> // io.github.ackeecz.apythia.http/Charset.values|values#static(){}[0]
 }
 
+abstract interface io.github.ackeecz.apythia.http.extension/DslExtensionConfig // io.github.ackeecz.apythia.http.extension/DslExtensionConfig|null[0]
+
 abstract interface io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider|null[0]
-    abstract fun <#A1: io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config> getDslExtensionConfig(kotlin.reflect/KClass<#A1>): #A1? // io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider.getDslExtensionConfig|getDslExtensionConfig(kotlin.reflect.KClass<0:0>){0§<io.github.ackeecz.apythia.http.extension.HttpDslExtension.Config>}[0]
+    abstract fun <#A1: io.github.ackeecz.apythia.http.extension/DslExtensionConfig> getDslExtensionConfig(kotlin.reflect/KClass<#A1>): #A1? // io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider.getDslExtensionConfig|getDslExtensionConfig(kotlin.reflect.KClass<0:0>){0§<io.github.ackeecz.apythia.http.extension.DslExtensionConfig>}[0]
 }
 
 abstract interface io.github.ackeecz.apythia.http.extension/DslExtensionConfigs { // io.github.ackeecz.apythia.http.extension/DslExtensionConfigs|null[0]
-    abstract fun dslExtensionConfig(io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config) // io.github.ackeecz.apythia.http.extension/DslExtensionConfigs.dslExtensionConfig|dslExtensionConfig(io.github.ackeecz.apythia.http.extension.HttpDslExtension.Config){}[0]
-}
-
-abstract interface io.github.ackeecz.apythia.http.extension/HttpDslExtension { // io.github.ackeecz.apythia.http.extension/HttpDslExtension|null[0]
-    abstract fun assert(kotlin/String, kotlin/String, io.github.ackeecz.apythia.http.request/ActualHttpMessage) // io.github.ackeecz.apythia.http.extension/HttpDslExtension.assert|assert(kotlin.String;kotlin.String;io.github.ackeecz.apythia.http.request.ActualHttpMessage){}[0]
-
-    abstract interface Config // io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config|null[0]
+    abstract fun dslExtensionConfig(io.github.ackeecz.apythia.http.extension/DslExtensionConfig) // io.github.ackeecz.apythia.http.extension/DslExtensionConfigs.dslExtensionConfig|dslExtensionConfig(io.github.ackeecz.apythia.http.extension.DslExtensionConfig){}[0]
 }
 
 abstract interface io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion|null[0]
+    abstract val actualBody // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.actualBody|{}actualBody[0]
+        abstract fun <get-actualBody>(): io.github.ackeecz.apythia.http.request.dsl.body/ActualBody // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.actualBody.<get-actualBody>|<get-actualBody>(){}[0]
+
     abstract fun bytes(kotlin/ByteArray) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.bytes|bytes(kotlin.ByteArray){}[0]
-    abstract fun dslExtension(io.github.ackeecz.apythia.http.extension/HttpDslExtension) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.dslExtension|dslExtension(io.github.ackeecz.apythia.http.extension.HttpDslExtension){}[0]
     abstract fun empty() // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.empty|empty(){}[0]
     abstract fun multipartFormData(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.multipartFormData|multipartFormData(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.MultipartFormDataAssertion,kotlin.Unit>){}[0]
     abstract fun partialMultipartFormData(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/PartialMultipartFormDataAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.partialMultipartFormData|partialMultipartFormData(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.PartialMultipartFormDataAssertion,kotlin.Unit>){}[0]
@@ -156,6 +154,15 @@ final class io.github.ackeecz.apythia.http.request.body/ActualPart { // io.githu
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin/ByteArray) // io.github.ackeecz.apythia.http.request.body/ActualPart.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>;kotlin.ByteArray){}[0]
 }
 
+final class io.github.ackeecz.apythia.http.request.dsl.body/ActualBody { // io.github.ackeecz.apythia.http.request.dsl.body/ActualBody|null[0]
+    constructor <init>(kotlin/ByteArray, kotlin/String?) // io.github.ackeecz.apythia.http.request.dsl.body/ActualBody.<init>|<init>(kotlin.ByteArray;kotlin.String?){}[0]
+
+    final val contentType // io.github.ackeecz.apythia.http.request.dsl.body/ActualBody.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String? // io.github.ackeecz.apythia.http.request.dsl.body/ActualBody.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val data // io.github.ackeecz.apythia.http.request.dsl.body/ActualBody.data|{}data[0]
+        final fun <get-data>(): kotlin/ByteArray // io.github.ackeecz.apythia.http.request.dsl.body/ActualBody.data.<get-data>|<get-data>(){}[0]
+}
+
 final class io.github.ackeecz.apythia.http.request/ActualHttpMessage { // io.github.ackeecz.apythia.http.request/ActualHttpMessage|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin/ByteArray) // io.github.ackeecz.apythia.http.request/ActualHttpMessage.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>;kotlin.ByteArray){}[0]
 
@@ -190,4 +197,4 @@ final class io.github.ackeecz.apythia.http.response/HttpResponse { // io.github.
         final fun <get-statusCode>(): kotlin/Int // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
 }
 
-final inline fun <#A: reified io.github.ackeecz.apythia.http.extension/HttpDslExtension.Config> (io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider).io.github.ackeecz.apythia.http.extension/getDslExtensionConfig(): #A? // io.github.ackeecz.apythia.http.extension/getDslExtensionConfig|getDslExtensionConfig@io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider(){0§<io.github.ackeecz.apythia.http.extension.HttpDslExtension.Config>}[0]
+final inline fun <#A: reified io.github.ackeecz.apythia.http.extension/DslExtensionConfig> (io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider).io.github.ackeecz.apythia.http.extension/getDslExtensionConfig(): #A? // io.github.ackeecz.apythia.http.extension/getDslExtensionConfig|getDslExtensionConfig@io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider(){0§<io.github.ackeecz.apythia.http.extension.DslExtensionConfig>}[0]

@@ -2,23 +2,60 @@ package io.github.ackeecz.apythia.http.apythia.assertion
 
 import io.github.ackeecz.apythia.http.UnsupportedEncodingException
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
-import io.github.ackeecz.apythia.http.extension.HttpDslExtensionMock
-import io.github.ackeecz.apythia.http.request.createActualRequest
 import io.github.ackeecz.apythia.http.util.header.Headers
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 
 internal suspend fun FunSpecContainerScope.bodyTests(
     fixture: HttpApythiaTest.Fixture
 ) = with(fixture) {
     context("body") {
+        actualBodyTests(fixture)
         emptyBodyTests(fixture)
         bytesBodyTests(fixture)
         plainTextBodyTests(fixture)
         multipartFormDataBodyTests(fixture)
         partialMultipartFormDataBodyTests(fixture)
-        dslExtensionTests(fixture)
+    }
+}
+
+private suspend fun FunSpecContainerScope.actualBodyTests(
+    fixture: HttpApythiaTest.Fixture,
+) = with(fixture) {
+    context("actual body") {
+        test("get body data") {
+            val expected = byteArrayOf(1, 2, 3)
+            underTest.actualBody = expected
+
+            underTest.assertNextRequest {
+                body {
+                    actualBody.data shouldBe expected
+                }
+            }
+        }
+
+        test("get null content type if missing") {
+            underTest.actualHeaders = mapOf("X-Custom-Header" to listOf("value"))
+
+            underTest.assertNextRequest {
+                body {
+                    actualBody.contentType.shouldBeNull()
+                }
+            }
+        }
+
+        test("get content type if present") {
+            val expected = "text/plain; charset=utf-8"
+            underTest.actualHeaders = mapOf("Content-Type" to listOf(expected))
+
+            underTest.assertNextRequest {
+                body {
+                    actualBody.contentType shouldBe expected
+                }
+            }
+        }
     }
 }
 
@@ -137,53 +174,6 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
                     body { plainText(expected) }
                 }
             }
-        }
-    }
-}
-
-private suspend fun FunSpecContainerScope.dslExtensionTests(
-    fixture: HttpApythiaTest.Fixture
-) = with(fixture) {
-    context("dsl extension") {
-        test("failure") {
-            val extension = HttpDslExtensionMock().also { it.failAssertion = true }
-
-            shouldFail {
-                underTest.assertNextRequest {
-                    body { dslExtension(extension) }
-                }
-            }
-        }
-
-        test("success") {
-            val extension = HttpDslExtensionMock().also { it.failAssertion = false }
-
-            shouldNotFail {
-                underTest.assertNextRequest {
-                    body { dslExtension(extension) }
-                }
-            }
-        }
-
-        test("pass correct actual request to assertion") {
-            val actualRequest = createActualRequest(
-                method = "GET",
-                url = "http://example.com",
-                headers = mapOf(
-                    "X-Custom-Header" to listOf("value"),
-                    "Content-Type" to listOf("text/plain; charset=utf-8"),
-                ),
-                body = byteArrayOf(1, 2, 3),
-            )
-            underTest.actualRequest = actualRequest
-            val expectedData = actualRequest.toTargetWithMessage()
-            val extension = HttpDslExtensionMock()
-
-            underTest.assertNextRequest {
-                body { dslExtension(extension) }
-            }
-
-            extension.dataToAssert shouldBe expectedData
         }
     }
 }

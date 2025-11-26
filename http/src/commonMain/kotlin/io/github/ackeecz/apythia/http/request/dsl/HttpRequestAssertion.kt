@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.request.dsl
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
+import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.ExpectedRequest
 import io.github.ackeecz.apythia.http.request.HttpMethod
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertionImpl
@@ -44,6 +45,7 @@ public interface HttpRequestAssertion {
 
 internal class HttpRequestAssertionImpl(
     private val configProvider: DslExtensionConfigProvider,
+    private val actualRequest: ActualRequest,
 ) : HttpRequestAssertion {
 
     var expectedRequest = ExpectedRequest()
@@ -73,7 +75,7 @@ internal class HttpRequestAssertionImpl(
 
     override fun body(assertBody: RequestBodyAssertion.() -> Unit) {
         bodyCallCountChecker.incrementOrFail()
-        val bodyAssertion = BodyAssertionImpl(configProvider)
+        val bodyAssertion = BodyAssertionImpl(configProvider, actualRequest)
         val requestBodyAssertion = RequestBodyAssertionImpl(bodyAssertion).apply(assertBody)
         expectedRequest = expectedRequest.copy(body = requestBodyAssertion.expectedBody)
     }

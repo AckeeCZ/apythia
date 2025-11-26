@@ -32,13 +32,13 @@ internal class HttpApythiaImpl(
         }
 
     var actualHeaders: Map<String, List<String>>
-        get() = actualRequest.headers
+        get() = actualRequest.message.headers
         set(value) {
             actualRequest = actualRequest.copy(headers = value)
         }
 
     var actualBody: ByteArray
-        get() = actualRequest.body
+        get() = actualRequest.message.body
         set(value) {
             actualRequest = actualRequest.copy(body = value)
         }

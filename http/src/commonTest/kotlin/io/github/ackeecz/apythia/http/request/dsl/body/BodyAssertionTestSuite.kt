@@ -2,7 +2,6 @@
 
 package io.github.ackeecz.apythia.http.request.dsl.body
 
-import io.github.ackeecz.apythia.http.extension.HttpDslExtensionMock
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
@@ -38,7 +37,6 @@ internal fun FunSpec.bodyAssertionTestSuite(fixture: BodyAssertionFixture) = wit
     plainTextTests(fixture)
     formDataMultipartTests(fixture)
     partialFormDataMultipartTests(fixture)
-    dslExtensionTests(fixture)
 }
 
 private fun FunSpec.emptyTests(fixture: BodyAssertionFixture) = with(fixture) {
@@ -126,20 +124,6 @@ private fun FunSpec.formDataMultipartTests(fixture: BodyAssertionFixture) = with
 private fun FunSpec.partialFormDataMultipartTests(fixture: BodyAssertionFixture) = with(fixture) {
     context("partialFormDataMultipart") {
         callOnceTest(fixture) { partialMultipartFormData {} }
-    }
-}
-
-private fun FunSpec.dslExtensionTests(fixture: BodyAssertionFixture) = with(fixture) {
-    context("dslExtension") {
-        callOnceTest(fixture) { dslExtension(HttpDslExtensionMock()) }
-
-        test("set") {
-            val expectedExtension = HttpDslExtensionMock()
-
-            underTest.bodyTest { dslExtension(expectedExtension) }
-
-            underTest.expectedBody shouldBe ExpectedBody.DslExtension(expectedExtension)
-        }
     }
 }
 

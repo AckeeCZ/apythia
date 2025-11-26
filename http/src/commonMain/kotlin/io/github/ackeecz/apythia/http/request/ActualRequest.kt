@@ -10,28 +10,19 @@ import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 public class ActualRequest(
     internal val method: String,
     url: String,
-    internal val headers: Map<String, List<String>>,
-    internal val body: ByteArray,
+    headers: Map<String, List<String>>,
+    body: ByteArray,
 ) {
 
     internal val url: Url = Url.parse(url)
 
-    internal fun toTargetWithMessage(): RequestTargetWithMessage {
-        return RequestTargetWithMessage(
-            method = method,
-            url = url,
-            message = ActualHttpMessage(
-                headers = headers,
-                body = body,
-            ),
-        )
-    }
+    internal val message = ActualHttpMessage(headers = headers, body = body)
 
     internal fun copy(
         method: String = this.method,
         url: String = this.url.toString(),
-        headers: Map<String, List<String>> = this.headers,
-        body: ByteArray = this.body,
+        headers: Map<String, List<String>> = this.message.headers,
+        body: ByteArray = this.message.body,
     ): ActualRequest {
         return ActualRequest(
             method = method,
@@ -48,8 +39,7 @@ public class ActualRequest(
         other as ActualRequest
 
         if (method != other.method) return false
-        if (headers != other.headers) return false
-        if (!body.contentEquals(other.body)) return false
+        if (message != other.message) return false
         if (url != other.url) return false
 
         return true
@@ -57,13 +47,12 @@ public class ActualRequest(
 
     override fun hashCode(): Int {
         var result = method.hashCode()
-        result = 31 * result + headers.hashCode()
-        result = 31 * result + body.contentHashCode()
+        result = 31 * result + message.hashCode()
         result = 31 * result + url.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "ActualRequest(method='$method', headers=$headers, body=${body.toHexString()}, url=$url)"
+        return "ActualRequest(method=$method, message=$message, url=$url)"
     }
 }

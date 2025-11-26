@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
+import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 
@@ -23,12 +24,13 @@ public interface PartialMultipartFormDataAssertion : MultipartFormDataAssertion 
 
 internal class PartialMultipartFormDataAssertionImpl(
     configProvider: DslExtensionConfigProvider,
+    actualRequest: ActualRequest,
 ) : PartialMultipartFormDataAssertion {
 
     private var _missingParts: MutableSet<String>? = null
     val missingParts: Set<String>? get() = _missingParts?.toSet()
 
-    private val multipartFormDataAssertion = MultipartFormDataAssertionImpl(configProvider)
+    private val multipartFormDataAssertion = MultipartFormDataAssertionImpl(configProvider, actualRequest)
 
     val expectedParts: List<ExpectedFormDataPart>?
         get() = multipartFormDataAssertion.expectedParts.ifEmpty { null }

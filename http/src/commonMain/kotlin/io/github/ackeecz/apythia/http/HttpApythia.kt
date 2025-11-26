@@ -1,15 +1,14 @@
 package io.github.ackeecz.apythia.http
 
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProviderImpl
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigsImpl
-import io.github.ackeecz.apythia.http.extension.HttpDslExtension
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.ExpectedRequest
 import io.github.ackeecz.apythia.http.request.HttpMethod
-import io.github.ackeecz.apythia.http.request.RequestTargetWithMessage
 import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
@@ -53,7 +52,7 @@ import io.kotest.matchers.string.shouldEndWith
  * a test class/suite. You can check existing implementations for a reference.
  *
  * // TODO Provide example of recommended usage in test classes
- * @param dslExtensionConfigs DSL for adding [HttpDslExtension.Config]s.
+ * @param dslExtensionConfigs DSL for adding [DslExtensionConfig]s.
  */
 public abstract class HttpApythia(
     dslExtensionConfigs: DslExtensionConfigs.() -> Unit,
@@ -110,17 +109,9 @@ public abstract class HttpApythia(
      * Asserts the next HTTP request that was made by the HTTP client.
      */
     public suspend fun assertNextRequest(assertRequest: HttpRequestAssertion.() -> Unit) {
-        val assertion = HttpRequestAssertionImpl(dslExtensionConfigProvider).apply(assertRequest)
-        assertNextRequest(assertion.expectedRequest)
-    }
-
-    private suspend fun assertNextRequest(expectedRequest: ExpectedRequest) {
-        with(getNextActualRequest()) {
-            assertMethod(request = this, expectedMethod = expectedRequest.method)
-            assertUrl(request = this, expectedUrl = expectedRequest.url)
-            assertHeaders(actual = this.headers, expected = expectedRequest.headers)
-            assertBody(actualRequest = this, expectedBody = expectedRequest.body)
-        }
+        val actualRequest = getNextActualRequest()
+        val assertion = HttpRequestAssertionImpl(dslExtensionConfigProvider, actualRequest).apply(assertRequest)
+        assertNextRequest(actualRequest, assertion.expectedRequest)
     }
 
     /**
@@ -128,6 +119,15 @@ public abstract class HttpApythia(
      * The returned [ActualRequest] is then used to verify the expectations defined in [assertNextRequest].
      */
     protected abstract suspend fun getNextActualRequest(): ActualRequest
+
+    private suspend fun assertNextRequest(actualRequest: ActualRequest, expectedRequest: ExpectedRequest) {
+        with(actualRequest) {
+            assertMethod(request = this, expectedMethod = expectedRequest.method)
+            assertUrl(request = this, expectedUrl = expectedRequest.url)
+            assertHeaders(actual = this.message.headers, expected = expectedRequest.headers)
+            assertBody(actualRequest = this, expectedBody = expectedRequest.body)
+        }
+    }
 
     private fun assertMethod(request: ActualRequest, expectedMethod: HttpMethod?) {
         expectedMethod?.let { request.method.lowercase() shouldBe it.value.lowercase() }
@@ -211,33 +211,30 @@ public abstract class HttpApythia(
     }
 
     private suspend fun assertBody(actualRequest: ActualRequest, expectedBody: ExpectedRequest.Body) {
-        assertBody(actualRequest.toTargetWithMessage(), expectedBody.body)
+        assertBody(actualRequest.message, expectedBody.body)
     }
 
     private suspend fun assertBody(
-        actualTargetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         expectedBody: ExpectedBody?,
     ) {
         if (expectedBody == null) return
 
         when (expectedBody) {
             is ExpectedBody.Empty -> {
-                assertEmptyBody(actualTargetWithMessage.message)
+                assertEmptyBody(actualMessage)
             }
             is ExpectedBody.Bytes -> {
-                assertBytesBody(actualTargetWithMessage.message, expectedBody)
+                assertBytesBody(actualMessage, expectedBody)
             }
             is ExpectedBody.PlainText -> {
-                assertPlainTextBody(actualTargetWithMessage.message, expectedBody)
+                assertPlainTextBody(actualMessage, expectedBody)
             }
             is ExpectedBody.MultipartFormData -> {
-                assertMultipartFormDataBody(actualTargetWithMessage, expectedBody)
+                assertMultipartFormDataBody(actualMessage, expectedBody)
             }
             is ExpectedBody.PartialMultipartFormData -> {
-                assertPartialMultipartBody(actualTargetWithMessage, expectedBody)
-            }
-            is ExpectedBody.DslExtension -> {
-                assertExtensionBody(actualTargetWithMessage, expectedBody)
+                assertPartialMultipartBody(actualMessage, expectedBody)
             }
         }
     }
@@ -275,11 +272,11 @@ public abstract class HttpApythia(
     }
 
     private suspend fun assertMultipartFormDataBody(
-        actualTargetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         expected: ExpectedBody.MultipartFormData,
     ) {
         assertParts(
-            actualTargetWithMessage = actualTargetWithMessage,
+            actualMessage = actualMessage,
             expectedParts = expected.parts,
             onUnexpectedPart = { formDataName ->
                 fail("Unexpected multipart part with name '$formDataName'")
@@ -288,12 +285,12 @@ public abstract class HttpApythia(
     }
 
     private suspend fun assertParts(
-        actualTargetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         expectedParts: List<ExpectedFormDataPart>,
         onUnexpectedPart: (formDataName: String) -> Unit,
     ) {
         val expectedPartsMutable = expectedParts.toMutableList()
-        processMultiParts(actualTargetWithMessage) { actualFormDataPart ->
+        processMultiParts(actualMessage) { actualFormDataPart ->
             val matchingExpectedParts = expectedPartsMutable.filter { it.name == actualFormDataPart.name }
             if (matchingExpectedParts.isEmpty()) {
                 onUnexpectedPart(actualFormDataPart.name)
@@ -318,10 +315,10 @@ public abstract class HttpApythia(
     }
 
     private suspend fun processMultiParts(
-        targetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         onPart: suspend (ActualFormDataPart) -> Unit
     ) {
-        forEachMultipartFormDataPart(targetWithMessage.message) { part ->
+        forEachMultipartFormDataPart(actualMessage) { part ->
             val contentDispositionHeader = getContentDispositionHeader(part.headers.toMap())
             val partName = checkNotNull(contentDispositionHeader?.name) {
                 "Multipart part is missing Content-Disposition header with 'name' parameter"
@@ -329,9 +326,7 @@ public abstract class HttpApythia(
             val actualFormDataPart = ActualFormDataPart(
                 name = partName,
                 filename = contentDispositionHeader.filename,
-                targetWithMessage = targetWithMessage.copy(
-                    message = ActualHttpMessage(part.headers, part.body),
-                ),
+                message = ActualHttpMessage(part.headers, part.body),
             )
             onPart(actualFormDataPart)
         }
@@ -354,13 +349,13 @@ public abstract class HttpApythia(
         expectedPart: ExpectedFormDataPart,
     ) {
         val actualFormDataName = actualFormDataPart.name
-        val targetWithMessage = actualFormDataPart.targetWithMessage
-        val actualHeaders = targetWithMessage.message.headers
+        val actualMessage = actualFormDataPart.message
+        val actualHeaders = actualMessage.headers
         withClue("Assertion failed for form data part with name '$actualFormDataName'") {
             actualFormDataName shouldBe expectedPart.name
             actualFormDataPart.filename shouldBe expectedPart.filename
             assertFormDataPartHeaders(actualHeaders, expectedPart.headers)
-            assertFormDataPartBody(targetWithMessage, expectedPart.body)
+            assertFormDataPartBody(actualMessage, expectedPart.body)
         }
     }
 
@@ -372,44 +367,33 @@ public abstract class HttpApythia(
     }
 
     private suspend fun assertFormDataPartBody(
-        actualTargetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         expectedBody: ExpectedFormDataPart.Body,
     ) {
-        assertBody(actualTargetWithMessage, expectedBody.body)
+        assertBody(actualMessage, expectedBody.body)
     }
 
     private suspend fun assertPartialMultipartBody(
-        actualTargetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         expectedBody: ExpectedBody.PartialMultipartFormData,
     ) {
-        expectedBody.parts?.let { assertParts(actualTargetWithMessage, it, onUnexpectedPart = {}) }
-        assertMissingParts(actualTargetWithMessage, expectedBody.missingParts)
+        expectedBody.parts?.let { assertParts(actualMessage, it, onUnexpectedPart = {}) }
+        assertMissingParts(actualMessage, expectedBody.missingParts)
     }
 
     private suspend fun assertMissingParts(
-        actualTargetWithMessage: RequestTargetWithMessage,
+        actualMessage: ActualHttpMessage,
         expectedMissingParts: Set<String>?,
     ) {
         if (expectedMissingParts != null) {
             val actualPartsNames = mutableListOf<String>()
-            processMultiParts(actualTargetWithMessage) { actualPartsNames.add(it.name) }
+            processMultiParts(actualMessage) { actualPartsNames.add(it.name) }
             expectedMissingParts.forEach { expectedMissingPart ->
                 withClue("Multipart part '$expectedMissingPart' should be missing but is present.") {
                     actualPartsNames.contains(expectedMissingPart).shouldBeFalse()
                 }
             }
         }
-    }
-
-    private fun assertExtensionBody(
-        actualTargetWithMessage: RequestTargetWithMessage,
-        expectedBody: ExpectedBody.DslExtension,
-    ) {
-        expectedBody.dslExtension.assert(
-            method = actualTargetWithMessage.method,
-            url = actualTargetWithMessage.url.toString(),
-            message = actualTargetWithMessage.message,
-        )
     }
 }
 
@@ -418,5 +402,5 @@ internal class UnsupportedEncodingException : RuntimeException("Only UTF-8 encod
 private class ActualFormDataPart(
     val name: String,
     val filename: String? = null,
-    val targetWithMessage: RequestTargetWithMessage,
+    val message: ActualHttpMessage,
 )

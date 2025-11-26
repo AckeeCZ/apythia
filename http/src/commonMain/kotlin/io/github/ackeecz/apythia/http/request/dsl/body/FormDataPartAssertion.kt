@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
+import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.dsl.header.FormDataPartHeadersAssertion
@@ -29,6 +30,7 @@ public interface FormDataPartAssertion {
 
 internal class FormDataPartAssertionImpl(
     private val configProvider: DslExtensionConfigProvider,
+    private val actualRequest: ActualRequest,
 ) : FormDataPartAssertion {
 
     var expectedHeaders: ExpectedFormDataPart.Headers = ExpectedFormDataPart.Headers()
@@ -48,7 +50,7 @@ internal class FormDataPartAssertionImpl(
 
     override fun body(assertBody: FormDataPartBodyAssertion.() -> Unit) {
         bodyCallCountChecker.incrementOrFail()
-        val bodyAssertion = BodyAssertionImpl(configProvider)
+        val bodyAssertion = BodyAssertionImpl(configProvider, actualRequest)
         val partBodyAssertion = FormDataPartBodyAssertionImpl(bodyAssertion).apply(assertBody)
         expectedBody = partBodyAssertion.expectedBody
     }
