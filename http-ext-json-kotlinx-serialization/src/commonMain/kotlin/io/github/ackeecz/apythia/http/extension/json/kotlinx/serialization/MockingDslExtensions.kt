@@ -7,6 +7,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArrayBuilder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObjectBuilder
+import kotlinx.serialization.json.addJsonObject
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
@@ -70,4 +71,19 @@ public fun HttpResponseMockBuilder.jsonArrayBody(
         value = buildJsonArray(build),
         includeContentTypeHeader = includeContentTypeHeader,
     )
+}
+
+/**
+ * Same as [jsonArrayBody] but uses a [buildItem] block to create a JSON object for each item from [items].
+ */
+public fun <T : Any> HttpResponseMockBuilder.jsonArrayBody(
+    items: List<T>,
+    includeContentTypeHeader: Boolean = true,
+    buildItem: JsonObjectBuilder.(T) -> Unit,
+) {
+    jsonArrayBody(includeContentTypeHeader) {
+        items.forEach {
+            addJsonObject { buildItem(it) }
+        }
+    }
 }

@@ -13,14 +13,18 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.double
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 private const val JSON_CONTENT_TYPE_VALUE = "application/json"
 
@@ -30,6 +34,7 @@ class MockingDslExtensionsTest : FunSpec({
     jsonStringBodyTests()
     jsonObjectBuilderBodyTests()
     jsonArrayBuilderBodyTests()
+    jsonArrayItemBuilderBodyTests()
 })
 
 private fun createSut(json: Json? = null): HttpApythiaMock {
@@ -80,9 +85,9 @@ private fun FunSpec.jsonStringBodyTests() {
 private fun FunSpec.jsonObjectBuilderBodyTests() {
     context("JSON object builder") {
         commonTestSuite(
-            setBody = { value, includeContentTypeHeader ->
+            setBody = { jsonObject, includeContentTypeHeader ->
                 jsonObjectBody(includeContentTypeHeader) {
-                    value.entries.forEach { (key, value) -> put(key, value) }
+                    jsonObject.entries.forEach { (key, value) -> put(key, value) }
                 }
             },
             setBodyWithDefaultHeader = { value ->
@@ -125,6 +130,41 @@ private fun FunSpec.jsonArrayBuilderBodyTests() {
                 requireResponse().body
                     .decodeToObject<List<Double>>(json)
                     .first()
+            },
+        )
+    }
+}
+
+private fun FunSpec.jsonArrayItemBuilderBodyTests() {
+    context("JSON array item builder") {
+        commonTestSuite(
+            setBody = { jsonObject, includeContentTypeHeader ->
+                jsonArrayBody(listOf(jsonObject), includeContentTypeHeader) { item ->
+                    item.entries.forEach { (key, value) -> put(key, value) }
+                }
+            },
+            setBodyWithDefaultHeader = { jsonObject ->
+                jsonArrayBody(listOf(jsonObject)) { item ->
+                    item.entries.forEach { (key, value) -> put(key, value) }
+                }
+            },
+            getExpected = { buildJsonArray { add(it) } },
+        )
+
+        val key = "key"
+        configTestSuite(
+            setBody = { value ->
+                jsonArrayBody(listOf(value)) { put(key, it) }
+            },
+            getActual = { json ->
+                requireResponse().body
+                    .decodeToObject<JsonArray>(json)
+                    .firstOrNull()
+                    .shouldNotBeNull()
+                    .jsonObject[key]
+                    .shouldNotBeNull()
+                    .jsonPrimitive
+                    .double
             },
         )
     }
