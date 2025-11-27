@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.apythia.arrangement
+package io.github.ackeecz.apythia.http.apythia.mocking
 
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.util.header.Headers
@@ -13,13 +13,13 @@ internal suspend fun FunSpecContainerScope.headersTests(
         callOnceTest { headers {} }
 
         test("default is empty") {
-            underTest.arrangeNextResponse {}
+            underTest.mockNextResponse {}
 
             requireActualResponse().headers shouldBe emptyMap()
         }
 
         test("calling just headers sets empty headers") {
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {}
             }
 
@@ -30,7 +30,7 @@ internal suspend fun FunSpecContainerScope.headersTests(
             val expectedName = "Content-Type"
             val expectedValue = jsonContentTypeValue
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     header(expectedName, expectedValue)
                 }
@@ -43,7 +43,7 @@ internal suspend fun FunSpecContainerScope.headersTests(
             val expectedName = "X-Custom-Header"
             val expectedValues = listOf("value1", "value2")
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     expectedValues.forEach { value ->
                         header(expectedName, value)
@@ -58,7 +58,7 @@ internal suspend fun FunSpecContainerScope.headersTests(
             val expectedName = "X-Custom-Header"
             val expectedValues = listOf("value1", "value2")
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     headers(expectedName, expectedValues)
                 }
@@ -73,7 +73,7 @@ internal suspend fun FunSpecContainerScope.headersTests(
             val expectedValues2 = listOf("value3", "value4")
             val allExpectedValues = expectedValues1 + expectedValues2
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     headers(expectedName, expectedValues1)
                     headers(expectedName, expectedValues2)
@@ -85,7 +85,7 @@ internal suspend fun FunSpecContainerScope.headersTests(
 
         test("set content type header using body method and then set content type header explicitly") {
             shouldThrow<IllegalStateException> {
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     bytesBody(value = byteArrayOf(), contentType = jsonContentTypeValue)
 
                     headers {

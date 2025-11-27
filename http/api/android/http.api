@@ -16,13 +16,13 @@ public abstract interface annotation class io/github/ackeecz/apythia/http/Experi
 public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun afterEachTest ()V
-	public final fun arrangeNext200Response ()V
-	protected abstract fun arrangeNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
-	public final fun arrangeNextResponse (Lkotlin/jvm/functions/Function1;)V
 	public final fun assertNextRequest (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeEachTest ()V
 	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun mockNext200Response ()V
+	protected abstract fun mockNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
+	public final fun mockNextResponse (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class io/github/ackeecz/apythia/http/UnsupportedEncodingException : java/lang/RuntimeException {
@@ -180,23 +180,23 @@ public final class io/github/ackeecz/apythia/http/response/HttpResponse {
 	public final fun getStatusCode ()I
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HeadersArrangement {
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HeadersMockBuilder {
 	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDslMarker : java/lang/annotation/Annotation {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
 	public abstract fun bytesBody ([BLjava/lang/String;)V
 	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun plainTextBody (Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;)V
-	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
+	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
 	public abstract fun statusCode (I)V
 }
 
-public final class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement$DefaultImpls {
-	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
-}
-
-public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDslMarker : java/lang/annotation/Annotation {
+public final class io/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder$DefaultImpls {
+	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
 }
 

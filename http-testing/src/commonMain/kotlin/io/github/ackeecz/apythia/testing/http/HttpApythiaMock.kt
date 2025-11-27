@@ -67,7 +67,7 @@ public class HttpApythiaMock(
 
     override fun afterEachTest(): Unit = Unit
 
-    override fun arrangeNextResponse(response: HttpResponse) {
+    override fun mockNextResponse(response: HttpResponse) {
         actualResponse = response
     }
 

@@ -10,10 +10,10 @@ import io.github.ackeecz.apythia.http.util.header.Headers
 import io.github.ackeecz.apythia.http.util.header.containsContentType
 
 /**
- * Entry point for building a HTTP response.
+ * Entry point for building a mocked HTTP response.
  */
 @HttpResponseDslMarker
-public interface HttpResponseArrangement : DslExtensionConfigProvider {
+public interface HttpResponseMockBuilder : DslExtensionConfigProvider {
 
     /**
      * Sets the HTTP status [code] for the response.
@@ -25,11 +25,11 @@ public interface HttpResponseArrangement : DslExtensionConfigProvider {
     public fun statusCode(code: Int)
 
     /**
-     * Sets the response headers using the provided [arrangeHeaders] block. Headers in the response
+     * Sets the response headers using the provided [mockHeaders] block. Headers in the response
      * should be empty if not set explicitly, but it is possible that some [HttpApythia]
      * implementations set some headers automatically (e.g. Content-Length by OkHttpHttpApythia).
      */
-    public fun headers(arrangeHeaders: HeadersArrangement.() -> Unit)
+    public fun headers(mockHeaders: HeadersMockBuilder.() -> Unit)
 
     /**
      * Sets the [value] as response body with a specified [contentType]. If [contentType] is null,
@@ -50,9 +50,9 @@ public interface HttpResponseArrangement : DslExtensionConfigProvider {
     public fun plainTextBody(value: String, charset: Charset = Charset.UTF_8)
 }
 
-internal class HttpResponseArrangementImpl(
+internal class HttpResponseMockBuilderImpl(
     private val dslExtensionConfigProvider: DslExtensionConfigProvider,
-) : HttpResponseArrangement, DslExtensionConfigProvider by dslExtensionConfigProvider {
+) : HttpResponseMockBuilder, DslExtensionConfigProvider by dslExtensionConfigProvider {
 
     private val statusCodeCallCountChecker = CallCountChecker("statusCode", maxCallCount = 1)
     private val headersCallCountChecker = CallCountChecker("headers", maxCallCount = 1)
@@ -70,9 +70,9 @@ internal class HttpResponseArrangementImpl(
         httpResponse = httpResponse.copy(statusCode = code)
     }
 
-    override fun headers(arrangeHeaders: HeadersArrangement.() -> Unit) {
+    override fun headers(mockHeaders: HeadersMockBuilder.() -> Unit) {
         headersCallCountChecker.incrementOrFail()
-        val headers = HeadersArrangementImpl().apply(arrangeHeaders).headers
+        val headers = HeadersMockBuilderImpl().apply(mockHeaders).headers
         if (headers.containsContentType) {
             checkContentTypeNotSet()
         }

@@ -1,14 +1,14 @@
 package io.github.ackeecz.apythia.http.apythia
 
 import io.github.ackeecz.apythia.http.HttpApythia
-import io.github.ackeecz.apythia.http.apythia.arrangement.bodyTests
-import io.github.ackeecz.apythia.http.apythia.arrangement.headersTests
-import io.github.ackeecz.apythia.http.apythia.arrangement.statusCodeTests
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
 import io.github.ackeecz.apythia.http.apythia.assertion.queryTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestBodyTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestHeadersTests
 import io.github.ackeecz.apythia.http.apythia.assertion.urlTests
+import io.github.ackeecz.apythia.http.apythia.mocking.bodyTests
+import io.github.ackeecz.apythia.http.apythia.mocking.headersTests
+import io.github.ackeecz.apythia.http.apythia.mocking.statusCodeTests
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigMock
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
@@ -18,7 +18,7 @@ import io.github.ackeecz.apythia.http.request.dsl.header.HeadersAssertion
 import io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion
 import io.github.ackeecz.apythia.http.request.dsl.url.UrlAssertion
 import io.github.ackeecz.apythia.http.response.HttpResponse
-import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
+import io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder
 import io.github.ackeecz.apythia.testing.http.HttpApythiaMock
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
@@ -37,7 +37,7 @@ internal class HttpApythiaTest : FunSpec({
 
     dslExtensionConfigTests(fixture)
     assertionTests(fixture)
-    arrangementTests(fixture)
+    mockingTests(fixture)
 }) {
 
     class Fixture {
@@ -51,10 +51,10 @@ internal class HttpApythiaTest : FunSpec({
         }
 
         suspend fun FunSpecContainerScope.callOnceTest(
-            act: HttpResponseArrangement.() -> Unit,
+            act: HttpResponseMockBuilder.() -> Unit,
         ) {
             test("can be called only once") {
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     act()
 
                     shouldThrow<IllegalStateException> {
@@ -84,9 +84,9 @@ private fun FunSpec.dslExtensionConfigTests(fixture: HttpApythiaTest.Fixture) = 
             }
         }
 
-        context("in ${HttpResponseArrangement::class.simpleName}") {
+        context("in ${HttpResponseMockBuilder::class.simpleName}") {
             dslExtensionConfigTestSuite(
-                callDslExtensionConfigProvider = { arrangeNextResponse(it) }
+                callDslExtensionConfigProvider = { mockNextResponse(it) }
             )
         }
 
@@ -161,8 +161,8 @@ private fun FunSpec.assertionTests(fixture: HttpApythiaTest.Fixture) = with(fixt
     }
 }
 
-private fun FunSpec.arrangementTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
-    context("arrangement") {
+private fun FunSpec.mockingTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
+    context("mocking") {
         statusCodeTests(fixture)
         headersTests(fixture)
         bodyTests(fixture)
@@ -172,7 +172,7 @@ private fun FunSpec.arrangementTests(fixture: HttpApythiaTest.Fixture) = with(fi
             val expectedHeaders = mapOf("X-Custom-Header" to listOf("value"))
             val expectedBody = byteArrayOf(1, 2, 3)
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 statusCode(expectedStatusCode)
                 headers {
                     expectedHeaders.forEach { (name, values) -> headers(name, values) }

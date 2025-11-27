@@ -6,7 +6,7 @@ import io.github.ackeecz.apythia.http.util.ByteArrayWrapper
 import io.github.ackeecz.apythia.http.util.wrap
 
 /**
- * Http response data to be arranged by [HttpApythia].
+ * HTTP response data to be mocked by [HttpApythia].
  */
 @ExperimentalHttpApi
 public class HttpResponse internal constructor(

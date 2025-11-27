@@ -282,17 +282,10 @@ private suspend fun FunSpecContainerScope.formDataPartBodyTests(
     bodyTestSuite(
         fixture = fixture,
         arrangeHeaders = { headers ->
-            createOrUpdatePart {
-                println("current headers: ${it.headers}")
-                println("new headers: $headers")
-                it.copy(headers = it.headers + headers)
-            }
+            createOrUpdatePart { it.copy(headers = it.headers + headers) }
         },
         arrangeBody = { body ->
-            println("arrangeBody: ${body.toHexString()}")
             createOrUpdatePart { it.copy(body = body) }
-            println("name: ${underTest.actualParts.firstOrNull()?.headers?.get("Content-Disposition")?.firstOrNull()}")
-            println("actualParts: ${underTest.actualParts.first().body.toHexString()}")
         },
         assertBody = { bodyAssertion ->
             body {

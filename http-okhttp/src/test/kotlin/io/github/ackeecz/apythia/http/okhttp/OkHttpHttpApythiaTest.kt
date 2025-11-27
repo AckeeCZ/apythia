@@ -1,7 +1,7 @@
 package io.github.ackeecz.apythia.http.okhttp
 
-import io.github.ackeecz.apythia.testing.http.ArrangedResponse
 import io.github.ackeecz.apythia.testing.http.BaseHttpApythiaImplTest
+import io.github.ackeecz.apythia.testing.http.MockedResponse
 import io.github.ackeecz.apythia.testing.http.RemoteDataSource
 import okhttp3.Headers
 import okhttp3.MediaType.Companion.toMediaType
@@ -18,8 +18,6 @@ import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.POST
 import retrofit2.http.Url
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 class OkHttpHttpApythiaTest : BaseHttpApythiaImplTest<OkHttpHttpApythia>() {
 
@@ -44,12 +42,12 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
         .build()
         .create(ApiDescription::class.java)
 
-    override suspend fun getArrangedResponse(): ArrangedResponse {
-        val response = apiDescription.getArrangedResponse()
-        return ArrangedResponse(
+    override suspend fun getMockedResponse(): MockedResponse {
+        val response = apiDescription.getMockedResponse()
+        return MockedResponse(
             statusCode = response.code(),
             // Content-Length header is automatically added by OkHttp's mock web server, so we need to
-            // remove it to preserve arranged headers.
+            // remove it to preserve mocked headers.
             headers = response.headers().toMultimap().removeContentLength(),
             body = response.body()?.bytes() ?: byteArrayOf(),
         )
@@ -115,8 +113,8 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
 
     private interface ApiDescription {
 
-        @GET("arranged-response")
-        suspend fun getArrangedResponse(): Response<ResponseBody>
+        @GET("mocked-response")
+        suspend fun getMockedResponse(): Response<ResponseBody>
 
         @POST
         suspend fun sendPostRequest(

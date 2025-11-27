@@ -26,7 +26,7 @@ Apythia is fully modular and extensible. You pick only what you need.
 ### `http` (core module)
 
 This is the heart of Apythia:
-- Contains all HTTP-related abstractions and the DSL for arranging responses and asserting requests.
+- Contains all HTTP-related abstractions and the DSL for mocking responses and asserting requests.
 - Defines the `HttpApythia` abstract class, which serves as the main entry point for mocking and assertions.
 - **No serialization dependency** — everything works with raw strings or bytes by default.
 - Provides a **DSL extension configuration mechanism**:
@@ -71,7 +71,7 @@ Includes the core `http` module transitively.
 
 Since `HttpApythia` is an abstract class, you can implement it to connect Apythia to the mocking solution 
 of your production HTTP client (for example, Ktor’s `MockEngine` or your own client).
-This allows you to use all of Apythia’s platform-independent DSL, arrangement, and assertion features, 
+This allows you to use all of Apythia’s platform-independent DSL, mocking, and assertion features, 
 while plugging in your own HTTP client for request execution.
 
 ## Setup
@@ -166,10 +166,10 @@ class RemoteDataSourceImplTest : FunSpec({
 **Tip**: It’s recommended to create a JUnit rule or Kotest extension (depending on your testing framework) 
 to automatically handle setup and teardown of `HttpApythia` instances, avoiding repetitive boilerplate in each test.
 
-### Arrangement DSL
+### Mocking DSL
 
 ```kotlin
-httpApythia.arrangeNextResponse {
+httpApythia.mockNextResponse {
     statusCode(204)
     headers {
         header("X-Custom-Header", "customValue")

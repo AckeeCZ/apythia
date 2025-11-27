@@ -138,28 +138,28 @@ abstract interface io.github.ackeecz.apythia.http.request.dsl/HttpRequestAsserti
     abstract suspend fun body(kotlin.coroutines/SuspendFunction1<io.github.ackeecz.apythia.http.request.dsl.body/RequestBodyAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion.body|body(kotlin.coroutines.SuspendFunction1<io.github.ackeecz.apythia.http.request.dsl.body.RequestBodyAssertion,kotlin.Unit>){}[0]
 }
 
-abstract interface io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement { // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement|null[0]
-    abstract fun header(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement.header|header(kotlin.String;kotlin.String){}[0]
-    abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+abstract interface io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder { // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder|null[0]
+    abstract fun header(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder.header|header(kotlin.String;kotlin.String){}[0]
+    abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
 }
 
-abstract interface io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement|null[0]
-    abstract fun bytesBody(kotlin/ByteArray, kotlin/String?) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.bytesBody|bytesBody(kotlin.ByteArray;kotlin.String?){}[0]
-    abstract fun headers(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.headers|headers(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HeadersArrangement,kotlin.Unit>){}[0]
-    abstract fun plainTextBody(kotlin/String, io.github.ackeecz.apythia.http/Charset = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.plainTextBody|plainTextBody(kotlin.String;io.github.ackeecz.apythia.http.Charset){}[0]
-    abstract fun statusCode(kotlin/Int) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.statusCode|statusCode(kotlin.Int){}[0]
+abstract interface io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder : io.github.ackeecz.apythia.http.extension/DslExtensionConfigProvider { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder|null[0]
+    abstract fun bytesBody(kotlin/ByteArray, kotlin/String?) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder.bytesBody|bytesBody(kotlin.ByteArray;kotlin.String?){}[0]
+    abstract fun headers(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder.headers|headers(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HeadersMockBuilder,kotlin.Unit>){}[0]
+    abstract fun plainTextBody(kotlin/String, io.github.ackeecz.apythia.http/Charset = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder.plainTextBody|plainTextBody(kotlin.String;io.github.ackeecz.apythia.http.Charset){}[0]
+    abstract fun statusCode(kotlin/Int) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder.statusCode|statusCode(kotlin.Int){}[0]
 }
 
 abstract class io.github.ackeecz.apythia.http/HttpApythia { // io.github.ackeecz.apythia.http/HttpApythia|null[0]
     constructor <init>(kotlin/Function1<io.github.ackeecz.apythia.http.extension/DslExtensionConfigs, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.<init>|<init>(kotlin.Function1<io.github.ackeecz.apythia.http.extension.DslExtensionConfigs,kotlin.Unit>){}[0]
 
     abstract fun afterEachTest() // io.github.ackeecz.apythia.http/HttpApythia.afterEachTest|afterEachTest(){}[0]
-    abstract fun arrangeNextResponse(io.github.ackeecz.apythia.http.response/HttpResponse) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(io.github.ackeecz.apythia.http.response.HttpResponse){}[0]
     abstract fun beforeEachTest() // io.github.ackeecz.apythia.http/HttpApythia.beforeEachTest|beforeEachTest(){}[0]
+    abstract fun mockNextResponse(io.github.ackeecz.apythia.http.response/HttpResponse) // io.github.ackeecz.apythia.http/HttpApythia.mockNextResponse|mockNextResponse(io.github.ackeecz.apythia.http.response.HttpResponse){}[0]
     abstract suspend fun forEachMultipartFormDataPart(io.github.ackeecz.apythia.http.request/ActualHttpMessage, kotlin.coroutines/SuspendFunction1<io.github.ackeecz.apythia.http.request.body/ActualPart, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.forEachMultipartFormDataPart|forEachMultipartFormDataPart(io.github.ackeecz.apythia.http.request.ActualHttpMessage;kotlin.coroutines.SuspendFunction1<io.github.ackeecz.apythia.http.request.body.ActualPart,kotlin.Unit>){}[0]
     abstract suspend fun getNextActualRequest(): io.github.ackeecz.apythia.http.request/ActualRequest // io.github.ackeecz.apythia.http/HttpApythia.getNextActualRequest|getNextActualRequest(){}[0]
-    final fun arrangeNext200Response() // io.github.ackeecz.apythia.http/HttpApythia.arrangeNext200Response|arrangeNext200Response(){}[0]
-    final fun arrangeNextResponse(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement,kotlin.Unit>){}[0]
+    final fun mockNext200Response() // io.github.ackeecz.apythia.http/HttpApythia.mockNext200Response|mockNext200Response(){}[0]
+    final fun mockNextResponse(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.mockNextResponse|mockNextResponse(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder,kotlin.Unit>){}[0]
     final suspend fun assertNextRequest(kotlin.coroutines/SuspendFunction1<io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.assertNextRequest|assertNextRequest(kotlin.coroutines.SuspendFunction1<io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion,kotlin.Unit>){}[0]
 }
 

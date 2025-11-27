@@ -1,8 +1,8 @@
-package io.github.ackeecz.apythia.http.apythia.arrangement
+package io.github.ackeecz.apythia.http.apythia.mocking
 
 import io.github.ackeecz.apythia.http.Charset
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
-import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
+import io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder
 import io.github.ackeecz.apythia.http.util.header.Headers
 import io.github.ackeecz.apythia.http.util.header.contentType
 import io.github.ackeecz.apythia.http.util.header.randomCase
@@ -16,19 +16,19 @@ internal suspend fun FunSpecContainerScope.bodyTests(
 ) = with(fixture) {
     context("body") {
         test("default value is empty") {
-            underTest.arrangeNextResponse {}
+            underTest.mockNextResponse {}
 
             requireActualResponse().body shouldBe byteArrayOf()
         }
 
         test("content type is null by default") {
-            underTest.arrangeNextResponse {}
+            underTest.mockNextResponse {}
 
             requireActualResponse().headers.contentType shouldBe null
         }
 
         test("body can be set just once no matter the content type method") {
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 bytesBody(value = byteArrayOf(), contentType = null)
 
                 shouldThrow<IllegalStateException> {
@@ -51,7 +51,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
         test("set value") {
             val expectedBody = byteArrayOf(1, 2, 3)
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 bytesBody(value = expectedBody, contentType = null)
             }
 
@@ -61,7 +61,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
         test("set content type") {
             val expectedContentType = jsonContentTypeValue
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 bytesBody(value = byteArrayOf(), contentType = expectedContentType)
             }
 
@@ -69,7 +69,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
         }
 
         test("do not set content type when it is null") {
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 bytesBody(value = byteArrayOf(), contentType = null)
             }
 
@@ -81,7 +81,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
             val expectedOtherHeader = "X-Custom-Header"
             val expectedOtherHeaderValue = "value"
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     header(expectedOtherHeader, expectedOtherHeaderValue)
                 }
@@ -98,7 +98,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
             val expectedOtherHeader = "X-Custom-Header"
             val expectedOtherHeaderValue = "value"
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     header(expectedOtherHeader, expectedOtherHeaderValue)
                 }
@@ -125,7 +125,7 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
 
         test("set value with default UTF-8 charset") {
             val expectedValue = "Hello, world!"
-            underTest.arrangeNextResponse { plainTextBody(value = expectedValue) }
+            underTest.mockNextResponse { plainTextBody(value = expectedValue) }
 
             requireActualResponse().body.decodeToString() shouldBe expectedValue
         }
@@ -133,7 +133,7 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
         Charset.entries.forEach { charset ->
             test("set value with $charset charset") {
                 val expectedValue = "Hello, world!"
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     plainTextBody(value = expectedValue, charset = charset)
                 }
 
@@ -150,7 +150,7 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
             test("set content type to text/plain with ${charset.name} charset") {
                 val expectedContentType = "text/plain; charset=${charset.name}"
 
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     plainTextBody(value = "", charset = charset)
                 }
 
@@ -162,7 +162,7 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
             val expectedOtherHeader = "X-Custom-Header"
             val expectedOtherHeaderValue = "value"
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 headers {
                     header(expectedOtherHeader, expectedOtherHeaderValue)
                 }
@@ -183,10 +183,10 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
 
 private suspend fun FunSpecContainerScope.checkContentTypeHeaderPresenceWhenBodySetTest(
     fixture: HttpApythiaTest.Fixture,
-    setBodyWithContentType: HttpResponseArrangement.() -> Unit,
+    setBodyWithContentType: HttpResponseMockBuilder.() -> Unit,
 ) = with(fixture) {
     test("throw exception when content type header already present") {
-        underTest.arrangeNextResponse {
+        underTest.mockNextResponse {
             headers {
                 header(Headers.CONTENT_TYPE.randomCase(), jsonContentTypeValue)
             }

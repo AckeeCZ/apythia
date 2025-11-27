@@ -19,7 +19,7 @@ import okio.Buffer
 /**
  * [HttpApythia] implementation backed by OkHttp's mock web server. After calling [beforeEachTest]
  * you can retrieve mock web server's URL using [getMockWebServerUrl] to pass it to your HTTP client.
- * This allows [OkHttpHttpApythia] to arrange responses and assert requests.
+ * This allows [OkHttpHttpApythia] to mock responses and assert requests.
  *
  * For more information check [HttpApythia] documentation.
  *
@@ -47,7 +47,7 @@ public class OkHttpHttpApythia(
         _mockWebServer = null
     }
 
-    override fun arrangeNextResponse(response: HttpResponse) {
+    override fun mockNextResponse(response: HttpResponse) {
         val headersBuilder = Headers.Builder()
         response.headers.toList().forEach { (key, values) ->
             values.forEach { value ->

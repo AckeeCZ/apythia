@@ -24,8 +24,8 @@ abstract class HttpApythiaSmokeTest : FunSpec() {
             underTest.afterEachTest()
         }
 
-        test("arrangement") {
-            underTest.arrangeNextResponse {
+        test("mocking") {
+            underTest.mockNextResponse {
                 statusCode(200)
                 headers {
                     headers("X-Custom-Header", listOf("value"))

@@ -1,4 +1,4 @@
-package io.github.ackeecz.apythia.http.apythia.arrangement
+package io.github.ackeecz.apythia.http.apythia.mocking
 
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
@@ -11,7 +11,7 @@ internal suspend fun FunSpecContainerScope.statusCodeTests(
         callOnceTest { statusCode(200) }
 
         test("default is 200") {
-            underTest.arrangeNextResponse {}
+            underTest.mockNextResponse {}
 
             requireActualResponse().statusCode shouldBe 200
         }
@@ -19,7 +19,7 @@ internal suspend fun FunSpecContainerScope.statusCodeTests(
         test("set") {
             val expectedStatusCode = 404
 
-            underTest.arrangeNextResponse {
+            underTest.mockNextResponse {
                 statusCode(expectedStatusCode)
             }
 

@@ -11,11 +11,11 @@ import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
 import io.github.ackeecz.apythia.http.response.HttpResponse
-import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
-import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangementImpl
+import io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder
+import io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilderImpl
 
 /**
- * Base class for HTTP API testing. It provides methods for arranging HTTP responses and asserting
+ * Base class for HTTP API testing. It provides methods for mocking HTTP responses and asserting
  * HTTP requests. [HttpApythia] abstracts away the complexities of mocking responses and verifying
  * requests, offering an intuitive DSL that is easy to read and use. Another major benefit of this
  * abstraction is that it is completely independent of any HTTP client implementation, which makes
@@ -36,7 +36,7 @@ import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangementImpl
  * By default, [HttpApythia] is also independent of any serialization library, including Kotlinx
  * Serialization. If you want DSL extensions for Kotlinx Serialization’s JSON API, you can include
  * the http-ext-json-kotlinx-serialization artifact. Creating your own DSL extensions is equally
- * easy—for example, to integrate a different serialization library or to add custom arrangement or
+ * easy—for example, to integrate a different serialization library or to add custom mocking or
  * assertion helpers. Refer to the existing DSL extensions for examples.
  *
  * A typical usage pattern looks like this:
@@ -95,30 +95,30 @@ public abstract class HttpApythia(
     public abstract fun afterEachTest()
 
     /**
-     * Arranges the next HTTP response that will be returned by the HTTP client. Responses must be
-     * arranged such that they are returned by the HTTP client in the order they are arranged.
+     * Mocks the next HTTP response that will be returned by the HTTP client. Responses must be
+     * mocked such that they are returned by the HTTP client in the order they are mocked.
      */
-    public fun arrangeNextResponse(arrange: HttpResponseArrangement.() -> Unit) {
-        val response = HttpResponseArrangementImpl(dslExtensionConfigProvider)
-            .apply(arrange)
+    public fun mockNextResponse(mock: HttpResponseMockBuilder.() -> Unit) {
+        val response = HttpResponseMockBuilderImpl(dslExtensionConfigProvider)
+            .apply(mock)
             .httpResponse
-        arrangeNextResponse(response)
+        mockNextResponse(response)
     }
 
     /**
-     * Same as [arrangeNextResponse] with DSL parameter but arranges a 200 response with an empty body.
+     * Same as [mockNextResponse] with DSL parameter but mocks a 200 response with an empty body.
      */
-    public fun arrangeNext200Response() {
-        arrangeNextResponse {}
+    public fun mockNext200Response() {
+        mockNextResponse {}
     }
 
     /**
-     * Same as public [arrangeNextResponse].
+     * Same as public [mockNextResponse].
      *
-     * @param response HTTP response that needs to be arranged to the particular HTTP client mock
+     * @param response HTTP response that needs to be mocked to the particular HTTP client mock
      * implementation to be returned when making HTTP requests.
      */
-    protected abstract fun arrangeNextResponse(response: HttpResponse)
+    protected abstract fun mockNextResponse(response: HttpResponse)
 
     /**
      * Asserts the next HTTP request that was made by the HTTP client.

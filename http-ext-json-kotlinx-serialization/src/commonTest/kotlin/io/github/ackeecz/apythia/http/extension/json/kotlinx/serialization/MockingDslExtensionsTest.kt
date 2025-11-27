@@ -2,7 +2,7 @@ package io.github.ackeecz.apythia.http.extension.json.kotlinx.serialization
 
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.response.HttpResponse
-import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
+import io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder
 import io.github.ackeecz.apythia.testing.http.HttpApythiaMock
 import io.github.ackeecz.apythia.testing.http.contentType
 import io.kotest.assertions.throwables.shouldThrow
@@ -24,7 +24,7 @@ import kotlinx.serialization.json.put
 
 private const val JSON_CONTENT_TYPE_VALUE = "application/json"
 
-class ArrangementDslExtensionsTest : FunSpec({
+class MockingDslExtensionsTest : FunSpec({
 
     jsonElementBodyTests()
     jsonStringBodyTests()
@@ -131,12 +131,12 @@ private fun FunSpec.jsonArrayBuilderBodyTests() {
 }
 
 private suspend fun FunSpecContainerScope.commonTestSuite(
-    setBody: HttpResponseArrangement.(JsonObject, Boolean) -> Unit,
-    setBodyWithDefaultHeader: HttpResponseArrangement.(JsonObject) -> Unit,
+    setBody: HttpResponseMockBuilder.(JsonObject, Boolean) -> Unit,
+    setBodyWithDefaultHeader: HttpResponseMockBuilder.(JsonObject) -> Unit,
     getExpected: (JsonObject) -> JsonElement = { it },
 ) {
     test("can be called only once") {
-        createSut().arrangeNextResponse {
+        createSut().mockNextResponse {
             setBodyWithDefaultHeader(buildJsonObject {})
 
             shouldThrow<IllegalStateException> {
@@ -151,7 +151,7 @@ private suspend fun FunSpecContainerScope.commonTestSuite(
         }
         val underTest = createSut()
 
-        underTest.arrangeNextResponse {
+        underTest.mockNextResponse {
             setBodyWithDefaultHeader(value)
         }
 
@@ -163,7 +163,7 @@ private suspend fun FunSpecContainerScope.commonTestSuite(
     test("by default include content type header") {
         val underTest = createSut()
 
-        underTest.arrangeNextResponse {
+        underTest.mockNextResponse {
             setBodyWithDefaultHeader(buildJsonObject {})
         }
 
@@ -173,7 +173,7 @@ private suspend fun FunSpecContainerScope.commonTestSuite(
     test("include content type header if true") {
         val underTest = createSut()
 
-        underTest.arrangeNextResponse {
+        underTest.mockNextResponse {
             setBody(buildJsonObject {}, true)
         }
 
@@ -183,7 +183,7 @@ private suspend fun FunSpecContainerScope.commonTestSuite(
     test("do not include content type header if false") {
         val underTest = createSut()
 
-        underTest.arrangeNextResponse {
+        underTest.mockNextResponse {
             setBody(buildJsonObject {}, false)
         }
 
@@ -191,7 +191,7 @@ private suspend fun FunSpecContainerScope.commonTestSuite(
     }
 
     test("throw exception when content type header already present") {
-        createSut().arrangeNextResponse {
+        createSut().mockNextResponse {
             headers {
                 header("cONtEnt-TYpE", JSON_CONTENT_TYPE_VALUE)
             }
@@ -204,13 +204,13 @@ private suspend fun FunSpecContainerScope.commonTestSuite(
 }
 
 private suspend fun FunSpecContainerScope.configTestSuite(
-    setBody: HttpResponseArrangement.(Double) -> Unit,
+    setBody: HttpResponseMockBuilder.(Double) -> Unit,
     getActual: HttpApythiaMock.(Json) -> Double,
 ) {
     context("config") {
         test("use default JSON config if not specified") {
             shouldThrow<SerializationException> {
-                createSut(json = null).arrangeNextResponse {
+                createSut(json = null).mockNextResponse {
                     setBody(Double.NaN)
                 }
             }
@@ -220,7 +220,7 @@ private suspend fun FunSpecContainerScope.configTestSuite(
             val json = Json { allowSpecialFloatingPointValues = true }
             val underTest = HttpApythiaMock { addConfig(json) }
 
-            underTest.arrangeNextResponse { setBody(Double.NaN) }
+            underTest.mockNextResponse { setBody(Double.NaN) }
 
             underTest.getActual(json).isNaN().shouldBeTrue()
         }
@@ -229,9 +229,9 @@ private suspend fun FunSpecContainerScope.configTestSuite(
             testAddedConfig { kotlinxSerializationJsonConfig(it) }
         }
 
-        test("use added JSON config if specified by particular arrangement JSON") {
+        test("use added JSON config if specified by particular mocking JSON") {
             testAddedConfig { json ->
-                kotlinxSerializationJsonConfig(assertionJson = Json, arrangementJson = json)
+                kotlinxSerializationJsonConfig(assertionJson = Json, mockingJson = json)
             }
         }
 

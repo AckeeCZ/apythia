@@ -4,7 +4,7 @@ public interface RemoteDataSource {
 
     public val baseUrl: String
 
-    public suspend fun getArrangedResponse(): ArrangedResponse
+    public suspend fun getMockedResponse(): MockedResponse
 
     public suspend fun sendPostRequest(
         url: String = baseUrl,
@@ -22,7 +22,7 @@ public interface RemoteDataSource {
     )
 }
 
-public class ArrangedResponse(
+public class MockedResponse(
     public val statusCode: Int,
     public val headers: Map<String, List<String>>,
     public val body: ByteArray,

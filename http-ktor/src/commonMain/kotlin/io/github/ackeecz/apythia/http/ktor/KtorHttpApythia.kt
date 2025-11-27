@@ -27,7 +27,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * [HttpApythia] implementation for Ktor HTTP client. After calling [beforeEachTest] you can retrieve
- * [mockEngine] to pass it to your Ktor HTTP client instance. This allows [KtorHttpApythia] to arrange
+ * [mockEngine] to pass it to your Ktor HTTP client instance. This allows [KtorHttpApythia] to mock
  * responses and assert requests.
  *
  * For more information check [HttpApythia] documentation.
@@ -57,7 +57,7 @@ public class KtorHttpApythia(
         requestHistoryIndex = 0
     }
 
-    override fun arrangeNextResponse(response: HttpResponse) {
+    override fun mockNextResponse(response: HttpResponse) {
         mockEngine.config.addHandler {
             respond(
                 content = response.body,

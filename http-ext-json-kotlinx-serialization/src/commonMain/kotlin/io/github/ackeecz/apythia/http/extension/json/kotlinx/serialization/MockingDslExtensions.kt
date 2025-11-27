@@ -2,7 +2,7 @@ package io.github.ackeecz.apythia.http.extension.json.kotlinx.serialization
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.getDslExtensionConfig
-import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
+import io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArrayBuilder
 import kotlinx.serialization.json.JsonElement
@@ -18,12 +18,12 @@ import kotlinx.serialization.json.buildJsonObject
  * set [includeContentTypeHeader] to false.
  */
 @ExperimentalHttpApi
-public fun HttpResponseArrangement.jsonBody(
+public fun HttpResponseMockBuilder.jsonBody(
     value: JsonElement,
     includeContentTypeHeader: Boolean = true,
 ) {
     val config = getDslExtensionConfig<KotlinxSerializationJsonConfig>()
-    val json = config?.arrangementJson ?: Json
+    val json = config?.mockingJson ?: Json
     jsonBody(
         value = json.encodeToString(value),
         includeContentTypeHeader = includeContentTypeHeader,
@@ -34,7 +34,7 @@ public fun HttpResponseArrangement.jsonBody(
  * Same as [jsonBody] accepting [JsonElement] but takes a JSON string as input.
  */
 @ExperimentalHttpApi
-public fun HttpResponseArrangement.jsonBody(
+public fun HttpResponseMockBuilder.jsonBody(
     value: String,
     includeContentTypeHeader: Boolean = true,
 ) {
@@ -48,7 +48,7 @@ public fun HttpResponseArrangement.jsonBody(
  * Same as [jsonBody] but uses a builder block to create a JSON object.
  */
 @ExperimentalHttpApi
-public fun HttpResponseArrangement.jsonObjectBody(
+public fun HttpResponseMockBuilder.jsonObjectBody(
     includeContentTypeHeader: Boolean = true,
     build: JsonObjectBuilder.() -> Unit,
 ) {
@@ -62,7 +62,7 @@ public fun HttpResponseArrangement.jsonObjectBody(
  * Same as [jsonBody] but uses a builder block to create a JSON array.
  */
 @ExperimentalHttpApi
-public fun HttpResponseArrangement.jsonArrayBody(
+public fun HttpResponseMockBuilder.jsonArrayBody(
     includeContentTypeHeader: Boolean = true,
     build: JsonArrayBuilder.() -> Unit,
 ) {

@@ -175,7 +175,7 @@ private suspend fun FunSpecContainerScope.commonWholeJsonTestSuite(
         test("use added JSON config if specified by particular assertion JSON") {
             shouldNotThrow<SerializationException> {
                 testAddedConfig { json ->
-                    kotlinxSerializationJsonConfig(assertionJson = json, arrangementJson = Json)
+                    kotlinxSerializationJsonConfig(assertionJson = json, mockingJson = Json)
                 }
             }
         }
