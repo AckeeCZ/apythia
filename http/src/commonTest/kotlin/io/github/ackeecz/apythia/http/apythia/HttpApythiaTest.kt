@@ -1,6 +1,9 @@
 package io.github.ackeecz.apythia.http.apythia
 
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.apythia.arrangement.bodyTests
+import io.github.ackeecz.apythia.http.apythia.arrangement.headersTests
+import io.github.ackeecz.apythia.http.apythia.arrangement.statusCodeTests
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
 import io.github.ackeecz.apythia.http.apythia.assertion.queryTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestBodyTests
@@ -14,6 +17,7 @@ import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.request.dsl.header.HeadersAssertion
 import io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion
 import io.github.ackeecz.apythia.http.request.dsl.url.UrlAssertion
+import io.github.ackeecz.apythia.http.response.HttpResponse
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
 import io.github.ackeecz.apythia.testing.http.HttpApythiaMock
 import io.kotest.assertions.throwables.shouldThrow
@@ -33,14 +37,35 @@ internal class HttpApythiaTest : FunSpec({
 
     dslExtensionConfigTests(fixture)
     assertionTests(fixture)
+    arrangementTests(fixture)
 }) {
 
     class Fixture {
+
+        val jsonContentTypeValue = "application/json"
 
         lateinit var underTest: HttpApythiaMock
 
         fun beforeEach() {
             underTest = HttpApythiaMock()
+        }
+
+        suspend fun FunSpecContainerScope.callOnceTest(
+            act: HttpResponseArrangement.() -> Unit,
+        ) {
+            test("can be called only once") {
+                underTest.arrangeNextResponse {
+                    act()
+
+                    shouldThrow<IllegalStateException> {
+                        act()
+                    }
+                }
+            }
+        }
+
+        fun requireActualResponse(): HttpResponse {
+            return checkNotNull(underTest.actualResponse)
         }
     }
 }
@@ -133,5 +158,32 @@ private fun FunSpec.assertionTests(fixture: HttpApythiaTest.Fixture) = with(fixt
         queryTests(fixture)
         requestHeadersTests(fixture)
         requestBodyTests(fixture)
+    }
+}
+
+private fun FunSpec.arrangementTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
+    context("arrangement") {
+        statusCodeTests(fixture)
+        headersTests(fixture)
+        bodyTests(fixture)
+
+        test("set all values at once") {
+            val expectedStatusCode = 404
+            val expectedHeaders = mapOf("X-Custom-Header" to listOf("value"))
+            val expectedBody = byteArrayOf(1, 2, 3)
+
+            underTest.arrangeNextResponse {
+                statusCode(expectedStatusCode)
+                headers {
+                    expectedHeaders.forEach { (name, values) -> headers(name, values) }
+                }
+                bytesBody(value = expectedBody, contentType = null)
+            }
+
+            val actualResponse = requireActualResponse()
+            actualResponse.statusCode shouldBe expectedStatusCode
+            actualResponse.headers shouldBe expectedHeaders
+            actualResponse.body shouldBe expectedBody
+        }
     }
 }
