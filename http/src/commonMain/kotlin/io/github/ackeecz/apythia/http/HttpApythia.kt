@@ -15,25 +15,58 @@ import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangementImpl
 
 /**
- * Base class for HTTP API testing. Provides methods for arranging HTTP responses and asserting
- * HTTP requests. [HttpApythia] serves as an abstraction over complexities of mocking responses and
- * asserting requests using nice DSLs that are easy to use and understand. The other big advantage
- * of this abstraction is that it is completely independent of any HTTP client implementation,
- * which is ideal for using it in tests to make them as black-box as possible.
+ * Base class for HTTP API testing. It provides methods for arranging HTTP responses and asserting
+ * HTTP requests. [HttpApythia] abstracts away the complexities of mocking responses and verifying
+ * requests, offering an intuitive DSL that is easy to read and use. Another major benefit of this
+ * abstraction is that it is completely independent of any HTTP client implementation, which makes
+ * it ideal for black-box testing.
  *
- * There are particular [HttpApythia] implementations for popular HTTP clients like Ktor or OkHttp.
- * So if you use a HTTP client in your application that is supported by Apythia library, you can
- * just include an appropriate artifact (e.g. `http-ktor`), which provides an implementation of
- * [HttpApythia] backed by that HTTP client mocking capabilities.
+ * The Apythia library includes specific [HttpApythia] implementations for popular HTTP clients
+ * such as Ktor and OkHttp. If your application uses a supported client, you can simply add the
+ * corresponding module (e.g. http-ktor), which provides an [HttpApythia] implementation backed
+ * by that client's mocking capabilities.
  *
- * Since [HttpApythia] is abstract, you can extend it to create your own implementation for a HTTP
- * client that is not supported by Apythia library. When you do this, the most important thing is
- * to implement [beforeEachTest] and [afterEachTest] methods properly. You have to initialize
- * everything needed per test in [beforeEachTest] instead of relying on the constructor, because
- * [HttpApythia] is designed to work no matter if the client creates its instance per test or per
- * a test class/suite. You can check existing implementations for a reference.
+ * Since [HttpApythia] is abstract, you can extend it to build your own implementation for any
+ * unsupported HTTP client. When doing so, the most important requirement is to implement
+ * [beforeEachTest] and [afterEachTest] correctly. All per-test initialization must happen inside
+ * [beforeEachTest] rather than in the constructor, because [HttpApythia] is designed to work
+ * regardless of whether a new instance is created per test or per test class/suite. Existing
+ * implementations can serve as a helpful reference.
  *
- * // TODO Provide example of recommended usage in test classes
+ * By default, [HttpApythia] is also independent of any serialization library, including Kotlinx
+ * Serialization. If you want DSL extensions for Kotlinx Serialization’s JSON API, you can include
+ * the http-ext-json-kotlinx-serialization artifact. Creating your own DSL extensions is equally
+ * easy—for example, to integrate a different serialization library or to add custom arrangement or
+ * assertion helpers. Refer to the existing DSL extensions for examples.
+ *
+ * A typical usage pattern looks like this:
+ *
+ * ```kotlin
+ * private lateinit var httpApythia: HttpApythia
+ * private lateinit var underTest: RemoteDataSource
+ *
+ * class RemoteDataSourceImplTest : FunSpec({
+ *
+ *     val ktorHttpApythia = KtorHttpApythia().also { httpApythia = it }
+ *
+ *     beforeEach {
+ *         ktorHttpApythia.beforeEachTest()
+ *         val httpClient = HttpClient(ktorHttpApythia.mockEngine)
+ *         underTest = RemoteDataSourceImpl(httpClient)
+ *     }
+ *
+ *     afterEach {
+ *         ktorHttpApythia.afterEachTest()
+ *     }
+ *
+ *     ...
+ * }
+ * ```
+ * The key idea is to instantiate the concrete [HttpApythia] implementation during your test setup
+ * and use that concrete type only when configuring your SUT (e.g., in Kotest’s beforeEach).
+ * During the tests themselves, interact with Apythia **only** through the abstract [HttpApythia]
+ * interface, keeping your tests fully decoupled from the underlying HTTP client.
+ *
  * @param dslExtensionConfigs DSL for adding [DslExtensionConfig]s.
  */
 public abstract class HttpApythia(
