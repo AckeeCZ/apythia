@@ -26,6 +26,28 @@ internal suspend fun FunSpecContainerScope.headersTests(
             requireActualResponse().headers shouldBe emptyMap()
         }
 
+        test("set content type header using body method and then set content type header explicitly") {
+            shouldThrow<IllegalStateException> {
+                underTest.mockNextResponse {
+                    bytesBody(value = byteArrayOf(), contentType = jsonContentTypeValue)
+
+                    headers {
+                        header(Headers.CONTENT_TYPE, jsonContentTypeValue)
+                    }
+                }
+            }
+        }
+
+        headerTests(fixture)
+        headersWithSameNameTests(fixture)
+        headersMapTests(fixture)
+    }
+}
+
+private suspend fun FunSpecContainerScope.headerTests(
+    fixture: HttpApythiaTest.Fixture
+) = with(fixture) {
+    context("header") {
         test("set header") {
             val expectedName = "Content-Type"
             val expectedValue = jsonContentTypeValue
@@ -53,7 +75,13 @@ internal suspend fun FunSpecContainerScope.headersTests(
 
             requireActualResponse().headers shouldBe mapOf(expectedName to expectedValues)
         }
+    }
+}
 
+private suspend fun FunSpecContainerScope.headersWithSameNameTests(
+    fixture: HttpApythiaTest.Fixture,
+) = with(fixture) {
+    context("headers") {
         test("set headers") {
             val expectedName = "X-Custom-Header"
             val expectedValues = listOf("value1", "value2")
@@ -82,17 +110,28 @@ internal suspend fun FunSpecContainerScope.headersTests(
 
             requireActualResponse().headers shouldBe mapOf(expectedName to allExpectedValues)
         }
+    }
+}
 
-        test("set content type header using body method and then set content type header explicitly") {
-            shouldThrow<IllegalStateException> {
-                underTest.mockNextResponse {
-                    bytesBody(value = byteArrayOf(), contentType = jsonContentTypeValue)
+private suspend fun FunSpecContainerScope.headersMapTests(
+    fixture: HttpApythiaTest.Fixture,
+) = with(fixture) {
+    context("headers map") {
+        test("set multiple headers") {
+            val expectedHeaders = mapOf(
+                "X-Custom-Header" to "value",
+                "Content-Type" to jsonContentTypeValue,
+            )
 
-                    headers {
-                        header(Headers.CONTENT_TYPE, jsonContentTypeValue)
-                    }
+            underTest.mockNextResponse {
+                headers {
+                    headers(expectedHeaders)
                 }
             }
+
+            requireActualResponse().headers
+                .mapValues { it.value.first() }
+                .shouldBe(expectedHeaders)
         }
     }
 }

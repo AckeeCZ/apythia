@@ -183,6 +183,7 @@ public final class io/github/ackeecz/apythia/http/response/HttpResponse {
 public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HeadersMockBuilder {
 	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
+	public abstract fun headers (Ljava/util/Map;)V
 }
 
 public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDslMarker : java/lang/annotation/Annotation {

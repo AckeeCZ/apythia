@@ -140,6 +140,7 @@ abstract interface io.github.ackeecz.apythia.http.request.dsl/HttpRequestAsserti
 
 abstract interface io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder { // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder|null[0]
     abstract fun header(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder.header|header(kotlin.String;kotlin.String){}[0]
+    abstract fun headers(kotlin.collections/Map<kotlin/String, kotlin/String>) // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder.headers|headers(kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
     abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.response.dsl/HeadersMockBuilder.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
 }
 

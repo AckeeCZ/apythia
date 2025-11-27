@@ -16,6 +16,11 @@ public interface HeadersMockBuilder {
      * entry per each value with the same [name].
      */
     public fun headers(name: String, values: List<String>)
+
+    /**
+     * Sets multiple headers from the specified [headers] map.
+     */
+    public fun headers(headers: Map<String, String>)
 }
 
 internal class HeadersMockBuilderImpl : HeadersMockBuilder {
@@ -30,5 +35,9 @@ internal class HeadersMockBuilderImpl : HeadersMockBuilder {
     override fun headers(name: String, values: List<String>) {
         val existingValues = _headers.getOrElse(name) { emptyList() }
         _headers[name] = existingValues + values
+    }
+
+    override fun headers(headers: Map<String, String>) {
+        headers.forEach { (name, value) -> header(name, value) }
     }
 }
