@@ -14,11 +14,6 @@ ktor = "3.3.2"
 mavenPublish = "0.35.0"
 okhttp-bom = "5.3.1"
 retrofit = "3.0.0"
-kotlinStdlib = "2.2.21"
-kotlinTest = "2.2.21"
-runner = "1.7.0"
-core = "1.7.0"
-junit = "1.3.0"
 
 [libraries]
 ackee-detekt-config-core = { module = "io.github.ackeecz:detekt-config-core", version.ref = "ackee-detekt-config" }
@@ -49,11 +44,6 @@ android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref 
 detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 mavenPublish-gradlePlugin = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenPublish" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
-kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
-core = { group = "androidx.test", name = "core", version.ref = "core" }
-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -76,4 +66,3 @@ apythia-kotlin-multiplatform-library = { id = "apythia.kotlin.multiplatform.libr
 apythia-kotlin-multiplatform-librarywithtesting = { id = "apythia.kotlin.multiplatform.library-with-testing" }
 apythia-preflightchecks = { id = "apythia.preflightchecks" }
 apythia-publishing = { id = "apythia.publishing" }
-android-lint = { id = "com.android.lint", version.ref = "agp" }

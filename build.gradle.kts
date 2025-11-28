@@ -11,5 +11,4 @@ plugins {
     alias(libs.plugins.kotlin.ksp) apply false
     alias(libs.plugins.kotlin.multiplatform) apply false
     alias(libs.plugins.mavenPublish) apply false
-    alias(libs.plugins.android.lint) apply false
 }
