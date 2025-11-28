@@ -241,4 +241,4 @@ We welcome feedback from users — it helps guide the evolution of Apythia’s e
 
 ## Credits
 
-Developed by Ackee team with 💙.
+Developed by [Ackee](https://www.ackee.cz) team with 💙.
