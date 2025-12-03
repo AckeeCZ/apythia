@@ -130,8 +130,8 @@ abstract class io.github.ackeecz.apythia.http/HttpApythia { // io.github.ackeecz
     abstract fun afterEachTest() // io.github.ackeecz.apythia.http/HttpApythia.afterEachTest|afterEachTest(){}[0]
     abstract fun arrangeNextResponse(io.github.ackeecz.apythia.http.response/HttpResponse) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(io.github.ackeecz.apythia.http.response.HttpResponse){}[0]
     abstract fun beforeEachTest() // io.github.ackeecz.apythia.http/HttpApythia.beforeEachTest|beforeEachTest(){}[0]
-    abstract fun getNextActualRequest(): io.github.ackeecz.apythia.http.request/ActualRequest // io.github.ackeecz.apythia.http/HttpApythia.getNextActualRequest|getNextActualRequest(){}[0]
     abstract suspend fun forEachMultipartFormDataPart(io.github.ackeecz.apythia.http.request/ActualHttpMessage, kotlin.coroutines/SuspendFunction1<io.github.ackeecz.apythia.http.request.body/ActualPart, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.forEachMultipartFormDataPart|forEachMultipartFormDataPart(io.github.ackeecz.apythia.http.request.ActualHttpMessage;kotlin.coroutines.SuspendFunction1<io.github.ackeecz.apythia.http.request.body.ActualPart,kotlin.Unit>){}[0]
+    abstract suspend fun getNextActualRequest(): io.github.ackeecz.apythia.http.request/ActualRequest // io.github.ackeecz.apythia.http/HttpApythia.getNextActualRequest|getNextActualRequest(){}[0]
     final fun arrangeNext200Response() // io.github.ackeecz.apythia.http/HttpApythia.arrangeNext200Response|arrangeNext200Response(){}[0]
     final fun arrangeNextResponse(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement,kotlin.Unit>){}[0]
     final suspend fun assertNextRequest(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.assertNextRequest|assertNextRequest(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion,kotlin.Unit>){}[0]
@@ -143,6 +143,15 @@ final class io.github.ackeecz.apythia.http.request.body/ActualPart { // io.githu
 
 final class io.github.ackeecz.apythia.http.request/ActualHttpMessage { // io.github.ackeecz.apythia.http.request/ActualHttpMessage|null[0]
     constructor <init>(kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>>, kotlin/ByteArray) // io.github.ackeecz.apythia.http.request/ActualHttpMessage.<init>|<init>(kotlin.collections.Map<kotlin.String,kotlin.collections.List<kotlin.String>>;kotlin.ByteArray){}[0]
+
+    final val body // io.github.ackeecz.apythia.http.request/ActualHttpMessage.body|{}body[0]
+        final fun <get-body>(): kotlin/ByteArray // io.github.ackeecz.apythia.http.request/ActualHttpMessage.body.<get-body>|<get-body>(){}[0]
+    final val contentLength // io.github.ackeecz.apythia.http.request/ActualHttpMessage.contentLength|{}contentLength[0]
+        final fun <get-contentLength>(): kotlin/Int // io.github.ackeecz.apythia.http.request/ActualHttpMessage.contentLength.<get-contentLength>|<get-contentLength>(){}[0]
+    final val contentType // io.github.ackeecz.apythia.http.request/ActualHttpMessage.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String? // io.github.ackeecz.apythia.http.request/ActualHttpMessage.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val headers // io.github.ackeecz.apythia.http.request/ActualHttpMessage.headers|{}headers[0]
+        final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.request/ActualHttpMessage.headers.<get-headers>|<get-headers>(){}[0]
 }
 
 final class io.github.ackeecz.apythia.http.request/ActualRequest { // io.github.ackeecz.apythia.http.request/ActualRequest|null[0]

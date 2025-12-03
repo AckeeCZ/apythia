@@ -50,7 +50,7 @@ internal class CheckArtifactUpdateStatusImpl(
     companion object {
 
         private val SRC_DIRS = listOf(
-            // To cover Android-only modules
+            // To cover JVM and Android-only modules
             "main",
             // To cover KMP modules
             "commonMain",

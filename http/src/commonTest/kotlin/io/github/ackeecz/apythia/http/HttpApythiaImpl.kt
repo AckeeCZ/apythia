@@ -48,7 +48,7 @@ internal class HttpApythiaImpl : HttpApythia() {
         throw NotImplementedError()
     }
 
-    override fun getNextActualRequest(): ActualRequest = actualRequest
+    override suspend fun getNextActualRequest(): ActualRequest = actualRequest
 
     override suspend fun forEachMultipartFormDataPart(
         message: ActualHttpMessage,

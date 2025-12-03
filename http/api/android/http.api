@@ -19,11 +19,15 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public final fun assertNextRequest (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeEachTest ()V
 	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected abstract fun getNextActualRequest ()Lio/github/ackeecz/apythia/http/request/ActualRequest;
+	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/github/ackeecz/apythia/http/request/ActualHttpMessage {
 	public fun <init> (Ljava/util/Map;[B)V
+	public final fun getBody ()[B
+	public final fun getContentLength ()I
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getHeaders ()Ljava/util/Map;
 }
 
 public final class io/github/ackeecz/apythia/http/request/ActualRequest {

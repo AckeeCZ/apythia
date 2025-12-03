@@ -8,10 +8,10 @@ import io.github.ackeecz.apythia.http.util.header.contentType
  */
 @ExperimentalHttpApi
 public class ActualHttpMessage(
-    internal val headers: Map<String, List<String>>,
-    internal val body: ByteArray,
+    public val headers: Map<String, List<String>>,
+    public val body: ByteArray,
 ) {
 
-    internal val contentType get() = headers.contentType
-    internal val contentLength: Int get() = body.size
+    public val contentType: String? get() = headers.contentType
+    public val contentLength: Int get() = body.size
 }
