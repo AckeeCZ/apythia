@@ -1,10 +1,12 @@
-package io.github.ackeecz.apythia.http.apythia
+package io.github.ackeecz.apythia.http.apythia.assertion
 
+import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.util.header.Headers
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
-internal fun FunSpec.headersTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
+internal suspend fun FunSpecContainerScope.rootHeadersTests(
+    fixture: HttpApythiaTest.Fixture
+) = with(fixture) {
     context("headers") {
         headerTests(fixture)
         headersTests(fixture)

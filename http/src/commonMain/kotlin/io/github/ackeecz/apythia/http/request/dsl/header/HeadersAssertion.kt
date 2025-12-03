@@ -1,7 +1,7 @@
 package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
-import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
+import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 import io.github.ackeecz.apythia.http.util.CallCountChecker
 import io.github.ackeecz.apythia.http.util.header.Headers
@@ -10,7 +10,7 @@ import io.github.ackeecz.apythia.http.util.header.appendHeaderParameters
 /**
  * Provides various methods for HTTP headers assertions.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
 public interface HeadersAssertion {
 

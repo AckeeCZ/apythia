@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.ktor
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ActualPart
@@ -21,7 +22,6 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.InternalAPI
 import io.ktor.utils.io.toByteArray
 import kotlinx.io.readByteArray
-import kotlinx.serialization.json.Json
 import kotlin.coroutines.EmptyCoroutineContext
 
 /**
@@ -31,10 +31,11 @@ import kotlin.coroutines.EmptyCoroutineContext
  *
  * For more information check [HttpApythia] documentation.
  *
- * @param json JSON serializer instance to use for encoding/decoding JSON bodies of responses and
- * requests.
+ * @param dslExtensionConfigs DSL for adding [io.github.ackeecz.apythia.http.extension.DslExtensionConfig]s.
  */
-public class KtorHttpApythia(json: Json = Json) : HttpApythia(json) {
+public class KtorHttpApythia(
+    dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},
+) : HttpApythia(dslExtensionConfigs) {
 
     private var _mockEngine: MockEngine? = null
     public val mockEngine: MockEngine

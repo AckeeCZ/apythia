@@ -4,6 +4,7 @@ import io.github.ackeecz.apythia.http.request.body.ExpectedBody
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.createHttpRequestAssertionImpl
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 import io.kotest.matchers.collections.shouldHaveSize
@@ -16,7 +17,7 @@ private lateinit var underTest: HttpRequestAssertionImpl
 class MultipartFormDataAssertionTest : FunSpec({
 
     beforeEach {
-        underTest = HttpRequestAssertionImpl()
+        underTest = createHttpRequestAssertionImpl()
     }
 
     context("part") {

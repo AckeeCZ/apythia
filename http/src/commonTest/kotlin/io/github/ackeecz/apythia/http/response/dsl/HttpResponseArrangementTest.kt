@@ -1,12 +1,12 @@
 package io.github.ackeecz.apythia.http.response.dsl
 
 import io.github.ackeecz.apythia.http.callOnceTest
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProviderImpl
 import io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangementTest.Fixture.Companion.JsonContentTypeValue
 import io.github.ackeecz.apythia.http.util.header.Headers
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.serialization.json.Json
 
 internal class HttpResponseArrangementTest : FunSpec({
 
@@ -40,16 +40,15 @@ internal class HttpResponseArrangementTest : FunSpec({
 
     class Fixture {
 
-        val json = Json
-
         lateinit var underTest: HttpResponseArrangementImpl
 
         fun beforeEach() {
-            underTest = HttpResponseArrangementImpl(json)
+            underTest = HttpResponseArrangementImpl(DslExtensionConfigProviderImpl(emptyList()))
         }
 
         companion object {
 
+            @Suppress("ConstPropertyName")
             const val JsonContentTypeValue = "application/json"
         }
     }

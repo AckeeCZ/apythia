@@ -11,12 +11,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.buildJsonArray
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 
 internal fun FunSpec.bodyTests(fixture: HttpResponseArrangementTest.Fixture) = with(fixture) {
     context("body") {
@@ -38,7 +32,6 @@ internal fun FunSpec.bodyTests(fixture: HttpResponseArrangementTest.Fixture) = w
 
         bytesBodyTests(fixture)
         plainTextBodyTests(fixture)
-        jsonBodyTests(fixture)
     }
 }
 
@@ -163,187 +156,6 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
     }
 }
 
-private suspend fun FunSpecContainerScope.jsonBodyTests(
-    fixture: HttpResponseArrangementTest.Fixture
-) {
-    jsonElementBodyTests(fixture)
-    jsonStringBodyTests(fixture)
-    jsonObjectBuilderBodyTests(fixture)
-    jsonArrayBuilderBodyTests(fixture)
-}
-
-private suspend fun FunSpecContainerScope.jsonElementBodyTests(
-    fixture: HttpResponseArrangementTest.Fixture
-) = with(fixture) {
-    context("JSON element") {
-        callOnceTest { underTest.jsonBody(value = buildJsonObject {}) }
-
-        test("set value") {
-            val expectedValue = buildJsonObject {
-                put("key", "value")
-            }
-
-            underTest.jsonBody(expectedValue)
-
-            underTest.httpResponse.body.decodeToJsonElement(json) shouldBe expectedValue
-        }
-
-        test("by default include content type header") {
-            underTest.jsonBody(value = buildJsonObject {})
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("include content type header if true") {
-            underTest.jsonBody(value = buildJsonObject {}, includeContentTypeHeader = true)
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("do not include content type header if false") {
-            underTest.jsonBody(value = buildJsonObject {}, includeContentTypeHeader = false)
-
-            underTest.httpResponse.headers.contentType shouldBe null
-        }
-
-        checkContentTypeHeaderPresenceWhenBodySetTest(
-            fixture = fixture,
-            setBodyWithContentType = { underTest.jsonBody(value = buildJsonObject {}) }
-        )
-    }
-}
-
-private suspend fun FunSpecContainerScope.jsonStringBodyTests(
-    fixture: HttpResponseArrangementTest.Fixture
-) = with(fixture) {
-    context("JSON string") {
-        callOnceTest { underTest.jsonBody(value = json.encodeToString(buildJsonObject {})) }
-
-        test("set value") {
-            val expectedValue = buildJsonObject {
-                put("key", "value")
-            }
-
-            underTest.jsonBody(json.encodeToString(expectedValue))
-
-            underTest.httpResponse.body.decodeToJsonElement(json) shouldBe expectedValue
-        }
-
-        test("by default include content type header") {
-            underTest.jsonBody(value = json.encodeToString(buildJsonObject {}))
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("include content type header if true") {
-            underTest.jsonBody(
-                value = json.encodeToString(buildJsonObject {}),
-                includeContentTypeHeader = true,
-            )
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("do not include content type header if false") {
-            underTest.jsonBody(
-                value = json.encodeToString(buildJsonObject {}),
-                includeContentTypeHeader = false,
-            )
-
-            underTest.httpResponse.headers.contentType shouldBe null
-        }
-
-        checkContentTypeHeaderPresenceWhenBodySetTest(
-            fixture = fixture,
-            setBodyWithContentType = {
-                underTest.jsonBody(value = json.encodeToString(buildJsonObject {}))
-            }
-        )
-    }
-}
-
-private suspend fun FunSpecContainerScope.jsonObjectBuilderBodyTests(
-    fixture: HttpResponseArrangementTest.Fixture
-) = with(fixture) {
-    context("JSON object builder") {
-        callOnceTest { underTest.jsonObjectBody {} }
-
-        test("set value") {
-            val keyValuePair = "key" to "value"
-            val expectedValue = buildJsonObject {
-                put(keyValuePair.first, keyValuePair.second)
-            }
-
-            underTest.jsonObjectBody { put(keyValuePair.first, keyValuePair.second) }
-
-            underTest.httpResponse.body.decodeToJsonElement(json) shouldBe expectedValue
-        }
-
-        test("by default include content type header") {
-            underTest.jsonObjectBody {}
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("include content type header if true") {
-            underTest.jsonObjectBody(includeContentTypeHeader = true) {}
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("do not include content type header if false") {
-            underTest.jsonObjectBody(includeContentTypeHeader = false) {}
-
-            underTest.httpResponse.headers.contentType shouldBe null
-        }
-
-        checkContentTypeHeaderPresenceWhenBodySetTest(
-            fixture = fixture,
-            setBodyWithContentType = { underTest.jsonObjectBody {} },
-        )
-    }
-}
-
-private suspend fun FunSpecContainerScope.jsonArrayBuilderBodyTests(
-    fixture: HttpResponseArrangementTest.Fixture
-) = with(fixture) {
-    context("JSON array builder") {
-        callOnceTest { underTest.jsonArrayBody {} }
-
-        test("set value") {
-            val value = "value"
-            val expectedValue = buildJsonArray { add(value) }
-
-            underTest.jsonArrayBody { add(value) }
-
-            underTest.httpResponse.body.decodeToJsonElement(json) shouldBe expectedValue
-        }
-
-        test("by default include content type header") {
-            underTest.jsonArrayBody {}
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("include content type header if true") {
-            underTest.jsonArrayBody(includeContentTypeHeader = true) {}
-
-            underTest.httpResponse.headers.contentType shouldBe JsonContentTypeValue
-        }
-
-        test("do not include content type header if false") {
-            underTest.jsonArrayBody(includeContentTypeHeader = false) {}
-
-            underTest.httpResponse.headers.contentType shouldBe null
-        }
-
-        checkContentTypeHeaderPresenceWhenBodySetTest(
-            fixture = fixture,
-            setBodyWithContentType = { underTest.jsonArrayBody {} }
-        )
-    }
-}
-
 private suspend fun FunSpecContainerScope.checkContentTypeHeaderPresenceWhenBodySetTest(
     fixture: HttpResponseArrangementTest.Fixture,
     setBodyWithContentType: () -> Unit,
@@ -357,8 +169,4 @@ private suspend fun FunSpecContainerScope.checkContentTypeHeaderPresenceWhenBody
             setBodyWithContentType()
         }
     }
-}
-
-private fun ByteArray.decodeToJsonElement(json: Json): JsonElement {
-    return json.decodeFromString(decodeToString())
 }

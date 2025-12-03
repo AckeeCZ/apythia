@@ -1,14 +1,14 @@
 package io.github.ackeecz.apythia.http.request.dsl.url
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
-import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
+import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.request.url.ExpectedUrl
 import io.github.ackeecz.apythia.http.util.CallCountChecker
 
 /**
  * Provides various methods for HTTP request URL assertions.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
 public interface UrlAssertion {
 

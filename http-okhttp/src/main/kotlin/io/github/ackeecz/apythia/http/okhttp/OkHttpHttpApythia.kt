@@ -2,11 +2,11 @@ package io.github.ackeecz.apythia.http.okhttp
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.response.HttpResponse
-import kotlinx.serialization.json.Json
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import okhttp3.Headers
@@ -22,10 +22,11 @@ import okio.Buffer
  *
  * For more information check [HttpApythia] documentation.
  *
- * @param json JSON serializer instance to use for encoding/decoding JSON bodies of responses and
- * requests.
+ * @param dslExtensionConfigs DSL for adding [io.github.ackeecz.apythia.http.extension.DslExtensionConfig]s.
  */
-public class OkHttpHttpApythia(json: Json = Json) : HttpApythia(json) {
+public class OkHttpHttpApythia(
+    dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},
+) : HttpApythia(dslExtensionConfigs) {
 
     private var _mockWebServer: MockWebServer? = null
     private val mockWebServer: MockWebServer

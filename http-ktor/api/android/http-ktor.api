@@ -1,7 +1,7 @@
 public final class io/github/ackeecz/apythia/http/ktor/KtorHttpApythia : io/github/ackeecz/apythia/http/HttpApythia {
 	public fun <init> ()V
-	public fun <init> (Lkotlinx/serialization/json/Json;)V
-	public synthetic fun <init> (Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterEachTest ()V
 	public fun beforeEachTest ()V
 	public final fun getMockEngine ()Lio/ktor/client/engine/mock/MockEngine;

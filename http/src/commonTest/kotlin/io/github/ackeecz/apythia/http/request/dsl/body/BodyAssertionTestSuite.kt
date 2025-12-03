@@ -5,6 +5,7 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.createHttpRequestAssertionImpl
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
@@ -18,7 +19,7 @@ internal abstract class BodyAssertionFixture {
     abstract val HttpRequestAssertionImpl.expectedBody: ExpectedBody?
 
     fun beforeEach() {
-        underTest = HttpRequestAssertionImpl()
+        underTest = createHttpRequestAssertionImpl()
     }
 
     abstract fun HttpRequestAssertion.bodyTest(test: BodyAssertion.() -> Unit)

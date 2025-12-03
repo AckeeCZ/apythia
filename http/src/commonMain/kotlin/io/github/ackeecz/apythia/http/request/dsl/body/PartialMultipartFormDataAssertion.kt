@@ -1,13 +1,15 @@
 package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
+import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
-import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
+import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 
 /**
  * Provides various methods for partial multipart/form-data assertions.
  */
-@HttpRequestDsl
+@HttpRequestDslMarker
 @ExperimentalHttpApi
 public interface PartialMultipartFormDataAssertion : MultipartFormDataAssertion {
 
@@ -20,12 +22,15 @@ public interface PartialMultipartFormDataAssertion : MultipartFormDataAssertion 
     public fun missingParts(vararg name: String)
 }
 
-internal class PartialMultipartFormDataAssertionImpl : PartialMultipartFormDataAssertion {
+internal class PartialMultipartFormDataAssertionImpl(
+    configProvider: DslExtensionConfigProvider,
+    actualRequest: ActualRequest,
+) : PartialMultipartFormDataAssertion {
 
     private var _missingParts: MutableSet<String>? = null
     val missingParts: Set<String>? get() = _missingParts?.toSet()
 
-    private val multipartFormDataAssertion = MultipartFormDataAssertionImpl()
+    private val multipartFormDataAssertion = MultipartFormDataAssertionImpl(configProvider, actualRequest)
 
     val expectedParts: List<ExpectedFormDataPart>?
         get() = multipartFormDataAssertion.expectedParts.ifEmpty { null }
