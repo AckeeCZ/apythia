@@ -14,6 +14,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                // TODO Extract Kotlin Serialization to a separate module
                 api(libs.kotlin.serialization.json)
                 implementation(libs.kotest.assertions.core)
             }

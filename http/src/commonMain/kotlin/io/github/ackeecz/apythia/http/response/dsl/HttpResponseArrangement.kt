@@ -15,7 +15,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 
 /**
- * Entry point for building an HTTP response.
+ * Entry point for building a HTTP response.
  */
 @HttpResponseDsl
 public interface HttpResponseArrangement {
@@ -88,7 +88,6 @@ public interface HttpResponseArrangement {
     )
 }
 
-@OptIn(ExperimentalHttpApi::class)
 internal class HttpResponseArrangementImpl(
     private val json: Json,
 ) : HttpResponseArrangement {

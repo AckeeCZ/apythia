@@ -19,6 +19,95 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public abstract fun beforeEachTest ()V
 }
 
+public final class io/github/ackeecz/apythia/http/request/HttpMethod : java/lang/Enum {
+	public static final field DELETE Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field GET Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field POST Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field PUT Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static fun values ()[Lio/github/ackeecz/apythia/http/request/HttpMethod;
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/HttpRequestAssertion {
+	public abstract fun body (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun method (Lio/github/ackeecz/apythia/http/request/HttpMethod;)V
+	public abstract fun url (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface annotation class io/github/ackeecz/apythia/http/request/dsl/HttpRequestDsl : java/lang/annotation/Annotation {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion {
+	public abstract fun bytes ([B)V
+	public abstract fun empty ()V
+	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun plainText (D)V
+	public abstract fun plainText (I)V
+	public abstract fun plainText (Ljava/lang/String;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/FormDataPartAssertion {
+	public abstract fun body (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/FormDataPartBodyAssertion : io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion {
+	public abstract fun part (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion$DefaultImpls {
+	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/PartialMultipartFormDataAssertion : io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion {
+	public abstract fun missingParts ([Ljava/lang/String;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/RequestBodyAssertion : io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/headers/FormDataPartHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion {
+	public abstract fun contentType (Ljava/lang/String;Ljava/util/Map;)V
+	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
+}
+
+public final class io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion$DefaultImpls {
+	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/headers/RequestHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/QueryAssertion {
+	public abstract fun missingParameters ([Ljava/lang/String;)V
+	public abstract fun noParameters ()V
+	public abstract fun parameter (Ljava/lang/String;D)V
+	public abstract fun parameter (Ljava/lang/String;I)V
+	public abstract fun parameter (Ljava/lang/String;J)V
+	public abstract fun parameter (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun parameterWithoutValue (Ljava/lang/String;)V
+	public abstract fun parameters (Ljava/lang/String;Ljava/util/List;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/UrlAssertion {
+	public abstract fun path (Ljava/lang/String;)V
+	public abstract fun pathSuffix (Ljava/lang/String;)V
+	public abstract fun query (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun url (Ljava/lang/String;)V
+}
+
 public final class io/github/ackeecz/apythia/http/response/HttpResponse {
 	public final fun getBody ()[B
 	public final fun getHeaders ()Ljava/util/Map;

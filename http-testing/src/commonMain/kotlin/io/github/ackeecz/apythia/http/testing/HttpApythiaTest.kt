@@ -1,13 +1,11 @@
 package io.github.ackeecz.apythia.http.testing
 
-import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 
-@OptIn(ExperimentalHttpApi::class)
 public abstract class HttpApythiaTest<Sut : HttpApythia> : FunSpec() {
 
     private lateinit var underTest: Sut

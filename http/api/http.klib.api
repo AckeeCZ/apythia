@@ -6,12 +6,29 @@
 // - Show declarations: true
 
 // Library unique name: <io.github.ackeecz:http>
+open annotation class io.github.ackeecz.apythia.http.request.dsl/HttpRequestDsl : kotlin/Annotation { // io.github.ackeecz.apythia.http.request.dsl/HttpRequestDsl|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http.request.dsl/HttpRequestDsl.<init>|<init>(){}[0]
+}
+
 open annotation class io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl : kotlin/Annotation { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl|null[0]
     constructor <init>() // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl.<init>|<init>(){}[0]
 }
 
 open annotation class io.github.ackeecz.apythia.http/ExperimentalHttpApi : kotlin/Annotation { // io.github.ackeecz.apythia.http/ExperimentalHttpApi|null[0]
     constructor <init>() // io.github.ackeecz.apythia.http/ExperimentalHttpApi.<init>|<init>(){}[0]
+}
+
+final enum class io.github.ackeecz.apythia.http.request/HttpMethod : kotlin/Enum<io.github.ackeecz.apythia.http.request/HttpMethod> { // io.github.ackeecz.apythia.http.request/HttpMethod|null[0]
+    enum entry DELETE // io.github.ackeecz.apythia.http.request/HttpMethod.DELETE|null[0]
+    enum entry GET // io.github.ackeecz.apythia.http.request/HttpMethod.GET|null[0]
+    enum entry POST // io.github.ackeecz.apythia.http.request/HttpMethod.POST|null[0]
+    enum entry PUT // io.github.ackeecz.apythia.http.request/HttpMethod.PUT|null[0]
+
+    final val entries // io.github.ackeecz.apythia.http.request/HttpMethod.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<io.github.ackeecz.apythia.http.request/HttpMethod> // io.github.ackeecz.apythia.http.request/HttpMethod.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): io.github.ackeecz.apythia.http.request/HttpMethod // io.github.ackeecz.apythia.http.request/HttpMethod.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<io.github.ackeecz.apythia.http.request/HttpMethod> // io.github.ackeecz.apythia.http.request/HttpMethod.values|values#static(){}[0]
 }
 
 final enum class io.github.ackeecz.apythia.http/Charset : kotlin/Enum<io.github.ackeecz.apythia.http/Charset> { // io.github.ackeecz.apythia.http/Charset|null[0]
@@ -22,6 +39,68 @@ final enum class io.github.ackeecz.apythia.http/Charset : kotlin/Enum<io.github.
 
     final fun valueOf(kotlin/String): io.github.ackeecz.apythia.http/Charset // io.github.ackeecz.apythia.http/Charset.valueOf|valueOf#static(kotlin.String){}[0]
     final fun values(): kotlin/Array<io.github.ackeecz.apythia.http/Charset> // io.github.ackeecz.apythia.http/Charset.values|values#static(){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion { // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion|null[0]
+    abstract fun bytes(kotlin/ByteArray) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.bytes|bytes(kotlin.ByteArray){}[0]
+    abstract fun empty() // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.empty|empty(){}[0]
+    abstract fun multipartFormData(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.multipartFormData|multipartFormData(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.MultipartFormDataAssertion,kotlin.Unit>){}[0]
+    abstract fun partialMultipartFormData(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/PartialMultipartFormDataAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.partialMultipartFormData|partialMultipartFormData(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.PartialMultipartFormDataAssertion,kotlin.Unit>){}[0]
+    abstract fun plainText(kotlin/Double) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.plainText|plainText(kotlin.Double){}[0]
+    abstract fun plainText(kotlin/Int) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.plainText|plainText(kotlin.Int){}[0]
+    abstract fun plainText(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion.plainText|plainText(kotlin.String){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartAssertion { // io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartAssertion|null[0]
+    abstract fun body(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartBodyAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartAssertion.body|body(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.FormDataPartBodyAssertion,kotlin.Unit>){}[0]
+    abstract fun headers(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.headers/FormDataPartHeadersAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartAssertion.headers|headers(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.headers.FormDataPartHeadersAssertion,kotlin.Unit>){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartBodyAssertion : io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion // io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartBodyAssertion|null[0]
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion { // io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion|null[0]
+    abstract fun part(kotlin/String, kotlin/String? = ..., kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/FormDataPartAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion.part|part(kotlin.String;kotlin.String?;kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.FormDataPartAssertion,kotlin.Unit>){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/PartialMultipartFormDataAssertion : io.github.ackeecz.apythia.http.request.dsl.body/MultipartFormDataAssertion { // io.github.ackeecz.apythia.http.request.dsl.body/PartialMultipartFormDataAssertion|null[0]
+    abstract fun missingParts(kotlin/Array<out kotlin/String>...) // io.github.ackeecz.apythia.http.request.dsl.body/PartialMultipartFormDataAssertion.missingParts|missingParts(kotlin.Array<out|kotlin.String>...){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.body/RequestBodyAssertion : io.github.ackeecz.apythia.http.request.dsl.body/BodyAssertion // io.github.ackeecz.apythia.http.request.dsl.body/RequestBodyAssertion|null[0]
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.headers/FormDataPartHeadersAssertion : io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion // io.github.ackeecz.apythia.http.request.dsl.headers/FormDataPartHeadersAssertion|null[0]
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion { // io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion|null[0]
+    abstract fun contentType(kotlin/String, kotlin.collections/Map<kotlin/String, kotlin/String> = ...) // io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion.contentType|contentType(kotlin.String;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
+    abstract fun header(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion.header|header(kotlin.String;kotlin.String){}[0]
+    abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.headers/RequestHeadersAssertion : io.github.ackeecz.apythia.http.request.dsl.headers/HeadersAssertion // io.github.ackeecz.apythia.http.request.dsl.headers/RequestHeadersAssertion|null[0]
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion { // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion|null[0]
+    abstract fun missingParameters(kotlin/Array<out kotlin/String>...) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.missingParameters|missingParameters(kotlin.Array<out|kotlin.String>...){}[0]
+    abstract fun noParameters() // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.noParameters|noParameters(){}[0]
+    abstract fun parameter(kotlin/String, kotlin/Double) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameter|parameter(kotlin.String;kotlin.Double){}[0]
+    abstract fun parameter(kotlin/String, kotlin/Int) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameter|parameter(kotlin.String;kotlin.Int){}[0]
+    abstract fun parameter(kotlin/String, kotlin/Long) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameter|parameter(kotlin.String;kotlin.Long){}[0]
+    abstract fun parameter(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameter|parameter(kotlin.String;kotlin.String){}[0]
+    abstract fun parameterWithoutValue(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameterWithoutValue|parameterWithoutValue(kotlin.String){}[0]
+    abstract fun parameters(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion.parameters|parameters(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion { // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion|null[0]
+    abstract fun path(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.path|path(kotlin.String){}[0]
+    abstract fun pathSuffix(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.pathSuffix|pathSuffix(kotlin.String){}[0]
+    abstract fun query(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.url/QueryAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.query|query(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion,kotlin.Unit>){}[0]
+    abstract fun url(kotlin/String) // io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion.url|url(kotlin.String){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion { // io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion|null[0]
+    abstract fun body(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.body/RequestBodyAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion.body|body(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.body.RequestBodyAssertion,kotlin.Unit>){}[0]
+    abstract fun headers(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.headers/RequestHeadersAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion.headers|headers(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.headers.RequestHeadersAssertion,kotlin.Unit>){}[0]
+    abstract fun method(io.github.ackeecz.apythia.http.request/HttpMethod) // io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion.method|method(io.github.ackeecz.apythia.http.request.HttpMethod){}[0]
+    abstract fun url(kotlin/Function1<io.github.ackeecz.apythia.http.request.dsl.url/UrlAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion.url|url(kotlin.Function1<io.github.ackeecz.apythia.http.request.dsl.url.UrlAssertion,kotlin.Unit>){}[0]
 }
 
 abstract interface io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement { // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement|null[0]

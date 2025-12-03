@@ -7,7 +7,7 @@ plugins {
 kotlin {
 
     androidLibrary {
-        namespace = "${Constants.NAMESPACE_PREFIX}.testing.internal"
+        namespace = "${Constants.NAMESPACE_PREFIX}.http.testing"
     }
 
     sourceSets.commonMain.dependencies {

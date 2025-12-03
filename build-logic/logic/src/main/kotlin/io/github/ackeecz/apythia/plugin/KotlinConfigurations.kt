@@ -4,9 +4,6 @@ import io.github.ackeecz.apythia.util.Constants
 import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationVariantSpec
-import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 internal fun KotlinJvmCompilerOptions.configureAllOptions() {
     configureCommonOptions()
@@ -18,6 +15,7 @@ internal fun KotlinCommonCompilerOptions.configureCommonOptions() {
     freeCompilerArgs.add(
         "-Xconsistent-data-class-copy-visibility"
     )
+    optIn.add("io.github.ackeecz.apythia.http.ExperimentalHttpApi")
 }
 
 internal fun KotlinJvmCompilerOptions.configureJvmSpecificOptions() {
