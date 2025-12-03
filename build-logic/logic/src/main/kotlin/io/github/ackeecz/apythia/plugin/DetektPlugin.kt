@@ -28,6 +28,5 @@ internal class DetektPlugin : Plugin<Project> {
             detektConfig(libs.ackee.detekt.config.core)
             detektPlugins(libs.detekt.formatting)
         }
-
     }
 }

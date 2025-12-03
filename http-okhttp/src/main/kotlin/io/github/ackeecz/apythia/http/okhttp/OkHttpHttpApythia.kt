@@ -1,6 +1,10 @@
 package io.github.ackeecz.apythia.http.okhttp
 
+import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.request.ActualHttpMessage
+import io.github.ackeecz.apythia.http.request.ActualRequest
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.response.HttpResponse
 import kotlinx.serialization.json.Json
 import mockwebserver3.MockResponse
@@ -52,5 +56,17 @@ public class OkHttpHttpApythia(json: Json = Json) : HttpApythia(json) {
             .body(bodyBuffer)
             .build()
         mockWebServer.enqueue(mockedResponse)
+    }
+
+    override fun getNextActualRequest(): ActualRequest {
+        TODO()
+    }
+
+    @ExperimentalHttpApi
+    override suspend fun forEachMultipartFormDataPart(
+        message: ActualHttpMessage,
+        onPart: suspend (ActualPart) -> Unit,
+    ) {
+        TODO()
     }
 }

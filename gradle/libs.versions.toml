@@ -1,11 +1,12 @@
 [versions]
-ackee-detekt-config = "1.0.0"
+ackee-detekt-config = "1.0.1"
 agp = "8.13.1"
 detekt = "1.23.8"
 dokka = "2.1.0"
 gradle-testLogger = "4.0.0"
 junit-bom = "6.0.1"
-kotest = "6.0.4"
+kmpUri = "0.0.21"
+kotest = "6.0.5"
 kotlin = "2.2.21"
 kotlin-serialization = "1.9.0"
 ksp = "2.3.2"
@@ -20,6 +21,8 @@ ackee-detekt-config-core = { module = "io.github.ackeecz:detekt-config-core", ve
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit-bom" }
+
+kmpUri = { module = "com.eygraber:uri-kmp", version.ref = "kmpUri" }
 
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }

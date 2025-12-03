@@ -3,9 +3,9 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDsl
-import io.github.ackeecz.apythia.http.request.dsl.headers.FormDataPartHeadersAssertion
-import io.github.ackeecz.apythia.http.request.dsl.headers.FormDataPartHeadersAssertionImpl
-import io.github.ackeecz.apythia.http.request.dsl.headers.HeadersAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.header.FormDataPartHeadersAssertion
+import io.github.ackeecz.apythia.http.request.dsl.header.FormDataPartHeadersAssertionImpl
+import io.github.ackeecz.apythia.http.request.dsl.header.HeadersAssertionImpl
 import io.github.ackeecz.apythia.http.util.CallCountChecker
 
 /**

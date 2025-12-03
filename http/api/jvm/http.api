@@ -16,17 +16,37 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public final fun arrangeNext200Response ()V
 	protected abstract fun arrangeNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
 	public final fun arrangeNextResponse (Lkotlin/jvm/functions/Function1;)V
+	public final fun assertNextRequest (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeEachTest ()V
+	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun getNextActualRequest ()Lio/github/ackeecz/apythia/http/request/ActualRequest;
+}
+
+public final class io/github/ackeecz/apythia/http/request/ActualHttpMessage {
+	public fun <init> (Ljava/util/Map;[B)V
+}
+
+public final class io/github/ackeecz/apythia/http/request/ActualRequest {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;[B)V
 }
 
 public final class io/github/ackeecz/apythia/http/request/HttpMethod : java/lang/Enum {
+	public static final field CONNECT Lio/github/ackeecz/apythia/http/request/HttpMethod;
 	public static final field DELETE Lio/github/ackeecz/apythia/http/request/HttpMethod;
 	public static final field GET Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field HEAD Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field OPTIONS Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field PATCH Lio/github/ackeecz/apythia/http/request/HttpMethod;
 	public static final field POST Lio/github/ackeecz/apythia/http/request/HttpMethod;
 	public static final field PUT Lio/github/ackeecz/apythia/http/request/HttpMethod;
+	public static final field TRACE Lio/github/ackeecz/apythia/http/request/HttpMethod;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/github/ackeecz/apythia/http/request/HttpMethod;
 	public static fun values ()[Lio/github/ackeecz/apythia/http/request/HttpMethod;
+}
+
+public final class io/github/ackeecz/apythia/http/request/body/ActualPart {
+	public fun <init> (Ljava/util/Map;[B)V
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/HttpRequestAssertion {
@@ -73,21 +93,21 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/RequestBodyAssertion : io/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/headers/FormDataPartHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/FormDataPartHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 	public abstract fun contentType (Ljava/lang/String;Ljava/util/Map;)V
-	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
 	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
 }
 
-public final class io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion$DefaultImpls {
-	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+public final class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion$DefaultImpls {
+	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/headers/RequestHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/headers/HeadersAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/RequestHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/QueryAssertion {

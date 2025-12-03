@@ -1,7 +1,7 @@
 package io.github.ackeecz.apythia.http.request
 
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
-import io.github.ackeecz.apythia.http.request.headers.ExpectedHeaders
+import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
 import io.github.ackeecz.apythia.http.request.url.ExpectedUrl
 
 /**

@@ -1,11 +1,11 @@
 @file:Suppress("MatchingDeclarationName")
 
-package io.github.ackeecz.apythia.http.request.dsl.headers
+package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertionImpl
-import io.github.ackeecz.apythia.http.request.headers.ExpectedHeaders
-import io.github.ackeecz.apythia.http.util.lowercaseKeys
+import io.github.ackeecz.apythia.http.request.header.ExpectedHeaders
+import io.github.ackeecz.apythia.http.util.header.lowercaseKeys
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
