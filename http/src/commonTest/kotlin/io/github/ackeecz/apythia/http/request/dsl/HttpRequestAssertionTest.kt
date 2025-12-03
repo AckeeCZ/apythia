@@ -1,11 +1,11 @@
 package io.github.ackeecz.apythia.http.request.dsl
 
-import io.github.ackeecz.apythia.http.callOnceTest
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProviderImpl
 import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.HttpMethod
-import io.github.ackeecz.apythia.http.request.createActualRequest
+import io.github.ackeecz.apythia.testing.http.callOnceTest
+import io.github.ackeecz.apythia.testing.http.request.createActualRequest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe

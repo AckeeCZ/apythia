@@ -14,13 +14,17 @@ internal sealed interface PublishableProject {
         override val projectName = "http"
     }
 
-    object HttpKtor : PublishableProject {
+    object HttpExtJsonKotlinxSerialization : PublishableProject {
 
+        override val projectName = "http-ext-json-kotlinx-serialization"
+    }
+
+    object HttpKtor : PublishableProject {
         override val projectName = "http-ktor"
     }
 
-    object HttpOkhttp : PublishableProject {
 
+    object HttpOkhttp : PublishableProject {
         override val projectName = "http-okhttp"
     }
 }

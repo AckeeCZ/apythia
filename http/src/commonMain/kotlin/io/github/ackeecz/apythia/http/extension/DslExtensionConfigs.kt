@@ -21,7 +21,7 @@ internal class DslExtensionConfigsImpl : DslExtensionConfigs {
     val configs: List<DslExtensionConfig> get() = _configs.toList()
 
     override fun dslExtensionConfig(config: DslExtensionConfig) {
-        if (configs.any { it::class == config::class }) {
+        if (_configs.any { it::class == config::class }) {
             error("Same config type is already set.")
         }
         _configs.add(config)

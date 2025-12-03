@@ -2,6 +2,8 @@ package io.github.ackeecz.apythia.http.apythia.assertion
 
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion
+import io.github.ackeecz.apythia.testing.http.shouldFail
+import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
 internal suspend fun FunSpecContainerScope.urlTests(
@@ -9,7 +11,7 @@ internal suspend fun FunSpecContainerScope.urlTests(
 ) = with(fixture) {
     context("url") {
         test("url failure") {
-            underTest.actualUrl = "http://example.com"
+            underTest.actualRequestUrl = "http://example.com"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -20,7 +22,7 @@ internal suspend fun FunSpecContainerScope.urlTests(
 
         test("url success") {
             val expected = "http://example.com/path?param=value"
-            underTest.actualUrl = expected
+            underTest.actualRequestUrl = expected
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -30,7 +32,7 @@ internal suspend fun FunSpecContainerScope.urlTests(
         }
 
         test("path failure") {
-            underTest.actualUrl = "http://example.com"
+            underTest.actualRequestUrl = "http://example.com"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -41,7 +43,7 @@ internal suspend fun FunSpecContainerScope.urlTests(
 
         test("path success") {
             val expected = "/path/to/something"
-            underTest.actualUrl = "http://example.com$expected"
+            underTest.actualRequestUrl = "http://example.com$expected"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -51,7 +53,7 @@ internal suspend fun FunSpecContainerScope.urlTests(
         }
 
         test("pathSuffix failure") {
-            underTest.actualUrl = "http://example.com/path/to/something"
+            underTest.actualRequestUrl = "http://example.com/path/to/something"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -62,7 +64,7 @@ internal suspend fun FunSpecContainerScope.urlTests(
 
         test("pathSuffix success") {
             val expected = "to/something"
-            underTest.actualUrl = "http://example.com/path/$expected"
+            underTest.actualRequestUrl = "http://example.com/path/$expected"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -87,7 +89,7 @@ private suspend fun FunSpecContainerScope.queryTests(fixture: HttpApythiaTest.Fi
             val key1 = "key1"
             val value1 = "value1"
             val key2 = "key2"
-            underTest.actualUrl = "http://example.com?$key1=$value1&$key2"
+            underTest.actualRequestUrl = "http://example.com?$key1=$value1&$key2"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -105,7 +107,7 @@ private suspend fun FunSpecContainerScope.queryTests(fixture: HttpApythiaTest.Fi
             val key = "key"
             val value1 = "value1"
             val value2 = "value2"
-            underTest.actualUrl = "http://example.com?$key=$value1&$key&$key=$value2"
+            underTest.actualRequestUrl = "http://example.com?$key=$value1&$key&$key=$value2"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -128,7 +130,7 @@ private suspend fun FunSpecContainerScope.parameterWithoutValueTests(
     context("parameterWithoutValue") {
         test("failure") {
             val expected = "key"
-            underTest.actualUrl = "http://example.com?$expected=value"
+            underTest.actualRequestUrl = "http://example.com?$expected=value"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -142,7 +144,7 @@ private suspend fun FunSpecContainerScope.parameterWithoutValueTests(
         suspend fun parameterWithoutValueSuccessTest(includeEqualsSign: Boolean) {
             val expected = "key"
             val equalsSign = if (includeEqualsSign) "=" else ""
-            underTest.actualUrl = "http://example.com?$expected$equalsSign"
+            underTest.actualRequestUrl = "http://example.com?$expected$equalsSign"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -213,7 +215,7 @@ private suspend fun FunSpecContainerScope.parameterTestSuite(
     test("failure") {
         val key = "key"
         val actualValue = "$expectedValue-failure"
-        underTest.actualUrl = "http://example.com?$key=$actualValue"
+        underTest.actualRequestUrl = "http://example.com?$key=$actualValue"
 
         shouldFail {
             underTest.assertNextRequest {
@@ -226,7 +228,7 @@ private suspend fun FunSpecContainerScope.parameterTestSuite(
 
     test("success") {
         val key = "key"
-        underTest.actualUrl = "http://example.com?$key=$expectedValue"
+        underTest.actualRequestUrl = "http://example.com?$key=$expectedValue"
 
         shouldNotFail {
             underTest.assertNextRequest {
@@ -240,7 +242,7 @@ private suspend fun FunSpecContainerScope.parameterTestSuite(
     test("multiple values success") {
         val key1 = "key1"
         val key2 = "key2"
-        underTest.actualUrl = "http://example.com?$key1=$expectedValue&$key2=$expectedValue"
+        underTest.actualRequestUrl = "http://example.com?$key1=$expectedValue&$key2=$expectedValue"
 
         shouldNotFail {
             underTest.assertNextRequest {
@@ -264,7 +266,7 @@ private suspend fun FunSpecContainerScope.parametersTests(
             val expectedValue1 = "value1"
             val expectedValue2 = "value2"
             val expectedValues = listOf(expectedValue1, expectedValue2)
-            underTest.actualUrl = "http://example.com?$key=$expectedValue1"
+            underTest.actualRequestUrl = "http://example.com?$key=$expectedValue1"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -280,7 +282,7 @@ private suspend fun FunSpecContainerScope.parametersTests(
             val expectedValue1 = "value1"
             val expectedValue2 = "value2"
             val expectedValues = listOf(expectedValue1, expectedValue2)
-            underTest.actualUrl = "http://example.com?$key=$expectedValue1&$key=$expectedValue2"
+            underTest.actualRequestUrl = "http://example.com?$key=$expectedValue1&$key=$expectedValue2"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -299,7 +301,7 @@ private suspend fun FunSpecContainerScope.missingParametersTests(
     context("missingParameters") {
         test("failure") {
             val expected = "key"
-            underTest.actualUrl = "http://example.com?$expected=value"
+            underTest.actualRequestUrl = "http://example.com?$expected=value"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -312,7 +314,7 @@ private suspend fun FunSpecContainerScope.missingParametersTests(
 
         test("success") {
             val expected = "key"
-            underTest.actualUrl = "http://example.com"
+            underTest.actualRequestUrl = "http://example.com"
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -330,7 +332,7 @@ private suspend fun FunSpecContainerScope.noParametersTests(
 ) = with(fixture) {
     context("noParameters") {
         test("failure") {
-            underTest.actualUrl = "http://example.com?key=value"
+            underTest.actualRequestUrl = "http://example.com?key=value"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -342,7 +344,7 @@ private suspend fun FunSpecContainerScope.noParametersTests(
         }
 
         test("success") {
-            underTest.actualUrl = "http://example.com"
+            underTest.actualRequestUrl = "http://example.com"
 
             shouldNotFail {
                 underTest.assertNextRequest {

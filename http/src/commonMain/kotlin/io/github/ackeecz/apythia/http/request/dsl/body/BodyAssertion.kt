@@ -6,7 +6,6 @@ import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.body.ExpectedBody
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 import io.github.ackeecz.apythia.http.util.CallCountChecker
-import io.github.ackeecz.apythia.http.util.header.contentType
 
 /**
  * Provides various methods for HTTP body assertions.
@@ -69,10 +68,14 @@ internal class BodyAssertionImpl(
 
     private val contentTypeCallCountChecker = CallCountChecker(actionName = "content type assertion")
 
-    override val actualBody: ActualBody get() = ActualBody(
-        data = actualRequest.message.body,
-        contentType = actualRequest.message.contentType,
-    )
+    override val actualBody: ActualBody
+        get() {
+            contentTypeCallCountChecker.incrementOrFail()
+            return ActualBody(
+                data = actualRequest.message.body,
+                contentType = actualRequest.message.contentType,
+            )
+        }
 
     override fun empty() {
         contentTypeCallCountChecker.incrementOrFail()

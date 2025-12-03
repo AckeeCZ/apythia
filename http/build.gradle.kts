@@ -18,5 +18,10 @@ kotlin {
                 implementation(libs.kotest.assertions.core)
             }
         }
+        commonTest {
+            dependencies {
+                implementation(projects.httpTesting)
+            }
+        }
     }
 }

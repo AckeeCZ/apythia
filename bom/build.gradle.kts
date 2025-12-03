@@ -9,6 +9,7 @@ plugins {
 dependencies {
     constraints {
         api(projects.http)
+        api(projects.httpExtJsonKotlinxSerialization)
         api(projects.httpKtor)
         api(projects.httpOkhttp)
     }

@@ -1,8 +1,8 @@
 package io.github.ackeecz.apythia.http.ktor
 
-import io.github.ackeecz.apythia.http.testing.ArrangedResponse
-import io.github.ackeecz.apythia.http.testing.BaseHttpApythiaImplTest
-import io.github.ackeecz.apythia.http.testing.RemoteDataSource
+import io.github.ackeecz.apythia.testing.http.ArrangedResponse
+import io.github.ackeecz.apythia.testing.http.BaseHttpApythiaImplTest
+import io.github.ackeecz.apythia.testing.http.RemoteDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.mock.MockEngine

@@ -2,6 +2,8 @@ package io.github.ackeecz.apythia.http.apythia.assertion
 
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.request.HttpMethod
+import io.github.ackeecz.apythia.testing.http.shouldFail
+import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
 internal suspend fun FunSpecContainerScope.methodTests(
@@ -9,7 +11,7 @@ internal suspend fun FunSpecContainerScope.methodTests(
 ) = with(fixture) {
     context("method") {
         test("failure") {
-            underTest.actualMethod = "POST"
+            underTest.actualRequestMethod = "POST"
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -20,7 +22,7 @@ internal suspend fun FunSpecContainerScope.methodTests(
 
         test("success") {
             val expected = HttpMethod.GET
-            underTest.actualMethod = expected.value
+            underTest.actualRequestMethod = expected.value
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -31,7 +33,7 @@ internal suspend fun FunSpecContainerScope.methodTests(
 
         test("success when actual method is in a different case") {
             val expected = HttpMethod.GET
-            underTest.actualMethod = expected.value.lowercase()
+            underTest.actualRequestMethod = expected.value.lowercase()
 
             shouldNotFail {
                 underTest.assertNextRequest {

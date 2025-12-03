@@ -33,6 +33,11 @@ public sealed class ArtifactProperties(
         defaultPropertyPrefix = "HTTP",
     )
 
+    public class HttpExtJsonKotlinxSerialization(properties: Properties) : ArtifactProperties(
+        properties = properties,
+        defaultPropertyPrefix = "HTTP_EXT_JSON_KOTLINX_SERIALIZATION",
+    )
+
     public class HttpKtor(properties: Properties) : ArtifactProperties(
         properties = properties,
         defaultPropertyPrefix = "HTTP_KTOR",
@@ -51,6 +56,7 @@ public sealed class ArtifactProperties(
         ): ArtifactProperties = when (projectName) {
             PublishableProject.Bom.projectName -> Bom(properties)
             PublishableProject.Http.projectName -> Http(properties)
+            PublishableProject.HttpExtJsonKotlinxSerialization.projectName -> HttpExtJsonKotlinxSerialization(properties)
             PublishableProject.HttpKtor.projectName -> HttpKtor(properties)
             PublishableProject.HttpOkhttp.projectName -> HttpOkhttp(properties)
             else -> throw IllegalStateException("Unknown Gradle module with name $projectName. Please " +

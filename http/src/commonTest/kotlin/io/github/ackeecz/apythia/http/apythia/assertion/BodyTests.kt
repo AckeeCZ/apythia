@@ -3,6 +3,8 @@ package io.github.ackeecz.apythia.http.apythia.assertion
 import io.github.ackeecz.apythia.http.UnsupportedEncodingException
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
 import io.github.ackeecz.apythia.http.util.header.Headers
+import io.github.ackeecz.apythia.testing.http.shouldFail
+import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 import io.kotest.matchers.nulls.shouldBeNull
@@ -27,7 +29,7 @@ private suspend fun FunSpecContainerScope.actualBodyTests(
     context("actual body") {
         test("get body data") {
             val expected = byteArrayOf(1, 2, 3)
-            underTest.actualBody = expected
+            underTest.actualRequestBody = expected
 
             underTest.assertNextRequest {
                 body {
@@ -37,7 +39,7 @@ private suspend fun FunSpecContainerScope.actualBodyTests(
         }
 
         test("get null content type if missing") {
-            underTest.actualHeaders = mapOf("X-Custom-Header" to listOf("value"))
+            underTest.actualRequestHeaders = mapOf("X-Custom-Header" to listOf("value"))
 
             underTest.assertNextRequest {
                 body {
@@ -48,7 +50,7 @@ private suspend fun FunSpecContainerScope.actualBodyTests(
 
         test("get content type if present") {
             val expected = "text/plain; charset=utf-8"
-            underTest.actualHeaders = mapOf("Content-Type" to listOf(expected))
+            underTest.actualRequestHeaders = mapOf("Content-Type" to listOf(expected))
 
             underTest.assertNextRequest {
                 body {
@@ -64,7 +66,7 @@ private suspend fun FunSpecContainerScope.emptyBodyTests(
 ) = with(fixture) {
     context("empty") {
         test("failure") {
-            underTest.actualBody = byteArrayOf(1, 2, 3)
+            underTest.actualRequestBody = byteArrayOf(1, 2, 3)
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -74,7 +76,7 @@ private suspend fun FunSpecContainerScope.emptyBodyTests(
         }
 
         test("success") {
-            underTest.actualBody = byteArrayOf()
+            underTest.actualRequestBody = byteArrayOf()
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -91,7 +93,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
     context("bytes") {
         test("failure") {
             val body = byteArrayOf(1, 2, 3)
-            underTest.actualBody = body.reversed().toByteArray()
+            underTest.actualRequestBody = body.reversed().toByteArray()
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -102,7 +104,7 @@ private suspend fun FunSpecContainerScope.bytesBodyTests(
 
         test("success") {
             val expected = byteArrayOf(1, 2, 3)
-            underTest.actualBody = expected
+            underTest.actualRequestBody = expected
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -119,7 +121,7 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
     context("plain text") {
         test("failure when body is different") {
             val body = "text"
-            underTest.actualBody = body.reversed().encodeToByteArray()
+            underTest.actualRequestBody = body.reversed().encodeToByteArray()
 
             shouldFail {
                 underTest.assertNextRequest {
@@ -130,8 +132,8 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
 
         test("failure on unsupported encoding in content type") {
             val expected = "text"
-            underTest.actualBody = expected.encodeToByteArray()
-            underTest.actualHeaders = mapOf(Headers.CONTENT_TYPE to listOf("text/plain; charset=utf-16"))
+            underTest.actualRequestBody = expected.encodeToByteArray()
+            underTest.actualRequestHeaders = mapOf(Headers.CONTENT_TYPE to listOf("text/plain; charset=utf-16"))
 
             shouldThrow<UnsupportedEncodingException> {
                 underTest.assertNextRequest {
@@ -142,8 +144,8 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
 
         test("success on supported UTF-8 encoding in content type") {
             val expected = "text"
-            underTest.actualBody = expected.encodeToByteArray()
-            underTest.actualHeaders = mapOf(Headers.CONTENT_TYPE to listOf("text/plain; charset=utf-8"))
+            underTest.actualRequestBody = expected.encodeToByteArray()
+            underTest.actualRequestHeaders = mapOf(Headers.CONTENT_TYPE to listOf("text/plain; charset=utf-8"))
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -154,8 +156,8 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
 
         test("success when encoding is not specified in content type and supported encoding is used") {
             val expected = "text"
-            underTest.actualBody = expected.encodeToByteArray()
-            underTest.actualHeaders = mapOf(Headers.CONTENT_TYPE to listOf("text/plain"))
+            underTest.actualRequestBody = expected.encodeToByteArray()
+            underTest.actualRequestHeaders = mapOf(Headers.CONTENT_TYPE to listOf("text/plain"))
 
             shouldNotFail {
                 underTest.assertNextRequest {
@@ -166,8 +168,8 @@ private suspend fun FunSpecContainerScope.plainTextBodyTests(
 
         test("success when content type header is missing and supported encoding is used") {
             val expected = "text"
-            underTest.actualBody = expected.encodeToByteArray()
-            underTest.actualHeaders = emptyMap()
+            underTest.actualRequestBody = expected.encodeToByteArray()
+            underTest.actualRequestHeaders = emptyMap()
 
             shouldNotFail {
                 underTest.assertNextRequest {

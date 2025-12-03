@@ -250,25 +250,13 @@ public abstract class HttpApythia(
         actualHttpMessage.body shouldBe expectedBody.value
     }
 
+    @Suppress("DEPRECATION_ERROR")
     private fun assertPlainTextBody(
         actualHttpMessage: ActualHttpMessage,
         expectedBody: ExpectedBody.PlainText,
     ) {
-        checkCharsetSupported(contentType = actualHttpMessage.contentType)
+        Charset.checkCharsetSupported(contentType = actualHttpMessage.contentType)
         actualHttpMessage.body.decodeToString() shouldBeEqual expectedBody.value
-    }
-
-    private fun checkCharsetSupported(contentType: String?) {
-        contentType?.split(";")
-            ?.map { it.trim() }
-            ?.firstOrNull { it.startsWith("charset=", ignoreCase = true) }
-            ?.substringAfter("charset=")
-            ?.lowercase()
-            ?.let {
-                if (it != "utf-8") {
-                    throw UnsupportedEncodingException()
-                }
-            }
     }
 
     private suspend fun assertMultipartFormDataBody(
@@ -396,8 +384,6 @@ public abstract class HttpApythia(
         }
     }
 }
-
-internal class UnsupportedEncodingException : RuntimeException("Only UTF-8 encoding is currently supported")
 
 private class ActualFormDataPart(
     val name: String,

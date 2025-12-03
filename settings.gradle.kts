@@ -29,6 +29,7 @@ includeBuild("build-logic")
 
 include(":bom")
 include(":http")
+include(":http-ext-json-kotlinx-serialization")
 include(":http-ktor")
 include(":http-okhttp")
 include(":http-testing")

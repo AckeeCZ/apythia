@@ -24,6 +24,7 @@ dependencies {
 
     val bomVersion = LibraryProperties(project).bomArtifactProperties.version
     testImplementation(platform("io.github.ackeecz:apythia-bom:$bomVersion"))
+    testImplementation("io.github.ackeecz:apythia-http-ext-json-kotlinx-serialization")
     testImplementation("io.github.ackeecz:apythia-http-ktor")
     testImplementation("io.github.ackeecz:apythia-http-okhttp")
 

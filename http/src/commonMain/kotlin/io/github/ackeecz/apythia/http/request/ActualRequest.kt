@@ -8,21 +8,22 @@ import io.github.ackeecz.apythia.http.ExperimentalHttpApi
  */
 @ExperimentalHttpApi
 public class ActualRequest(
-    internal val method: String,
+    public val method: String,
     url: String,
-    headers: Map<String, List<String>>,
-    body: ByteArray,
+    public val headers: Map<String, List<String>>,
+    public val body: ByteArray,
 ) {
 
+    public val urlString: String = url
     internal val url: Url = Url.parse(url)
 
     internal val message = ActualHttpMessage(headers = headers, body = body)
 
     internal fun copy(
         method: String = this.method,
-        url: String = this.url.toString(),
-        headers: Map<String, List<String>> = this.message.headers,
-        body: ByteArray = this.message.body,
+        url: String = this.urlString,
+        headers: Map<String, List<String>> = this.headers,
+        body: ByteArray = this.body,
     ): ActualRequest {
         return ActualRequest(
             method = method,
