@@ -7,6 +7,7 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.plugins.PluginManager
 import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.DependencyHandlerScope
@@ -14,7 +15,10 @@ import org.gradle.kotlin.dsl.add
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.the
 import org.gradle.plugin.use.PluginDependency
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
@@ -35,12 +39,24 @@ internal fun Project.androidApp(action: BaseAppModuleExtension.() -> Unit) {
     extensions.configure(BaseAppModuleExtension::class, action)
 }
 
-internal fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
+internal fun Project.java(action: JavaPluginExtension.() -> Unit) {
+    extensions.configure(JavaPluginExtension::class, action)
+}
+
+internal fun Project.kotlinJvm(action: KotlinJvmProjectExtension.() -> Unit) {
+    extensions.configure(KotlinJvmProjectExtension::class, action)
+}
+
+internal fun Project.kotlinMultiplatform(action: KotlinMultiplatformExtension.() -> Unit) {
     extensions.configure(KotlinMultiplatformExtension::class, action)
 }
 
 internal fun KotlinMultiplatformExtension.abiValidation(action: AbiValidationMultiplatformExtension.() -> Unit) {
     extensions.configure(AbiValidationMultiplatformExtension::class, action)
+}
+
+internal fun KotlinJvmProjectExtension.abiValidation(action: AbiValidationExtension.() -> Unit) {
+    extensions.configure(AbiValidationExtension::class, action)
 }
 
 internal fun DependencyHandlerScope.testImplementation(

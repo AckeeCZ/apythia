@@ -1,0 +1,10 @@
+public final class io/github/ackeecz/apythia/http/okhttp/OkHttpHttpApythia : io/github/ackeecz/apythia/http/HttpApythia {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/serialization/json/Json;)V
+	public synthetic fun <init> (Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun afterEachTest ()V
+	public fun beforeEachTest ()V
+	public final fun getMockWebServerUrl (Ljava/lang/String;)Ljava/lang/String;
+	public static synthetic fun getMockWebServerUrl$default (Lio/github/ackeecz/apythia/http/okhttp/OkHttpHttpApythia;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+}
+

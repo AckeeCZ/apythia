@@ -1,0 +1,17 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.github.ackeecz:http-ktor>
+final class io.github.ackeecz.apythia.http.ktor/KtorHttpApythia : io.github.ackeecz.apythia.http/HttpApythia { // io.github.ackeecz.apythia.http.ktor/KtorHttpApythia|null[0]
+    constructor <init>(kotlinx.serialization.json/Json = ...) // io.github.ackeecz.apythia.http.ktor/KtorHttpApythia.<init>|<init>(kotlinx.serialization.json.Json){}[0]
+
+    final val mockEngine // io.github.ackeecz.apythia.http.ktor/KtorHttpApythia.mockEngine|{}mockEngine[0]
+        final fun <get-mockEngine>(): io.ktor.client.engine.mock/MockEngine // io.github.ackeecz.apythia.http.ktor/KtorHttpApythia.mockEngine.<get-mockEngine>|<get-mockEngine>(){}[0]
+
+    final fun afterEachTest() // io.github.ackeecz.apythia.http.ktor/KtorHttpApythia.afterEachTest|afterEachTest(){}[0]
+    final fun beforeEachTest() // io.github.ackeecz.apythia.http.ktor/KtorHttpApythia.beforeEachTest|beforeEachTest(){}[0]
+}

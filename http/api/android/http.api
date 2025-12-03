@@ -1,0 +1,59 @@
+public final class io/github/ackeecz/apythia/http/Charset : java/lang/Enum {
+	public static final field UTF_8 Lio/github/ackeecz/apythia/http/Charset;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/github/ackeecz/apythia/http/Charset;
+	public static fun values ()[Lio/github/ackeecz/apythia/http/Charset;
+}
+
+public abstract interface annotation class io/github/ackeecz/apythia/http/ExperimentalHttpApi : java/lang/annotation/Annotation {
+}
+
+public abstract class io/github/ackeecz/apythia/http/HttpApythia {
+	public fun <init> ()V
+	public fun <init> (Lkotlinx/serialization/json/Json;)V
+	public synthetic fun <init> (Lkotlinx/serialization/json/Json;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun afterEachTest ()V
+	public final fun arrangeNext200Response ()V
+	protected abstract fun arrangeNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
+	public final fun arrangeNextResponse (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun beforeEachTest ()V
+}
+
+public final class io/github/ackeecz/apythia/http/response/HttpResponse {
+	public final fun getBody ()[B
+	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getStatusCode ()I
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HeadersArrangement {
+	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement {
+	public abstract fun bytesBody ([BLjava/lang/String;)V
+	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun jsonArrayBody (ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun jsonBody (Ljava/lang/String;Z)V
+	public abstract fun jsonBody (Lkotlinx/serialization/json/JsonElement;Z)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
+	public abstract fun jsonObjectBody (ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun plainTextBody (Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;)V
+	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
+	public abstract fun statusCode (I)V
+}
+
+public final class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement$DefaultImpls {
+	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
+	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
+}
+
+public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDsl : java/lang/annotation/Annotation {
+}
+

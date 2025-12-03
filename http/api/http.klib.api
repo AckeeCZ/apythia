@@ -6,3 +6,55 @@
 // - Show declarations: true
 
 // Library unique name: <io.github.ackeecz:http>
+open annotation class io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl : kotlin/Annotation { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http.response.dsl/HttpResponseDsl.<init>|<init>(){}[0]
+}
+
+open annotation class io.github.ackeecz.apythia.http/ExperimentalHttpApi : kotlin/Annotation { // io.github.ackeecz.apythia.http/ExperimentalHttpApi|null[0]
+    constructor <init>() // io.github.ackeecz.apythia.http/ExperimentalHttpApi.<init>|<init>(){}[0]
+}
+
+final enum class io.github.ackeecz.apythia.http/Charset : kotlin/Enum<io.github.ackeecz.apythia.http/Charset> { // io.github.ackeecz.apythia.http/Charset|null[0]
+    enum entry UTF_8 // io.github.ackeecz.apythia.http/Charset.UTF_8|null[0]
+
+    final val entries // io.github.ackeecz.apythia.http/Charset.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<io.github.ackeecz.apythia.http/Charset> // io.github.ackeecz.apythia.http/Charset.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): io.github.ackeecz.apythia.http/Charset // io.github.ackeecz.apythia.http/Charset.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<io.github.ackeecz.apythia.http/Charset> // io.github.ackeecz.apythia.http/Charset.values|values#static(){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement { // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement|null[0]
+    abstract fun header(kotlin/String, kotlin/String) // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement.header|header(kotlin.String;kotlin.String){}[0]
+    abstract fun headers(kotlin/String, kotlin.collections/List<kotlin/String>) // io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement.headers|headers(kotlin.String;kotlin.collections.List<kotlin.String>){}[0]
+}
+
+abstract interface io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement { // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement|null[0]
+    abstract fun bytesBody(kotlin/ByteArray, kotlin/String?) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.bytesBody|bytesBody(kotlin.ByteArray;kotlin.String?){}[0]
+    abstract fun headers(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HeadersArrangement, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.headers|headers(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HeadersArrangement,kotlin.Unit>){}[0]
+    abstract fun jsonArrayBody(kotlin/Boolean = ..., kotlin/Function1<kotlinx.serialization.json/JsonArrayBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonArrayBody|jsonArrayBody(kotlin.Boolean;kotlin.Function1<kotlinx.serialization.json.JsonArrayBuilder,kotlin.Unit>){}[0]
+    abstract fun jsonBody(kotlin/String, kotlin/Boolean = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonBody|jsonBody(kotlin.String;kotlin.Boolean){}[0]
+    abstract fun jsonBody(kotlinx.serialization.json/JsonElement, kotlin/Boolean = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonBody|jsonBody(kotlinx.serialization.json.JsonElement;kotlin.Boolean){}[0]
+    abstract fun jsonObjectBody(kotlin/Boolean = ..., kotlin/Function1<kotlinx.serialization.json/JsonObjectBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.jsonObjectBody|jsonObjectBody(kotlin.Boolean;kotlin.Function1<kotlinx.serialization.json.JsonObjectBuilder,kotlin.Unit>){}[0]
+    abstract fun plainTextBody(kotlin/String, io.github.ackeecz.apythia.http/Charset = ...) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.plainTextBody|plainTextBody(kotlin.String;io.github.ackeecz.apythia.http.Charset){}[0]
+    abstract fun statusCode(kotlin/Int) // io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement.statusCode|statusCode(kotlin.Int){}[0]
+}
+
+abstract class io.github.ackeecz.apythia.http/HttpApythia { // io.github.ackeecz.apythia.http/HttpApythia|null[0]
+    constructor <init>(kotlinx.serialization.json/Json = ...) // io.github.ackeecz.apythia.http/HttpApythia.<init>|<init>(kotlinx.serialization.json.Json){}[0]
+
+    abstract fun afterEachTest() // io.github.ackeecz.apythia.http/HttpApythia.afterEachTest|afterEachTest(){}[0]
+    abstract fun arrangeNextResponse(io.github.ackeecz.apythia.http.response/HttpResponse) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(io.github.ackeecz.apythia.http.response.HttpResponse){}[0]
+    abstract fun beforeEachTest() // io.github.ackeecz.apythia.http/HttpApythia.beforeEachTest|beforeEachTest(){}[0]
+    final fun arrangeNext200Response() // io.github.ackeecz.apythia.http/HttpApythia.arrangeNext200Response|arrangeNext200Response(){}[0]
+    final fun arrangeNextResponse(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HttpResponseArrangement, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.arrangeNextResponse|arrangeNextResponse(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HttpResponseArrangement,kotlin.Unit>){}[0]
+}
+
+final class io.github.ackeecz.apythia.http.response/HttpResponse { // io.github.ackeecz.apythia.http.response/HttpResponse|null[0]
+    final val body // io.github.ackeecz.apythia.http.response/HttpResponse.body|{}body[0]
+        final fun <get-body>(): kotlin/ByteArray // io.github.ackeecz.apythia.http.response/HttpResponse.body.<get-body>|<get-body>(){}[0]
+    final val headers // io.github.ackeecz.apythia.http.response/HttpResponse.headers|{}headers[0]
+        final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.response/HttpResponse.headers.<get-headers>|<get-headers>(){}[0]
+    final val statusCode // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode|{}statusCode[0]
+        final fun <get-statusCode>(): kotlin/Int // io.github.ackeecz.apythia.http.response/HttpResponse.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
+}
