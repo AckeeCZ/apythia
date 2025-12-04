@@ -7,7 +7,7 @@ import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
 internal suspend fun FunSpecContainerScope.methodTests(
-    fixture: HttpApythiaTest.Fixture
+    fixture: HttpApythiaTest.Fixture,
 ) = with(fixture) {
     context("method") {
         test("failure") {

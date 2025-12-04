@@ -25,7 +25,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             underTest.afterEachTest()
         }
 
-        arrangementTests()
+        mockingTests()
         actualRequestTests()
         multipartFormDataTests()
     }
@@ -34,23 +34,23 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
 
     protected abstract fun createRemoteDataSource(sut: Sut): RemoteDataSource
 
-    private fun arrangementTests() {
-        context("arrangement") {
+    private fun mockingTests() {
+        context("mocking") {
             test("set status code") {
                 val expectedCode = 305
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     statusCode(expectedCode)
                 }
 
-                val actual = remoteDataSource.getArrangedResponse()
+                val actual = remoteDataSource.getMockedResponse()
 
                 actual.statusCode shouldBe expectedCode
             }
 
             test("set empty headers") {
-                underTest.arrangeNextResponse {}
+                underTest.mockNextResponse {}
 
-                val actual = remoteDataSource.getArrangedResponse()
+                val actual = remoteDataSource.getMockedResponse()
 
                 actual.headers.shouldBeEmpty()
             }
@@ -61,55 +61,55 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
                     "X-Another-Header" to listOf("first-value", "second-value"),
                     "Content-Type" to listOf("application/json"),
                 )
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     headers {
                         expected.forEach { (name, values) -> headers(name, values) }
                     }
                 }
 
-                val actual = remoteDataSource.getArrangedResponse()
+                val actual = remoteDataSource.getMockedResponse()
 
                 actual.headers.lowercaseKeys() shouldBe expected.lowercaseKeys()
             }
 
             test("set empty body") {
-                underTest.arrangeNextResponse {}
+                underTest.mockNextResponse {}
 
-                val actual = remoteDataSource.getArrangedResponse()
+                val actual = remoteDataSource.getMockedResponse()
 
                 actual.body.shouldBeEmpty()
             }
 
             test("set body") {
                 val expected = byteArrayOf(1, 2, 3)
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     bytesBody(expected, contentType = null)
                 }
 
-                val actual = remoteDataSource.getArrangedResponse()
+                val actual = remoteDataSource.getMockedResponse()
 
                 actual.body shouldBe expected
             }
 
-            test("arrange multiple responses") {
+            test("mock multiple responses") {
                 val expectedCode = 305
                 val expectedBody = byteArrayOf(1, 2, 3)
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     statusCode(expectedCode)
                 }
-                underTest.arrangeNextResponse {
+                underTest.mockNextResponse {
                     bytesBody(expectedBody, contentType = null)
                 }
 
-                remoteDataSource.getArrangedResponse().statusCode shouldBe expectedCode
-                remoteDataSource.getArrangedResponse().body shouldBe expectedBody
+                remoteDataSource.getMockedResponse().statusCode shouldBe expectedCode
+                remoteDataSource.getMockedResponse().body shouldBe expectedBody
             }
 
-            test("arrange 200 response with empty body") {
-                underTest.arrangeNext200Response()
+            test("mock 200 response with empty body") {
+                underTest.mockNext200Response()
                 val expectedCode = 200
 
-                val actual = remoteDataSource.getArrangedResponse()
+                val actual = remoteDataSource.getMockedResponse()
 
                 actual.statusCode shouldBe expectedCode
                 actual.body.shouldBeEmpty()
@@ -120,7 +120,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
     private fun actualRequestTests() {
         context("actual request") {
             test("POST method") {
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
 
                 remoteDataSource.sendPostRequest()
 
@@ -130,7 +130,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             }
 
             test("URL") {
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
                 val expectedUrl = "${remoteDataSource.baseUrl}/url/test"
 
                 remoteDataSource.sendPostRequest(url = expectedUrl)
@@ -141,7 +141,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             }
 
             test("headers") {
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
                 val mimeType = "text/plain"
                 val charsetParam = "charset" to "UTF-8"
                 val expected = mapOf(
@@ -162,7 +162,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             }
 
             test("basic body (anything except multipart/*)") {
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
                 val expected = byteArrayOf(1, 2, 3)
 
                 remoteDataSource.sendPostRequest(body = expected)
@@ -173,8 +173,8 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             }
 
             test("send multiple requests and then assert them") {
-                underTest.arrangeNext200Response()
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
+                underTest.mockNext200Response()
                 val firstExpectedBody = byteArrayOf(1, 2, 3)
                 val secondExpectedBody = byteArrayOf(4, 5, 6)
 
@@ -190,8 +190,8 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             }
 
             test("send request and assert it afterwards multiple times") {
-                underTest.arrangeNext200Response()
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
+                underTest.mockNext200Response()
                 val firstExpectedBody = byteArrayOf(1, 2, 3)
                 val secondExpectedBody = byteArrayOf(4, 5, 6)
 
@@ -210,7 +210,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
     private fun multipartFormDataTests() {
         context("multipart/form-data") {
             test("process parts") {
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
                 val expectedHeaders = mapOf(
                     "X-Custom-Header" to "value",
                     "Content-Type" to "image/jpeg",
@@ -250,7 +250,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             // we could just drop this test completely to make things easier or at least limit the test
             // only to non-problematic HttpApythia implementations.
             test("process nested parts") {
-                underTest.arrangeNext200Response()
+                underTest.mockNext200Response()
                 val expectedParts = mapOf(
                     "part1" to mapOf(
                         "nested1" to byteArrayOf(1, 2, 3),

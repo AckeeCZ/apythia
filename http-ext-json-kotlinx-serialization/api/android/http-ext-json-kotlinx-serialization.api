@@ -1,14 +1,3 @@
-public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/ArrangementDslExtensionsKt {
-	public static final fun jsonArrayBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun jsonBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Z)V
-	public static final fun jsonBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;Z)V
-	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;ZILjava/lang/Object;)V
-	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
-	public static final fun jsonObjectBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-}
-
 public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/AssertionDslExtensionsKt {
 	public static final fun json (Lio/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion;Ljava/lang/String;)V
 	public static final fun jsonElement (Lio/github/ackeecz/apythia/http/request/dsl/body/BodyAssertion;Lkotlinx/serialization/json/JsonElement;)V
@@ -20,6 +9,19 @@ public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/seriali
 	public static final fun kotlinxSerializationJsonConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfigs;Lkotlin/jvm/functions/Function1;)V
 	public static final fun kotlinxSerializationJsonConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfigs;Lkotlinx/serialization/json/Json;)V
 	public static final fun kotlinxSerializationJsonConfig (Lio/github/ackeecz/apythia/http/extension/DslExtensionConfigs;Lkotlinx/serialization/json/Json;Lkotlinx/serialization/json/Json;)V
+}
+
+public final class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/MockingDslExtensionsKt {
+	public static final fun jsonArrayBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/util/List;ZLkotlin/jvm/functions/Function2;)V
+	public static final fun jsonArrayBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/util/List;ZLkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public static synthetic fun jsonArrayBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun jsonBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/lang/String;Z)V
+	public static final fun jsonBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Lkotlinx/serialization/json/JsonElement;Z)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/lang/String;ZILjava/lang/Object;)V
+	public static synthetic fun jsonBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Lkotlinx/serialization/json/JsonElement;ZILjava/lang/Object;)V
+	public static final fun jsonObjectBody (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun jsonObjectBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/extension/json/kotlinx/serialization/PartialJsonObjectAssertion {

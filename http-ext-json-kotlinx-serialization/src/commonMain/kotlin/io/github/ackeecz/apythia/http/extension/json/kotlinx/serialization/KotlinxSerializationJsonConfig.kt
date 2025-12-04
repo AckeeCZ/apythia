@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonBuilder
 
 internal class KotlinxSerializationJsonConfig(
     val assertionJson: Json,
-    val arrangementJson: Json,
+    val mockingJson: Json,
 ) : DslExtensionConfig
 
 /**
@@ -33,15 +33,15 @@ public fun DslExtensionConfigs.kotlinxSerializationJsonConfig(json: Json) {
  * For more information about configurations, see [DslExtensionConfig]'s documentation.
  *
  * @param assertionJson JSON configuration used for encoding/decoding JSONs during assertions.
- * @param arrangementJson JSON configuration used for encoding/decoding JSONs during arrangements.
+ * @param mockingJson JSON configuration used for encoding/decoding JSONs during mocking responses.
  */
 public fun DslExtensionConfigs.kotlinxSerializationJsonConfig(
     assertionJson: Json,
-    arrangementJson: Json,
+    mockingJson: Json,
 ) {
     val config = KotlinxSerializationJsonConfig(
         assertionJson = assertionJson,
-        arrangementJson = arrangementJson,
+        mockingJson = mockingJson,
     )
     dslExtensionConfig(config)
 }

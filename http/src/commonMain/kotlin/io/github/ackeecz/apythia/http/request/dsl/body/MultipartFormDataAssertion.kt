@@ -2,9 +2,14 @@ package io.github.ackeecz.apythia.http.request.dsl.body
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
-import io.github.ackeecz.apythia.http.request.ActualRequest
-import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
+import io.github.ackeecz.apythia.http.request.ActualHttpMessage
+import io.github.ackeecz.apythia.http.request.body.ActualFormDataPart
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
+import io.github.ackeecz.apythia.http.util.header.getContentDispositionHeader
+import io.kotest.assertions.withClue
+import io.kotest.matchers.collections.shouldNotBeEmpty
+import io.kotest.matchers.shouldBe
 
 /**
  * Provides various methods for multipart/form-data assertions.
@@ -20,33 +25,80 @@ public interface MultipartFormDataAssertion {
      * @param filename Optional filename of the part specified in Content-Disposition header filename parameter.
      * @param assertPart Asserts additional properties of the part.
      */
-    public fun part(
+    public suspend fun part(
         name: String,
         filename: String? = null,
-        assertPart: FormDataPartAssertion.() -> Unit,
+        assertPart: suspend FormDataPartAssertion.() -> Unit,
     )
 }
 
-internal class MultipartFormDataAssertionImpl(
+internal class MultipartFormDataAssertionImpl private constructor(
     private val configProvider: DslExtensionConfigProvider,
-    private val actualRequest: ActualRequest,
+    private val collectNestedParts: suspend (ActualHttpMessage) -> List<ActualPart>,
+    actualParts: List<ActualPart>,
 ) : MultipartFormDataAssertion {
 
-    private val _expectedParts: MutableList<ExpectedFormDataPart> = mutableListOf()
-    val expectedParts: List<ExpectedFormDataPart> get() = _expectedParts.toList()
+    private val _remainingActualParts = actualParts.toFormDataParts().toMutableList()
 
-    override fun part(
+    /**
+     * Remaining actual multipart/form-data parts that have not been matched yet by calling [part].
+     * Returned list is an immutable snapshot of the current state.
+     */
+    val remainingActualParts: List<ActualFormDataPart> get() = _remainingActualParts.toList()
+
+    private fun List<ActualPart>.toFormDataParts(): List<ActualFormDataPart> = map { part ->
+        val contentDispositionHeader = getContentDispositionHeader(part.headers.toMap())
+        val partName = checkNotNull(contentDispositionHeader?.name) {
+            "multipart/form-data part is missing Content-Disposition header with 'name' parameter"
+        }
+        ActualFormDataPart(
+            name = partName,
+            filename = contentDispositionHeader.filename,
+            message = ActualHttpMessage(part.headers, part.body),
+        )
+    }
+
+    override suspend fun part(
         name: String,
         filename: String?,
-        assertPart: FormDataPartAssertion.() -> Unit,
+        assertPart: suspend FormDataPartAssertion.() -> Unit,
     ) {
-        val partAssertion = FormDataPartAssertionImpl(configProvider, actualRequest).apply(assertPart)
-        val part = ExpectedFormDataPart(
-            name = name,
-            filename = filename,
-            headers = partAssertion.expectedHeaders,
-            body = partAssertion.expectedBody,
-        )
-        _expectedParts.add(part)
+        val matchingParts = remainingActualParts.filter { it.name == name }
+        withClue("Expected part with name '$name' and filename '$filename' not found") {
+            matchingParts.shouldNotBeEmpty()
+        }
+        for (index in matchingParts.indices) {
+            val actualPart = matchingParts[index]
+            try {
+                val actualFormDataName = actualPart.name
+                withClue("Assertion failed for form data part with name '$actualFormDataName'") {
+                    actualFormDataName shouldBe name
+                    actualPart.filename shouldBe filename
+                    FormDataPartAssertionImpl(configProvider, actualPart, collectNestedParts).assertPart()
+                }
+                _remainingActualParts.remove(actualPart)
+                break
+            } catch (e: AssertionError) {
+                if (index == matchingParts.lastIndex) {
+                    throw e
+                }
+            }
+        }
+    }
+
+    companion object {
+
+        suspend operator fun invoke(
+            configProvider: DslExtensionConfigProvider,
+            collectParts: suspend (ActualHttpMessage) -> List<ActualPart>,
+            actualMessage: ActualHttpMessage,
+        ): MultipartFormDataAssertionImpl {
+            val actualParts = collectParts(actualMessage)
+            return MultipartFormDataAssertionImpl(
+                configProvider = configProvider,
+                collectNestedParts = collectParts,
+                actualParts = actualParts,
+            )
+        }
     }
 }

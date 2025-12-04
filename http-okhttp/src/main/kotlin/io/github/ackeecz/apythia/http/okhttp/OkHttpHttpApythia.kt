@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.okhttp
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
@@ -18,11 +19,11 @@ import okio.Buffer
 /**
  * [HttpApythia] implementation backed by OkHttp's mock web server. After calling [beforeEachTest]
  * you can retrieve mock web server's URL using [getMockWebServerUrl] to pass it to your HTTP client.
- * This allows [OkHttpHttpApythia] to arrange responses and assert requests.
+ * This allows [OkHttpHttpApythia] to mock responses and assert requests.
  *
  * For more information check [HttpApythia] documentation.
  *
- * @param dslExtensionConfigs DSL for adding [io.github.ackeecz.apythia.http.extension.DslExtensionConfig]s.
+ * @param dslExtensionConfigs DSL for adding [DslExtensionConfig]s.
  */
 public class OkHttpHttpApythia(
     dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},
@@ -46,7 +47,7 @@ public class OkHttpHttpApythia(
         _mockWebServer = null
     }
 
-    override fun arrangeNextResponse(response: HttpResponse) {
+    override fun mockNextResponse(response: HttpResponse) {
         val headersBuilder = Headers.Builder()
         response.headers.toList().forEach { (key, values) ->
             values.forEach { value ->

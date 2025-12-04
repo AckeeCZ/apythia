@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.ktor
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.HttpApythia
+import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigs
 import io.github.ackeecz.apythia.http.request.ActualHttpMessage
 import io.github.ackeecz.apythia.http.request.ActualRequest
@@ -26,12 +27,12 @@ import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * [HttpApythia] implementation for Ktor HTTP client. After calling [beforeEachTest] you can retrieve
- * [mockEngine] to pass it to your Ktor HTTP client instance. This allows [KtorHttpApythia] to arrange
+ * [mockEngine] to pass it to your Ktor HTTP client instance. This allows [KtorHttpApythia] to mock
  * responses and assert requests.
  *
  * For more information check [HttpApythia] documentation.
  *
- * @param dslExtensionConfigs DSL for adding [io.github.ackeecz.apythia.http.extension.DslExtensionConfig]s.
+ * @param dslExtensionConfigs DSL for adding [DslExtensionConfig]s.
  */
 public class KtorHttpApythia(
     dslExtensionConfigs: DslExtensionConfigs.() -> Unit = {},
@@ -56,7 +57,7 @@ public class KtorHttpApythia(
         requestHistoryIndex = 0
     }
 
-    override fun arrangeNextResponse(response: HttpResponse) {
+    override fun mockNextResponse(response: HttpResponse) {
         mockEngine.config.addHandler {
             respond(
                 content = response.body,

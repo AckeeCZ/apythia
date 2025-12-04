@@ -1,7 +1,6 @@
 package io.github.ackeecz.apythia.http.request.dsl.header
 
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
-import io.github.ackeecz.apythia.http.request.body.ExpectedFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
 
 /**
@@ -13,12 +12,4 @@ public interface FormDataPartHeadersAssertion : HeadersAssertion
 
 internal class FormDataPartHeadersAssertionImpl(
     private val headersAssertion: HeadersAssertionImpl,
-) : FormDataPartHeadersAssertion, HeadersAssertion by headersAssertion {
-
-    val expectedHeaders: ExpectedFormDataPart.Headers
-        get() {
-            return ExpectedFormDataPart.Headers(
-                headers = headersAssertion.expectedHeaders,
-            )
-        }
-}
+) : FormDataPartHeadersAssertion, HeadersAssertion by headersAssertion

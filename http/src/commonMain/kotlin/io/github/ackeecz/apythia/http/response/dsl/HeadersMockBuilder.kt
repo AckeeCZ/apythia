@@ -1,10 +1,10 @@
 package io.github.ackeecz.apythia.http.response.dsl
 
 /**
- * Arrangement for HTTP response headers.
+ * DSL for building mocked HTTP response headers.
  */
 @HttpResponseDslMarker
-public interface HeadersArrangement {
+public interface HeadersMockBuilder {
 
     /**
      * Sets a single header with the specified [name] and [value].
@@ -16,9 +16,14 @@ public interface HeadersArrangement {
      * entry per each value with the same [name].
      */
     public fun headers(name: String, values: List<String>)
+
+    /**
+     * Sets multiple headers from the specified [headers] map.
+     */
+    public fun headers(headers: Map<String, String>)
 }
 
-internal class HeadersArrangementImpl : HeadersArrangement {
+internal class HeadersMockBuilderImpl : HeadersMockBuilder {
 
     private val _headers: MutableMap<String, List<String>> = mutableMapOf()
     val headers: Map<String, List<String>> get() = _headers.toMap()
@@ -30,5 +35,9 @@ internal class HeadersArrangementImpl : HeadersArrangement {
     override fun headers(name: String, values: List<String>) {
         val existingValues = _headers.getOrElse(name) { emptyList() }
         _headers[name] = existingValues + values
+    }
+
+    override fun headers(headers: Map<String, String>) {
+        headers.forEach { (name, value) -> header(name, value) }
     }
 }

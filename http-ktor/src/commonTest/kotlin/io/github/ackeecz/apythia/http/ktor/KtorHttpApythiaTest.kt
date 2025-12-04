@@ -1,7 +1,7 @@
 package io.github.ackeecz.apythia.http.ktor
 
-import io.github.ackeecz.apythia.testing.http.ArrangedResponse
 import io.github.ackeecz.apythia.testing.http.BaseHttpApythiaImplTest
+import io.github.ackeecz.apythia.testing.http.MockedResponse
 import io.github.ackeecz.apythia.testing.http.RemoteDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -62,9 +62,9 @@ private class KtorRemoteDataSource(engine: MockEngine) : RemoteDataSource {
         }
     }
 
-    override suspend fun getArrangedResponse(): ArrangedResponse {
-        val response = ktorClient.get { url("arranged-response") }
-        return ArrangedResponse(
+    override suspend fun getMockedResponse(): MockedResponse {
+        val response = ktorClient.get { url("mocked-response") }
+        return MockedResponse(
             statusCode = response.status.value,
             headers = response.headers.toMap(),
             body = response.bodyAsBytes(),

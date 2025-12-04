@@ -1,6 +1,7 @@
 package io.github.ackeecz.apythia.http.apythia.assertion
 
 import io.github.ackeecz.apythia.http.apythia.HttpApythiaTest
+import io.github.ackeecz.apythia.http.request.body.ActualPart
 import io.github.ackeecz.apythia.http.request.body.createActualFormDataPart
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.request.dsl.body.MultipartFormDataAssertion
@@ -9,7 +10,7 @@ import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 
 internal suspend fun FunSpecContainerScope.multipartFormDataBodyTests(
-    fixture: HttpApythiaTest.Fixture
+    fixture: HttpApythiaTest.Fixture,
 ) = with(fixture) {
     context("multipart/form-data") {
         context("part") {
@@ -38,7 +39,7 @@ internal suspend fun FunSpecContainerScope.multipartFormDataBodyTests(
 
 private suspend fun FunSpecContainerScope.commonFormDataPartTestSuite(
     fixture: HttpApythiaTest.Fixture,
-    callMultipart: BodyAssertion.(MultipartFormDataAssertion.() -> Unit) -> Unit,
+    callMultipart: suspend BodyAssertion.(suspend MultipartFormDataAssertion.() -> Unit) -> Unit,
 ) = with(fixture) {
     test("failure when name is different") {
         val expectedName = "name"
@@ -182,114 +183,120 @@ private suspend fun FunSpecContainerScope.commonFormDataPartTestSuite(
         }
     }
 
+    test("success when there are parts with the same name but different headers and in the different order than expected") {
+        val expectedName = "name"
+        val firstExpectedHeader = "Content-Type" to listOf("text/plain")
+        val secondExpectedHeader = "Content-Type" to listOf("application/octet-stream")
+        underTest.actualParts = listOf(
+            createActualFormDataPart(name = expectedName, headers = mapOf(firstExpectedHeader)),
+            createActualFormDataPart(name = expectedName, headers = mapOf(secondExpectedHeader)),
+        )
+
+        shouldNotFail {
+            underTest.assertNextRequest {
+                body {
+                    callMultipart {
+                        part(name = expectedName) {
+                            headers {
+                                headers(secondExpectedHeader.first, secondExpectedHeader.second)
+                            }
+                        }
+                        part(name = expectedName) {
+                            headers {
+                                headers(firstExpectedHeader.first, firstExpectedHeader.second)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    test("success when there are parts with the same name but different bodies and in the different order than expected") {
+        val expectedName = "name"
+        val firstExpectedBody = byteArrayOf(1, 2, 3)
+        val secondExpectedBody = byteArrayOf(4, 5, 6)
+        underTest.actualParts = listOf(
+            createActualFormDataPart(name = expectedName, body = firstExpectedBody),
+            createActualFormDataPart(name = expectedName, body = secondExpectedBody),
+        )
+
+        shouldNotFail {
+            underTest.assertNextRequest {
+                body {
+                    callMultipart {
+                        part(name = expectedName) {
+                            body {
+                                bytes(secondExpectedBody)
+                            }
+                        }
+                        part(name = expectedName) {
+                            body {
+                                bytes(firstExpectedBody)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     formDataPartHeadersTests(fixture, callMultipart)
     formDataPartBodyTests(fixture, callMultipart)
 }
 
 private suspend fun FunSpecContainerScope.formDataPartHeadersTests(
     fixture: HttpApythiaTest.Fixture,
-    callMultipart: BodyAssertion.(MultipartFormDataAssertion.() -> Unit) -> Unit,
+    callMultipart: suspend BodyAssertion.(suspend MultipartFormDataAssertion.() -> Unit) -> Unit,
 ) = with(fixture) {
-    context("headers") {
-        test("failure") {
-            val expectedName = "name"
-            val expectedHeader = "header"
-            underTest.actualParts = listOf(
-                createActualFormDataPart(
-                    name = expectedName,
-                    headers = mapOf(expectedHeader to listOf("value")),
-                )
-            )
-
-            shouldFail {
-                underTest.assertNextRequest {
-                    body {
-                        callMultipart {
-                            part(expectedName) {
-                                headers {
-                                    header(expectedHeader, "other value")
-                                }
-                            }
-                        }
+    val partName = "name"
+    headersTestSuite(
+        fixture = fixture,
+        arrangeHeaders = {
+            val part = createActualFormDataPart(name = partName, headers = it)
+            underTest.actualParts = listOf(part)
+        },
+        assertHeaders = { headersAssertion ->
+            body {
+                callMultipart {
+                    part(partName) {
+                        headers(headersAssertion)
                     }
                 }
             }
-        }
-
-        test("success") {
-            val expectedName = "name"
-            val expectedHeader = "header"
-            val expectedHeaderValue = "value"
-            underTest.actualParts = listOf(
-                createActualFormDataPart(
-                    name = expectedName,
-                    headers = mapOf(expectedHeader to listOf(expectedHeaderValue)),
-                )
-            )
-
-            shouldNotFail {
-                underTest.assertNextRequest {
-                    body {
-                        callMultipart {
-                            part(expectedName) {
-                                headers {
-                                    header(expectedHeader, expectedHeaderValue)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+        },
+    )
 }
 
 private suspend fun FunSpecContainerScope.formDataPartBodyTests(
     fixture: HttpApythiaTest.Fixture,
-    callMultipart: BodyAssertion.(MultipartFormDataAssertion.() -> Unit) -> Unit,
+    callMultipart: suspend BodyAssertion.(suspend MultipartFormDataAssertion.() -> Unit) -> Unit,
 ) = with(fixture) {
-    context("body") {
-        test("failure") {
-            val expected = "text"
-            val partName = "name"
-            underTest.actualParts = listOf(
-                createActualFormDataPart(
-                    name = partName,
-                    body = expected.reversed().encodeToByteArray(),
-                )
-            )
+    val partName = "name"
 
-            shouldFail {
-                underTest.assertNextRequest {
-                    body {
-                        callMultipart {
-                            part(partName) {
-                                body { plainText(expected) }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        test("success") {
-            val partName = "name"
-            val expected = byteArrayOf(1, 2, 3)
-            underTest.actualParts = listOf(createActualFormDataPart(name = partName, body = expected))
-
-            shouldNotFail {
-                underTest.assertNextRequest {
-                    body {
-                        callMultipart {
-                            part(partName) {
-                                body { bytes(expected) }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    fun createOrUpdatePart(update: (ActualPart) -> ActualPart) {
+        val part = underTest.actualParts.firstOrNull() ?: createActualFormDataPart(name = partName)
+        underTest.actualParts = listOf(update(part))
     }
+
+    bodyTestSuite(
+        fixture = fixture,
+        arrangeHeaders = { headers ->
+            createOrUpdatePart { it.copy(headers = it.headers + headers) }
+        },
+        arrangeBody = { body ->
+            createOrUpdatePart { it.copy(body = body) }
+        },
+        assertBody = { bodyAssertion ->
+            body {
+                callMultipart {
+                    part(partName) {
+                        body(bodyAssertion)
+                    }
+                }
+            }
+        },
+    )
 }
 
 internal suspend fun FunSpecContainerScope.partialMultipartFormDataBodyTests(
@@ -298,18 +305,6 @@ internal suspend fun FunSpecContainerScope.partialMultipartFormDataBodyTests(
     context("partial multipart/form-data") {
         context("part") {
             commonFormDataPartTestSuite(fixture) { partialMultipartFormData(it) }
-
-            test("not asserted when no parts expected") {
-                underTest.actualParts = listOf(createActualFormDataPart())
-
-                shouldNotFail {
-                    underTest.assertNextRequest {
-                        body {
-                            partialMultipartFormData {}
-                        }
-                    }
-                }
-            }
         }
 
         context("missing parts") {

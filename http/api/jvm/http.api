@@ -16,13 +16,13 @@ public abstract interface annotation class io/github/ackeecz/apythia/http/Experi
 public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun afterEachTest ()V
-	public final fun arrangeNext200Response ()V
-	protected abstract fun arrangeNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
-	public final fun arrangeNextResponse (Lkotlin/jvm/functions/Function1;)V
-	public final fun assertNextRequest (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun assertNextRequest (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeEachTest ()V
 	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun mockNext200Response ()V
+	protected abstract fun mockNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
+	public final fun mockNextResponse (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class io/github/ackeecz/apythia/http/UnsupportedEncodingException : java/lang/RuntimeException {
@@ -82,10 +82,11 @@ public final class io/github/ackeecz/apythia/http/request/HttpMethod : java/lang
 
 public final class io/github/ackeecz/apythia/http/request/body/ActualPart {
 	public fun <init> (Ljava/util/Map;[B)V
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/HttpRequestAssertion {
-	public abstract fun body (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun body (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
 	public abstract fun method (Lio/github/ackeecz/apythia/http/request/HttpMethod;)V
 	public abstract fun url (Lkotlin/jvm/functions/Function1;)V
@@ -104,15 +105,15 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 	public abstract fun bytes ([B)V
 	public abstract fun empty ()V
 	public abstract fun getActualBody ()Lio/github/ackeecz/apythia/http/request/dsl/body/ActualBody;
-	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun multipartFormData (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun partialMultipartFormData (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun plainText (D)V
 	public abstract fun plainText (I)V
 	public abstract fun plainText (Ljava/lang/String;)V
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/FormDataPartAssertion {
-	public abstract fun body (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun body (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -120,12 +121,12 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion {
-	public abstract fun part (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public abstract fun part (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion$DefaultImpls {
-	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static synthetic fun part$default (Lio/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/PartialMultipartFormDataAssertion : io/github/ackeecz/apythia/http/request/dsl/body/MultipartFormDataAssertion {
@@ -138,9 +139,10 @@ public abstract interface class io/github/ackeecz/apythia/http/request/dsl/body/
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/FormDataPartHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
 	public abstract fun contentType (Ljava/lang/String;Ljava/util/Map;)V
 	public static synthetic fun contentType$default (Lio/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)V
+	public abstract fun getActualHeaders ()Ljava/util/Map;
 	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
 }
@@ -152,18 +154,20 @@ public final class io/github/ackeecz/apythia/http/request/dsl/header/HeadersAsse
 public abstract interface class io/github/ackeecz/apythia/http/request/dsl/header/RequestHeadersAssertion : io/github/ackeecz/apythia/http/request/dsl/header/HeadersAssertion {
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/QueryAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/QueryAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+	public abstract fun getActualQueryParameters ()Ljava/util/Map;
 	public abstract fun missingParameters ([Ljava/lang/String;)V
 	public abstract fun noParameters ()V
+	public abstract fun noValueParameter (Ljava/lang/String;)V
 	public abstract fun parameter (Ljava/lang/String;D)V
 	public abstract fun parameter (Ljava/lang/String;I)V
 	public abstract fun parameter (Ljava/lang/String;J)V
 	public abstract fun parameter (Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun parameterWithoutValue (Ljava/lang/String;)V
 	public abstract fun parameters (Ljava/lang/String;Ljava/util/List;)V
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/UrlAssertion {
+public abstract interface class io/github/ackeecz/apythia/http/request/dsl/url/UrlAssertion : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+	public abstract fun getActualUrl ()Ljava/lang/String;
 	public abstract fun path (Ljava/lang/String;)V
 	public abstract fun pathSuffix (Ljava/lang/String;)V
 	public abstract fun query (Lkotlin/jvm/functions/Function1;)V
@@ -176,23 +180,24 @@ public final class io/github/ackeecz/apythia/http/response/HttpResponse {
 	public final fun getStatusCode ()I
 }
 
-public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HeadersArrangement {
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HeadersMockBuilder {
 	public abstract fun header (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun headers (Ljava/lang/String;Ljava/util/List;)V
-}
-
-public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
-	public abstract fun bytesBody ([BLjava/lang/String;)V
-	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun plainTextBody (Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;)V
-	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
-	public abstract fun statusCode (I)V
-}
-
-public final class io/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement$DefaultImpls {
-	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseArrangement;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
+	public abstract fun headers (Ljava/util/Map;)V
 }
 
 public abstract interface annotation class io/github/ackeecz/apythia/http/response/dsl/HttpResponseDslMarker : java/lang/annotation/Annotation {
+}
+
+public abstract interface class io/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder : io/github/ackeecz/apythia/http/extension/DslExtensionConfigProvider {
+	public abstract fun bytesBody ([BLjava/lang/String;)V
+	public abstract fun headers (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun plainTextBody (Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;)V
+	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
+	public abstract fun statusCode (I)V
+}
+
+public final class io/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder$DefaultImpls {
+	public static synthetic fun plainTextBody$default (Lio/github/ackeecz/apythia/http/response/dsl/HttpResponseMockBuilder;Ljava/lang/String;Lio/github/ackeecz/apythia/http/Charset;ILjava/lang/Object;)V
 }
 
