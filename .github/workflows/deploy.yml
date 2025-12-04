@@ -52,7 +52,7 @@ jobs:
             -PmavenCentralUsername=$MAVEN_USERNAME \
             -PmavenCentralPassword=$MAVEN_PASSWORD
           
-          ./gradlew :app:testDebugUnitTest
+          ./gradlew :sample-app:testDebugUnitTest
 
   publish:
     needs: preflight_checks
