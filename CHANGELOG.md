@@ -7,5 +7,23 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 ### http
+### http-ext-json-kotlinx-serialization
 ### http-ktor
 ### http-okhttp
+
+## BOM [1.0.0] - 2025-12-04
+### http
+#### Added
+- First version of the artifact 🎉
+
+### http-ext-json-kotlinx-serialization
+#### Added
+- First version of the artifact 🎉
+
+### http-ktor
+#### Added
+- First version of the artifact 🎉
+
+### http-okhttp
+#### Added
+- First version of the artifact 🎉
