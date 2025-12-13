@@ -14,6 +14,7 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -97,6 +98,12 @@ private class KtorRemoteDataSource(engine: MockEngine) : RemoteDataSource {
         }
         ktorClient.post("multipart") {
             setBody(MultiPartFormDataContent(formDataParts))
+        }
+    }
+
+    override suspend fun testUrlEncoding(path: String, queryParams: Map<String, String>) {
+        ktorClient.get(path) {
+            queryParams.forEach { (key, value) -> parameter(key, value) }
         }
     }
 

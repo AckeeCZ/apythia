@@ -57,12 +57,33 @@ internal suspend fun FunSpecContainerScope.queryTests(
         }
 
         test("get actual query parameters") {
+            underTest.actualRequestUrl = "http://example.com/path?key=value1&key=value2&key2=value3&key3&key3=value4"
             val expected = mapOf(
                 "key" to listOf("value1", "value2"),
                 "key2" to listOf("value3"),
                 "key3" to listOf(null, "value4"),
             )
-            underTest.actualRequestUrl = "http://example.com/path?key=value1&key=value2&key2=value3&key3&key3=value4"
+
+            underTest.assertNextRequest {
+                url {
+                    query {
+                        actualQueryParameters shouldBe expected
+                    }
+                }
+            }
+        }
+
+        @Suppress("MaxLineLength")
+        test("actual query parameters are decoded correctly") {
+            val encodedPlus = "%2B"
+            val defaultEncodedSpace = "%20"
+            val queryEncodedSpace = "+"
+            val actualQuery = "key$queryEncodedSpace=value${queryEncodedSpace}1&key$queryEncodedSpace=value${defaultEncodedSpace}2&key2$encodedPlus=value${encodedPlus}3"
+            underTest.actualRequestUrl = "http://example.com/path?$actualQuery"
+            val expected = mapOf(
+                "key " to listOf("value 1", "value 2"),
+                "key2+" to listOf("value+3"),
+            )
 
             underTest.assertNextRequest {
                 url {
@@ -164,6 +185,20 @@ private suspend fun FunSpecContainerScope.parameterTests(
                 getValue = { it.toString() },
                 assertValue = { key, value -> parameter(key, value) },
             )
+
+            test("encoded name and values success") {
+                underTest.actualRequestUrl = "http://example.com/path?key+1=value+1&key%202=value%202&key%2B3=value%2B3"
+
+                underTest.assertNextRequest {
+                    url {
+                        query {
+                            parameter("key 1", "value 1")
+                            parameter("key 2", "value 2")
+                            parameter("key+3", "value+3")
+                        }
+                    }
+                }
+            }
         }
 
         context("Int") {

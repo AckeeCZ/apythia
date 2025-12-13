@@ -5,6 +5,11 @@ import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 
 /**
  * Actual HTTP request that was sent by the HTTP client. This data is used for assertions.
+ *
+ * @param method HTTP method of the request.
+ * @param url Encoded URL of the request. Both `+` and `%20` space encoding is supported in the query.
+ * @param headers Headers of the request.
+ * @param body Raw byte body of the request.
  */
 @ExperimentalHttpApi
 public class ActualRequest(
@@ -15,23 +20,21 @@ public class ActualRequest(
 ) {
 
     public val urlString: String = url
-    internal val url: Url = Url.parse(url)
+    internal val url: Url
+
+    init {
+        val parsedUrl = Url.parse(url)
+        // We need to replace + with %20 in the query to be able to properly decode spaces encoded as +,
+        // because Url decodes only %20 to spaces.
+        val encodedQuery = parsedUrl.encodedQuery?.replace("+", "%20")
+        this.url = parsedUrl.buildUpon()
+            .encodedQuery(encodedQuery)
+            .build()
+            .toString()
+            .let(Url::parse)
+    }
 
     internal val message = ActualHttpMessage(headers = headers, body = body)
-
-    internal fun copy(
-        method: String = this.method,
-        url: String = this.urlString,
-        headers: Map<String, List<String>> = this.headers,
-        body: ByteArray = this.body,
-    ): ActualRequest {
-        return ActualRequest(
-            method = method,
-            url = url,
-            headers = headers,
-            body = body,
-        )
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

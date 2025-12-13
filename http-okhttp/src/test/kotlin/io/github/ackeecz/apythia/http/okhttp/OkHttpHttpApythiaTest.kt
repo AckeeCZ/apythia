@@ -17,6 +17,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HeaderMap
 import retrofit2.http.POST
+import retrofit2.http.QueryMap
 import retrofit2.http.Url
 
 class OkHttpHttpApythiaTest : BaseHttpApythiaImplTest<OkHttpHttpApythia>() {
@@ -91,6 +92,10 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
         apiDescription.sendMultipartRequest(multipartBuilder.build())
     }
 
+    override suspend fun testUrlEncoding(path: String, queryParams: Map<String, String>) {
+        apiDescription.testUrlEncoding(path, queryParams)
+    }
+
     override suspend fun sendNestedMultipartRequest(nestedPartNamesToBodies: Map<String, Map<String, ByteArray>>) {
         val multipartBuilder = MultipartBody.Builder().setType(MultipartBody.FORM)
         nestedPartNamesToBodies.forEach { (name, nestedParts) ->
@@ -121,6 +126,12 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
             @Url url: String,
             @HeaderMap headers: Map<String, String>,
             @Body body: RequestBody,
+        )
+
+        @GET
+        suspend fun testUrlEncoding(
+            @Url path: String,
+            @QueryMap queryParams: Map<String, String>,
         )
 
         @POST("api/v1/multipart")

@@ -12,6 +12,11 @@ public interface RemoteDataSource {
         body: ByteArray = byteArrayOf(),
     )
 
+    public suspend fun testUrlEncoding(
+        path: String,
+        queryParams: Map<String, String>,
+    )
+
     public suspend fun sendMultipartRequest(
         eachPartHeaders: Map<String, String>,
         partNamesToBodies: Map<String, ByteArray>,

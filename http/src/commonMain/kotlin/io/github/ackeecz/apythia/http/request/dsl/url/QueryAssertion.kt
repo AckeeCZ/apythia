@@ -19,7 +19,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 public interface QueryAssertion : DslExtensionConfigProvider {
 
     /**
-     * The actual URL query parameters of a HTTP request. Each key is a query parameter name and
+     * The actual decoded URL query parameters of a HTTP request. Each key is a query parameter name and
      * the value is a list of query parameter values, e.g. "name=value1&name=value2". `null` value
      * means that the query parameter has no value, e.g. "name" or "name=".
      * This can be used to extend the [QueryAssertion] DSL with custom assertions.
@@ -27,13 +27,13 @@ public interface QueryAssertion : DslExtensionConfigProvider {
     public val actualQueryParameters: Map<String, List<String?>>
 
     /**
-     * Asserts that a query parameter with the given [name] has no value,
+     * Asserts that a decoded query parameter with the given [name] has no value,
      * e.g. "www.example.com/path?foo".
      */
     public fun noValueParameter(name: String)
 
     /**
-     * Asserts a query parameter with the given [name] and [value].
+     * Asserts a decoded query parameter with the given [name] and [value].
      */
     public fun parameter(name: String, value: String)
 
@@ -53,7 +53,7 @@ public interface QueryAssertion : DslExtensionConfigProvider {
     public fun parameter(name: String, value: Double)
 
     /**
-     * Asserts that each value from [values] is a separate query parameter with the same [name].
+     * Asserts that each value from [values] is a separate decoded query parameter with the same [name].
      * `null` value means that the query parameter has no value, e.g. "name" or "name=".
      *
      * @param values Values must not be empty
@@ -61,7 +61,7 @@ public interface QueryAssertion : DslExtensionConfigProvider {
     public fun parameters(name: String, values: List<String?>)
 
     /**
-     * Asserts that query parameters with the given [name] are missing.
+     * Asserts that decoded query parameters with the given [name] are missing.
      */
     public fun missingParameters(vararg name: String)
 

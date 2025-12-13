@@ -2,7 +2,6 @@ package io.github.ackeecz.apythia.http.apythia
 
 import io.github.ackeecz.apythia.http.HttpApythia
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
-import io.github.ackeecz.apythia.http.apythia.assertion.queryTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestBodyTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestHeadersTests
 import io.github.ackeecz.apythia.http.apythia.assertion.urlTests
@@ -35,7 +34,7 @@ internal class HttpApythiaTest : FunSpec({
         fixture.beforeEach()
     }
 
-    dslExtensionConfigTests(fixture)
+    dslExtensionConfigTests()
     assertionTests(fixture)
     mockingTests(fixture)
 }) {
@@ -70,7 +69,7 @@ internal class HttpApythiaTest : FunSpec({
     }
 }
 
-private fun FunSpec.dslExtensionConfigTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
+private fun FunSpec.dslExtensionConfigTests() {
     context("DSL extension config") {
         test("fail if same config type is set twice") {
             val config1 = DslExtensionConfigMock()
@@ -151,11 +150,10 @@ private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
     }
 }
 
-private fun FunSpec.assertionTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
+private fun FunSpec.assertionTests(fixture: HttpApythiaTest.Fixture) {
     context("assertion") {
         methodTests(fixture)
         urlTests(fixture)
-        queryTests(fixture)
         requestHeadersTests(fixture)
         requestBodyTests(fixture)
     }
