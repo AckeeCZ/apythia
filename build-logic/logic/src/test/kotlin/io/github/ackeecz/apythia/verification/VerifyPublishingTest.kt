@@ -7,26 +7,26 @@ import io.kotest.datatest.withData
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import org.gradle.api.Project
 import java.util.UUID
 
 private lateinit var getPreviousTag: GetPreviousTagStub
 private lateinit var getArtifactVersionFromTag: GetArtifactVersionFromTagStub
-private lateinit var getReleaseDependentProjects: GetReleaseDependentProjectsStub
 private lateinit var checkArtifactUpdateStatus: CheckArtifactUpdateStatusStub
-
-private lateinit var underTest: VerifyPublishing
 
 internal class VerifyPublishingTest : FunSpec({
 
     beforeTest {
         getPreviousTag = GetPreviousTagStub()
         getArtifactVersionFromTag = GetArtifactVersionFromTagStub()
-        getReleaseDependentProjects = GetReleaseDependentProjectsStub()
         checkArtifactUpdateStatus = CheckArtifactUpdateStatusStub()
-        underTest = VerifyPublishing(
+    }
+
+    fun createSut(dependentProjects: List<Project> = emptyList()): VerifyPublishing {
+        return VerifyPublishing(
+            dependentProjects = dependentProjects,
             getPreviousTag = getPreviousTag,
             getArtifactVersionFromTag = getArtifactVersionFromTag,
-            getReleaseDependentProjects = getReleaseDependentProjects,
             checkArtifactUpdateStatus = checkArtifactUpdateStatus,
         )
     }
@@ -39,7 +39,7 @@ internal class VerifyPublishingTest : FunSpec({
         val expected = TagResult.Tag(UUID.randomUUID().toString())
         getPreviousTag.result = expected
 
-        underTest(buildProject())
+        createSut().invoke(buildProject())
 
         getArtifactVersionFromTag.receivedTagResult shouldBe expected
     }
@@ -51,7 +51,7 @@ internal class VerifyPublishingTest : FunSpec({
         val project = buildProject().withVersion(artifactVersion)
         getArtifactVersionFromTag.setProjectVersion(project, artifactVersion)
 
-        underTest(project)
+        createSut().invoke(project)
 
         checkArtifactUpdateStatus.receivedTagResult shouldBe expected
     }
@@ -67,7 +67,7 @@ internal class VerifyPublishingTest : FunSpec({
 
             val dependentProject1 = buildProject(name = "dependent-1", parent = rootProject).withVersion(increasedVersion)
             val dependentProject2 = buildProject(name = "dependent-2", parent = rootProject).withVersion(increasedVersion)
-            getReleaseDependentProjects.dependentProjects = listOf(dependentProject1, dependentProject2)
+            val dependentProjects = listOf(dependentProject1, dependentProject2)
 
             val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(increasedVersion)
 
@@ -76,7 +76,7 @@ internal class VerifyPublishingTest : FunSpec({
             getArtifactVersionFromTag.setProjectVersion(dependentProject2, previousTagVersion)
 
             // Act
-            val actual = underTest(checkedProject)
+            val actual = createSut(dependentProjects).invoke(checkedProject)
 
             // Assert
             actual.shouldBeInstanceOf<VerifyPublishing.Result.Success>()
@@ -96,7 +96,7 @@ internal class VerifyPublishingTest : FunSpec({
             val dependentProject1 = buildProject(name = "dependent-1", parent = rootProject).withVersion(dependentProjectsOldVersion)
             val dependentProject2 = buildProject(name = "dependent-2", parent = rootProject).withVersion(dependentProjectsOldVersion)
             val dependentProject3 = buildProject(name = "dependent-3", parent = rootProject).withVersion(ArtifactVersion("1.0.1"))
-            getReleaseDependentProjects.dependentProjects = listOf(dependentProject1, dependentProject2, dependentProject3)
+            val dependentProjects = listOf(dependentProject1, dependentProject2, dependentProject3)
 
             val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(increasedVersion)
 
@@ -106,7 +106,7 @@ internal class VerifyPublishingTest : FunSpec({
             getArtifactVersionFromTag.setProjectVersion(dependentProject3, dependentProjectsOldVersion)
 
             // Act
-            val actual = underTest(checkedProject)
+            val actual = createSut(dependentProjects).invoke(checkedProject)
 
             // Assert
             actual.shouldBeInstanceOf<DependentProjectsOutdated>().also {
@@ -122,13 +122,12 @@ internal class VerifyPublishingTest : FunSpec({
             ts = listOf(ArtifactVersion("1.0.0"), null),
         ) { previousTagVersion ->
             // Arrange
-            getReleaseDependentProjects.dependentProjects = emptyList()
             val increasedVersion = ArtifactVersion("1.0.1")
             val rootProject = buildProject(name = "root")
             val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(increasedVersion)
             getArtifactVersionFromTag.setProjectVersion(checkedProject, previousTagVersion)
 
-            val actual = underTest(checkedProject)
+            val actual = createSut(dependentProjects = emptyList()).invoke(checkedProject)
 
             actual.shouldBeInstanceOf<VerifyPublishing.Result.Success>()
         }
@@ -140,7 +139,7 @@ internal class VerifyPublishingTest : FunSpec({
         val rootProject = buildProject(name = "root")
 
         val dependentProject = buildProject(name = "dependent", parent = rootProject)
-        getReleaseDependentProjects.dependentProjects = listOf(dependentProject)
+        val dependentProjects = listOf(dependentProject)
 
         val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(checkedArtifactVersion)
         getArtifactVersionFromTag.setProjectVersion(checkedProject, checkedArtifactVersion)
@@ -148,7 +147,7 @@ internal class VerifyPublishingTest : FunSpec({
         checkArtifactUpdateStatus.artifactUpdateStatus = ArtifactUpdateStatus.UP_TO_DATE
 
         // Act
-        val actual = underTest(checkedProject)
+        val actual = createSut(dependentProjects).invoke(checkedProject)
 
         // Assert
         actual.shouldBeInstanceOf<VerifyPublishing.Result.Success>()
@@ -159,15 +158,13 @@ internal class VerifyPublishingTest : FunSpec({
         val checkedArtifactVersion = ArtifactVersion("1.0.0")
         val rootProject = buildProject(name = "root")
 
-        getReleaseDependentProjects.dependentProjects = emptyList()
-
         val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(checkedArtifactVersion)
         getArtifactVersionFromTag.setProjectVersion(checkedProject, checkedArtifactVersion)
 
         checkArtifactUpdateStatus.artifactUpdateStatus = ArtifactUpdateStatus.UP_TO_DATE
 
         // Act
-        val actual = underTest(checkedProject)
+        val actual = createSut(dependentProjects = emptyList()).invoke(checkedProject)
 
         // Assert
         actual.shouldBeInstanceOf<VerifyPublishing.Result.Success>()
@@ -179,7 +176,6 @@ internal class VerifyPublishingTest : FunSpec({
         val rootProject = buildProject(name = "root")
 
         val dependentProjects = listOf(buildProject(name = "dependent", parent = rootProject))
-        getReleaseDependentProjects.dependentProjects = dependentProjects
 
         val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(checkedArtifactVersion)
         getArtifactVersionFromTag.setProjectVersion(checkedProject, checkedArtifactVersion)
@@ -187,7 +183,7 @@ internal class VerifyPublishingTest : FunSpec({
         checkArtifactUpdateStatus.artifactUpdateStatus = ArtifactUpdateStatus.UPDATE_NEEDED
 
         // Act
-        val actual = underTest(checkedProject)
+        val actual = createSut(dependentProjects = dependentProjects).invoke(checkedProject)
 
         // Assert
         actual.shouldBeInstanceOf<ArtifactVersionNotIncreased>().also {
@@ -201,15 +197,13 @@ internal class VerifyPublishingTest : FunSpec({
         val checkedArtifactVersion = ArtifactVersion("1.0.0")
         val rootProject = buildProject(name = "root")
 
-        getReleaseDependentProjects.dependentProjects = emptyList()
-
         val checkedProject = buildProject(name = "checked", parent = rootProject).withVersion(checkedArtifactVersion)
         getArtifactVersionFromTag.setProjectVersion(checkedProject, checkedArtifactVersion)
 
         checkArtifactUpdateStatus.artifactUpdateStatus = ArtifactUpdateStatus.UPDATE_NEEDED
 
         // Act
-        val actual = underTest(checkedProject)
+        val actual = createSut(dependentProjects = emptyList()).invoke(checkedProject)
 
         // Assert
         actual.shouldBeInstanceOf<CheckIfShouldUpdate>()

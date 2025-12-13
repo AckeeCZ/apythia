@@ -1,30 +1,15 @@
 package io.github.ackeecz.apythia.util
 
-internal sealed interface PublishableProject {
+internal interface PublishableProject {
 
     val projectName: String
+}
 
-    object Bom : PublishableProject {
+internal enum class ApythiaPublishableProject(override val projectName: String) : PublishableProject {
 
-        override val projectName = "bom"
-    }
-
-    object Http : PublishableProject {
-
-        override val projectName = "http"
-    }
-
-    object HttpExtJsonKotlinxSerialization : PublishableProject {
-
-        override val projectName = "http-ext-json-kotlinx-serialization"
-    }
-
-    object HttpKtor : PublishableProject {
-        override val projectName = "http-ktor"
-    }
-
-
-    object HttpOkhttp : PublishableProject {
-        override val projectName = "http-okhttp"
-    }
+    Bom("bom"),
+    Http("http"),
+    HttpExtJsonKotlinxSerialization("http-ext-json-kotlinx-serialization"),
+    HttpKtor("http-ktor"),
+    HttpOkhttp("http-okhttp"),
 }
