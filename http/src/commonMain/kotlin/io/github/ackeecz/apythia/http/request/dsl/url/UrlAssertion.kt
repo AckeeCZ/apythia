@@ -1,6 +1,7 @@
 package io.github.ackeecz.apythia.http.request.dsl.url
 
 import com.eygraber.uri.Url
+import com.eygraber.uri.decodeUri
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
@@ -16,23 +17,23 @@ import io.kotest.matchers.string.shouldEndWith
 public interface UrlAssertion : DslExtensionConfigProvider {
 
     /**
-     * The actual URL of a HTTP request. This can be used to extend the [UrlAssertion] DSL with
+     * The actual decoded URL of a HTTP request. This can be used to extend the [UrlAssertion] DSL with
      * custom assertions.
      */
     public val actualUrl: String
 
     /**
-     * Asserts full request [url].
+     * Asserts full decoded request [url].
      */
     public fun url(url: String)
 
     /**
-     * Asserts full request URL [path].
+     * Asserts full decoded request URL [path].
      */
     public fun path(path: String)
 
     /**
-     * Asserts request URL [pathSuffix].
+     * Asserts decoded request URL [pathSuffix].
      */
     public fun pathSuffix(pathSuffix: String)
 
@@ -49,7 +50,7 @@ internal class UrlAssertionImpl(
 
     private val queryCallCountChecker = CallCountChecker(actionName = "query")
 
-    override val actualUrl = actualTypedUrl.toString()
+    override val actualUrl = actualTypedUrl.toString().decodeUri()
 
     override fun url(url: String) {
         actualUrl shouldBe url

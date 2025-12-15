@@ -140,6 +140,34 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
                 }
             }
 
+            test("URL encoding") {
+                underTest.mockNext200Response()
+                val actualPath = "pa t+h"
+                val expectedPath = "/$actualPath"
+                val actualQueryParams = mapOf(
+                    "param 1" to "value 1",
+                    "param+2" to "value+2",
+                )
+                val expectedQuery = actualQueryParams.entries.joinToString("&") { "${it.key}=${it.value}" }
+                val expectedUrl = "${remoteDataSource.baseUrl}$actualPath?$expectedQuery"
+
+                remoteDataSource.testUrlEncoding(actualPath, actualQueryParams)
+
+                underTest.assertNextRequest {
+                    url {
+                        actualUrl shouldBe expectedUrl
+                        url(expectedUrl)
+                        path(expectedPath)
+                        pathSuffix(expectedPath)
+                        query {
+                            actualQueryParams.forEach { (key, value) ->
+                                parameter(key, value)
+                            }
+                        }
+                    }
+                }
+            }
+
             test("headers") {
                 underTest.mockNext200Response()
                 val mimeType = "text/plain"

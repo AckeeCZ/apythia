@@ -32,9 +32,21 @@ internal suspend fun FunSpecContainerScope.urlTests(
             }
         }
 
+        @Suppress("MaxLineLength")
+        test("actual url is decoded correctly") {
+            underTest.actualRequestUrl = "https://ex+ample.com/path/with+plus/and%20space?percent%20=hello%20world&plus+=hello+world&encoded%2B=1%2B2#frag+ment%20here"
+
+            underTest.assertNextRequest {
+                url {
+                    actualUrl shouldBe "https://ex+ample.com/path/with+plus/and space?percent =hello world&plus =hello world&encoded+=1+2#frag+ment here"
+                }
+            }
+        }
+
         fullUrlTests(fixture)
         pathTests(fixture)
         pathSuffixTests(fixture)
+        queryTests(fixture)
     }
 }
 
@@ -59,6 +71,17 @@ private suspend fun FunSpecContainerScope.fullUrlTests(
             shouldNotFail {
                 underTest.assertNextRequest {
                     url { url(expected) }
+                }
+            }
+        }
+
+        @Suppress("MaxLineLength")
+        test("encoded url success") {
+            underTest.actualRequestUrl = "https://ex+ample.com/path/with+plus/and%20space?percent%20=hello%20world&plus+=hello+world&encoded%2B=1%2B2#frag+ment%20here"
+
+            underTest.assertNextRequest {
+                url {
+                    url("https://ex+ample.com/path/with+plus/and space?percent =hello world&plus =hello world&encoded+=1+2#frag+ment here")
                 }
             }
         }
@@ -89,6 +112,14 @@ private suspend fun FunSpecContainerScope.pathTests(
                 }
             }
         }
+
+        test("encoded path success") {
+            underTest.actualRequestUrl = "https://example.com/path/with+plus/and%20space"
+
+            underTest.assertNextRequest {
+                url { path("/path/with+plus/and space") }
+            }
+        }
     }
 }
 
@@ -114,6 +145,14 @@ private suspend fun FunSpecContainerScope.pathSuffixTests(
                 underTest.assertNextRequest {
                     url { pathSuffix(expected) }
                 }
+            }
+        }
+
+        test("encoded path suffix success") {
+            underTest.actualRequestUrl = "https://ex+ample.com/path/with+plus/and%20space"
+
+            underTest.assertNextRequest {
+                url { pathSuffix("+plus/and space") }
             }
         }
     }

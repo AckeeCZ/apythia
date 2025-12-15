@@ -1,5 +1,6 @@
 package io.github.ackeecz.apythia.properties
 
+import io.github.ackeecz.apythia.util.ApythiaPublishableProject
 import io.github.ackeecz.apythia.util.PublishableProject
 import java.util.Properties
 
@@ -54,11 +55,11 @@ public sealed class ArtifactProperties(
             projectName: String,
             properties: Properties,
         ): ArtifactProperties = when (projectName) {
-            PublishableProject.Bom.projectName -> Bom(properties)
-            PublishableProject.Http.projectName -> Http(properties)
-            PublishableProject.HttpExtJsonKotlinxSerialization.projectName -> HttpExtJsonKotlinxSerialization(properties)
-            PublishableProject.HttpKtor.projectName -> HttpKtor(properties)
-            PublishableProject.HttpOkhttp.projectName -> HttpOkhttp(properties)
+            ApythiaPublishableProject.Bom.projectName -> Bom(properties)
+            ApythiaPublishableProject.Http.projectName -> Http(properties)
+            ApythiaPublishableProject.HttpExtJsonKotlinxSerialization.projectName -> HttpExtJsonKotlinxSerialization(properties)
+            ApythiaPublishableProject.HttpKtor.projectName -> HttpKtor(properties)
+            ApythiaPublishableProject.HttpOkhttp.projectName -> HttpOkhttp(properties)
             else -> throw IllegalStateException("Unknown Gradle module with name $projectName. Please " +
                 "add artifact properties for this module and corresponding mapping in " +
                 "${ArtifactProperties::class.simpleName}. It is also possible that you changed module " +

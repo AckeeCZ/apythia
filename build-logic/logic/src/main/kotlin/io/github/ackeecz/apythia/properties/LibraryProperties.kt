@@ -1,6 +1,6 @@
 package io.github.ackeecz.apythia.properties
 
-import io.github.ackeecz.apythia.util.PublishableProject
+import io.github.ackeecz.apythia.util.ApythiaPublishableProject
 import org.gradle.api.Project
 import java.io.File
 import java.util.Properties
@@ -26,7 +26,7 @@ public class LibraryProperties internal constructor(
 
     public val bomArtifactProperties: ArtifactProperties
         get() = ArtifactProperties.getFor(
-            projectName = PublishableProject.Bom.projectName,
+            projectName = ApythiaPublishableProject.Bom.projectName,
             properties = properties,
         )
 

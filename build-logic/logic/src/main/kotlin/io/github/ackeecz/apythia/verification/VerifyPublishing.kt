@@ -22,21 +22,23 @@ import org.jetbrains.annotations.VisibleForTesting
  * a new version.
  */
 internal class VerifyPublishing @VisibleForTesting constructor(
+    private val dependentProjects: List<Project>,
     private val getPreviousTag: GetPreviousTag,
     private val getArtifactVersionFromTag: GetArtifactVersionFromTag,
-    private val getReleaseDependentProjects: GetReleaseDependentProjects,
     private val checkArtifactUpdateStatus: CheckArtifactUpdateStatus,
 ) {
 
-    constructor(execOperations: ExecOperations) : this(
+    constructor(
+        execOperations: ExecOperations,
+        dependentProjects: List<Project>,
+    ) : this(
+        dependentProjects = dependentProjects,
         getPreviousTag = GetPreviousTag(execOperations),
         getArtifactVersionFromTag = GetArtifactVersionFromTag(execOperations),
-        getReleaseDependentProjects = GetReleaseDependentProjects(),
         checkArtifactUpdateStatus = CheckArtifactUpdateStatus(execOperations),
     )
 
     operator fun invoke(project: Project): Result {
-        val dependentProjects = getReleaseDependentProjects(project)
         return Impl(project, dependentProjects).invoke()
     }
 

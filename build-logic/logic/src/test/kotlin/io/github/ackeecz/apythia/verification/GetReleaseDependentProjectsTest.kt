@@ -4,6 +4,7 @@ import io.github.ackeecz.apythia.testutil.IMPLEMENTATION_CONFIGURATION
 import io.github.ackeecz.apythia.testutil.addDependencies
 import io.github.ackeecz.apythia.testutil.addImplementationDependencies
 import io.github.ackeecz.apythia.testutil.buildProject
+import io.github.ackeecz.apythia.util.PublishableProject
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -15,25 +16,25 @@ private lateinit var underTest: GetReleaseDependentProjects
 internal class GetReleaseDependentProjectsTest : FunSpec({
 
     beforeTest {
-        underTest = GetReleaseDependentProjects()
+        underTest = GetReleaseDependentProjectsImpl(TestPublishableProject.entries)
     }
 
     test("get all dependent projects for complex flat hierarchy (root and child projects)") {
         // Arrange
         val rootProject = buildProject(name = "root")
-        val checkedProject = buildProject(name = "checked", parent = rootProject)
-        val notDependentProject1 = buildProject(name = "not-dependent-1", parent = rootProject)
-        val notDependentProject2 = buildProject(name = "not-dependent-2", parent = rootProject)
+        val checkedProject = buildProject(name = TestPublishableProject.One.projectName, parent = rootProject)
+        val notDependentProject1 = buildProject(name = TestPublishableProject.Two.projectName, parent = rootProject)
+        val notDependentProject2 = buildProject(name = TestPublishableProject.Three.projectName, parent = rootProject)
             .addImplementationDependencies(notDependentProject1)
 
-        val dependentProject1 = buildProject(name = "dependent-1", parent = rootProject)
+        val dependentProject1 = buildProject(name = TestPublishableProject.Four.projectName, parent = rootProject)
             .addImplementationDependencies(checkedProject, notDependentProject2)
 
-        val dependentProject2 = buildProject(name = "dependent-2", parent = rootProject)
+        val dependentProject2 = buildProject(name = TestPublishableProject.Five.projectName, parent = rootProject)
             .addImplementationDependencies(checkedProject, dependentProject1)
 
         // Act
-        val actual = underTest(checkedProject)
+        val actual = underTest(checkedProject).get()
 
         // Assert
         actual shouldContainProjectsExactlyInAnyOrder listOf(dependentProject1, dependentProject2)
@@ -51,14 +52,18 @@ internal class GetReleaseDependentProjectsTest : FunSpec({
             "releaseImplementation",
             "releaseRuntimeOnly",
             "runtimeOnly",
+            "commonMainApi",
+            "commonMainCompileOnly",
+            "commonMainImplementation",
+            "commonMainRuntimeOnly",
         ) { configuration ->
             val rootProject = buildProject(name = "root")
-            val checkedProject = buildProject(name = "checked", parent = rootProject)
-            val notDependentProject = buildProject(name = "not-dependent", parent = rootProject)
-            val dependentProject = buildProject(name = "dependent", parent = rootProject)
+            val checkedProject = buildProject(name = TestPublishableProject.One.projectName, parent = rootProject)
+            val notDependentProject = buildProject(name = TestPublishableProject.Two.projectName, parent = rootProject)
+            val dependentProject = buildProject(name = TestPublishableProject.Three.projectName, parent = rootProject)
                 .addDependencies(configuration, checkedProject, notDependentProject)
 
-            val actual = underTest(checkedProject)
+            val actual = underTest(checkedProject).get()
 
             actual shouldContainProjectsExactlyInAnyOrder listOf(dependentProject)
         }
@@ -75,11 +80,11 @@ internal class GetReleaseDependentProjectsTest : FunSpec({
             "testImplementation",
         ) { configuration ->
             val rootProject = buildProject(name = "root")
-            val checkedProject = buildProject(name = "checked", parent = rootProject)
-            buildProject(name = "dependent-with-non-release-configuration", parent = rootProject)
+            val checkedProject = buildProject(name = TestPublishableProject.One.projectName, parent = rootProject)
+            buildProject(name = TestPublishableProject.Two.projectName, parent = rootProject)
                 .addDependencies(configuration, checkedProject)
 
-            val actual = underTest(checkedProject)
+            val actual = underTest(checkedProject).get()
 
             actual.shouldBeEmpty()
         }
@@ -88,22 +93,22 @@ internal class GetReleaseDependentProjectsTest : FunSpec({
     test("get all dependent projects for complex nested hierarchy (root, child, grandchild projects)") {
         // Arrange
         val rootProject = buildProject(name = "root")
-        val checkedProject = buildProject(name = "checked", parent = rootProject)
-        val notDependentChildProject = buildProject(name = "not-dependent-child", parent = rootProject)
-        val dependentChildProject = buildProject(name = "dependent-child", parent = rootProject)
+        val checkedProject = buildProject(name = TestPublishableProject.One.projectName, parent = rootProject)
+        val notDependentChildProject = buildProject(name = TestPublishableProject.Two.projectName, parent = rootProject)
+        val dependentChildProject = buildProject(name = TestPublishableProject.Three.projectName, parent = rootProject)
             .addImplementationDependencies(checkedProject, notDependentChildProject)
 
         val notDependentGrandChildProject = buildProject(
-            name = "not-dependent-grand-child",
+            name = TestPublishableProject.Four.projectName,
             parent = notDependentChildProject,
         )
         val dependentGrandChildProject = buildProject(
-            name = "dependent-grand-child",
+            name = TestPublishableProject.Five.projectName,
             parent = dependentChildProject,
         ).addImplementationDependencies(checkedProject, notDependentGrandChildProject)
 
         // Act
-        val actual = underTest(checkedProject)
+        val actual = underTest(checkedProject).get()
 
         // Assert
         actual shouldContainProjectsExactlyInAnyOrder listOf(dependentChildProject, dependentGrandChildProject)
@@ -113,11 +118,22 @@ internal class GetReleaseDependentProjectsTest : FunSpec({
     // filter these cases out, because we care only about other dependent projects
     test("get no dependent projects when project depend only on itself") {
         val rootProject = buildProject(name = "root")
-        val checkedProject = buildProject(name = "checked", parent = rootProject).also {
+        val checkedProject = buildProject(name = TestPublishableProject.One.projectName, parent = rootProject).also {
             it.addDependencies("releaseUnitTestCompileClasspath", it)
         }
 
-        val actual = underTest(checkedProject)
+        val actual = underTest(checkedProject).get()
+
+        actual.shouldBeEmpty()
+    }
+
+    test("filter out dependent projects that are not publishable") {
+        val rootProject = buildProject(name = "root")
+        val checkedProject = buildProject(name = TestPublishableProject.One.projectName, parent = rootProject)
+        buildProject(name = "not-publishable", parent = rootProject)
+            .addImplementationDependencies(checkedProject)
+
+        val actual = underTest(checkedProject).get()
 
         actual.shouldBeEmpty()
     }
@@ -125,4 +141,13 @@ internal class GetReleaseDependentProjectsTest : FunSpec({
 
 private infix fun List<Project>.shouldContainProjectsExactlyInAnyOrder(expected: List<Project>) {
     map { it.path } shouldContainExactlyInAnyOrder expected.map { it.path }
+}
+
+private enum class TestPublishableProject(override val projectName: String) : PublishableProject {
+
+    One("one"),
+    Two("two"),
+    Three("three"),
+    Four("four"),
+    Five("five"),
 }

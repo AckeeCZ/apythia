@@ -7,9 +7,21 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 ### http
+#### Fixed
+- Encoded URL processing. `HttpApythia` now correctly handles encoded URLs and all URL assertions
+now assert correctly only against decoded URLs.
+
 ### http-ext-json-kotlinx-serialization
+#### Changed
+- Updated dependency on `http` artifact.
+
 ### http-ktor
+#### Changed
+- Updated dependency on `http` artifact.
+
 ### http-okhttp
+#### Changed
+- Updated dependency on `http` artifact.
 
 ## BOM [1.0.0] - 2025-12-04
 ### http
