@@ -58,6 +58,37 @@ If the intent is a public API change, treat the `.api` diff as part of the revie
 | `apythia.publishing` | Maven Central publishing + `verifyPublishing` / `checkIfUpdateNeededSinceCurrentTag` |
 | `apythia.preflightchecks` | Registers `prePublishCheck` aggregating release-time checks |
 
+## Publishing
+
+Source of truth for the release procedure: `RELEASING.md`. Below is the mental model.
+
+### Versioning
+
+Every artifact has an independent version in `lib.properties` (`HTTP_VERSION`, `HTTP_KTOR_VERSION`, `BOM_VERSION`, …). The BOM pins a compatible set. Artifacts can release individually, but `verifyPublishing` forces co-release when an internal-only module had breaking changes — internal-API breaks can corrupt binary compat between artifacts that link against the same internal.
+
+### Release Gradle tasks
+
+| Task | Purpose |
+|---|---|
+| `checkIfUpdateNeededSinceCurrentTag` | List artifacts whose code changed since the last tag |
+| `verifyPublishing` | Fail if internal-module breakage forces a co-release |
+| `verifyBomVersion` | Fail if BOM version in `lib.properties` doesn't match the pushed git tag |
+| `prePublishCheck` | Aggregated CI-equivalent check; run locally before pushing the tag |
+
+### Publishing skipping
+
+`PublishingPlugin` probes Maven Central before publishing:
+
+- **404** → publish.
+- **2xx** → skip (artifact at this version already exists).
+- **Anything else** → fail.
+
+Re-pushing the same tag is safe (publishes nothing). To re-publish, bump the version — never force.
+
+### Dokka + signing
+
+`com.vanniktech.maven.publish` + Dokka. `signAllPublications()` requires GPG secrets — provided by CI only. Local publishing fails signing; expected.
+
 ## Code Style
 
 - Always put a blank line after a type body opening brace and before the first member. Applies to `class`, `interface`, `sealed class`, `object`, `enum class` — any construct that declares a type with a `{ }` body block.
