@@ -1,6 +1,5 @@
 package io.github.ackeecz.apythia.plugin
 
-import com.android.build.api.dsl.androidLibrary
 import io.github.ackeecz.apythia.util.Constants
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -42,19 +41,20 @@ internal class KmpLibraryPlugin : Plugin<Project> {
                 }
             }
 
-            androidLibrary {
+            android {
                 compileSdk = Constants.COMPILE_SDK
                 minSdk = Constants.MIN_SDK
 
-                compilations.configureEach {
-                    compileTaskProvider.configure {
-                        compilerOptions.configureJvmSpecificOptions()
-                    }
+                compilerOptions {
+                    configureJvmSpecificOptions()
                 }
 
                 optimization {
                     consumerKeepRules.publish = true
-                    consumerKeepRules.file("consumer-rules.pro")
+                    val consumerRulesFile = target.file("consumer-rules.pro")
+                    if (consumerRulesFile.exists()) {
+                        consumerKeepRules.file(consumerRulesFile)
+                    }
                     minify = false
                 }
             }

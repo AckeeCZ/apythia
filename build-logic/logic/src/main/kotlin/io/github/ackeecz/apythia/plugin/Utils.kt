@@ -1,7 +1,8 @@
 package io.github.ackeecz.apythia.plugin
 
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
@@ -15,9 +16,9 @@ import org.gradle.kotlin.dsl.add
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.the
 import org.gradle.plugin.use.PluginDependency
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
 import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
@@ -31,12 +32,16 @@ internal fun PluginManager.apply(plugin: Provider<PluginDependency>) {
 internal val NamedDomainObjectContainer<KotlinSourceSet>.androidHostTest: KotlinSourceSet
     get() = getByName("androidHostTest")
 
-internal fun Project.androidBase(action: BaseExtension.() -> Unit) {
-    extensions.configure(BaseExtension::class, action)
+internal fun Project.androidCommon(action: CommonExtension.() -> Unit) {
+    extensions.configure(CommonExtension::class, action)
 }
 
-internal fun Project.androidApp(action: BaseAppModuleExtension.() -> Unit) {
-    extensions.configure(BaseAppModuleExtension::class, action)
+internal fun Project.androidApplication(action: ApplicationExtension.() -> Unit) {
+    extensions.configure(ApplicationExtension::class, action)
+}
+
+internal fun Project.kotlinAndroid(action: KotlinAndroidProjectExtension.() -> Unit) {
+    extensions.configure(KotlinAndroidProjectExtension::class, action)
 }
 
 internal fun Project.java(action: JavaPluginExtension.() -> Unit) {
@@ -49,6 +54,10 @@ internal fun Project.kotlinJvm(action: KotlinJvmProjectExtension.() -> Unit) {
 
 internal fun Project.kotlinMultiplatform(action: KotlinMultiplatformExtension.() -> Unit) {
     extensions.configure(KotlinMultiplatformExtension::class, action)
+}
+
+internal fun KotlinMultiplatformExtension.android(action: KotlinMultiplatformAndroidLibraryTarget.() -> Unit) {
+    extensions.configure(KotlinMultiplatformAndroidLibraryTarget::class.java, action)
 }
 
 internal fun KotlinMultiplatformExtension.abiValidation(action: AbiValidationMultiplatformExtension.() -> Unit) {

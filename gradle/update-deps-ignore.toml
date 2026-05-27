@@ -5,8 +5,5 @@
 # To re-enable a dep for /update-deps, remove its entry here (or move it to a comment).
 
 [libraries]
-"com.android.tools.build:gradle" = "AGP 8→9 migration deferred — build-logic uses BaseExtension + BaseAppModuleExtension (internal pkg) hidden by android.newDsl=true; kotlin-android plugin incompatible with AGP 9 new DSL. Migrate on a dedicated branch."
 
 [plugins]
-"com.android.application" = "AGP 8→9 migration deferred — see com.android.tools.build:gradle entry."
-"com.android.kotlin.multiplatform.library" = "AGP 8→9 migration deferred — see com.android.tools.build:gradle entry."

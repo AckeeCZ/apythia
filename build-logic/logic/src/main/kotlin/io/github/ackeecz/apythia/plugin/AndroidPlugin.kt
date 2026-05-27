@@ -1,6 +1,6 @@
 package io.github.ackeecz.apythia.plugin
 
-import com.android.build.gradle.BaseExtension
+import com.android.build.api.dsl.CommonExtension
 import io.github.ackeecz.apythia.util.Constants
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -12,23 +12,19 @@ internal class AndroidPlugin : Plugin<Project> {
     }
 
     private fun Project.configure() {
-        androidBase {
+        androidCommon {
             configureSdkVersions()
             configureCompileOptions()
         }
     }
 
-    private fun BaseExtension.configureSdkVersions() {
-        compileSdkVersion(Constants.COMPILE_SDK)
-        defaultConfig {
-            minSdk = Constants.MIN_SDK
-        }
+    private fun CommonExtension.configureSdkVersions() {
+        compileSdk = Constants.COMPILE_SDK
+        defaultConfig.minSdk = Constants.MIN_SDK
     }
 
-    private fun BaseExtension.configureCompileOptions() {
-        compileOptions {
-            sourceCompatibility = Constants.JAVA_VERSION
-            targetCompatibility = Constants.JAVA_VERSION
-        }
+    private fun CommonExtension.configureCompileOptions() {
+        compileOptions.sourceCompatibility = Constants.JAVA_VERSION
+        compileOptions.targetCompatibility = Constants.JAVA_VERSION
     }
 }

@@ -6,7 +6,7 @@ plugins {
 
 kotlin {
 
-    androidLibrary {
+    android {
         namespace = "${Constants.NAMESPACE_PREFIX}.http.testing"
     }
 

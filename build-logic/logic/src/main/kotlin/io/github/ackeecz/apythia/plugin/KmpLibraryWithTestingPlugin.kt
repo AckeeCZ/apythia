@@ -1,6 +1,5 @@
 package io.github.ackeecz.apythia.plugin
 
-import com.android.build.api.dsl.androidLibrary
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
@@ -35,12 +34,11 @@ internal class KmpLibraryWithTestingPlugin : Plugin<Project> {
         pluginManager.apply(libs.plugins.gradle.testLogger)
     }
 
-    @Suppress("UnstableApiUsage")
     private fun Project.configurePlugins() {
         kotlinMultiplatform {
-            androidLibrary {
+            android {
                 // This nice config enables Android host (local unit) tests in KMP module 🫠
-                withHostTestBuilder {}.configure {}
+                withHostTest {}
             }
 
             sourceSets.commonTest.dependencies {
