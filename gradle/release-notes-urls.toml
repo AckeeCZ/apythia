@@ -1,0 +1,31 @@
+# gradle/release-notes-urls.toml
+# Maps Maven coordinates and Gradle plugin IDs to release-notes URLs.
+# Run /find-release-notes to populate; manual edits preserved across runs.
+
+[libraries]
+"com.android.tools.build:gradle" = "https://developer.android.com/build/releases/agp-x-x-x-release-notes"
+"com.squareup.okhttp3:okhttp-bom" = "https://github.com/square/okhttp/blob/HEAD/CHANGELOG.md"
+"com.vanniktech:gradle-maven-publish-plugin" = "https://github.com/vanniktech/gradle-maven-publish-plugin/blob/HEAD/CHANGELOG.md"
+"io.kotest:kotest-assertions-core" = "https://github.com/kotest/kotest/releases"
+"io.kotest:kotest-framework-engine" = "https://github.com/kotest/kotest/releases"
+"io.kotest:kotest-runner-junit5" = "https://github.com/kotest/kotest/releases"
+"io.ktor:ktor-client-logging" = "https://github.com/ktorio/ktor/blob/HEAD/CHANGELOG.md"
+"io.ktor:ktor-client-mock" = "https://github.com/ktorio/ktor/blob/HEAD/CHANGELOG.md"
+"org.jetbrains.kotlin:kotlin-gradle-plugin" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
+"org.jetbrains.kotlinx:kotlinx-serialization-json" = "https://github.com/Kotlin/kotlinx.serialization/blob/HEAD/CHANGELOG.md"
+"org.junit:junit-bom" = "https://github.com/junit-team/junit-framework/releases"
+
+[plugins]
+"com.android.application" = "https://developer.android.com/build/releases/agp-x-x-x-release-notes"
+"com.android.kotlin.multiplatform.library" = "https://developer.android.com/build/releases/agp-x-x-x-release-notes"
+"com.google.devtools.ksp" = "https://github.com/google/ksp/releases"
+"com.vanniktech.maven.publish" = "https://github.com/vanniktech/gradle-maven-publish-plugin/blob/HEAD/CHANGELOG.md"
+"io.kotest" = "https://github.com/kotest/kotest/releases"
+"org.jetbrains.dokka" = "https://github.com/Kotlin/dokka/releases"
+"org.jetbrains.kotlin.android" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
+"org.jetbrains.kotlin.jvm" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
+"org.jetbrains.kotlin.multiplatform" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
+
+[unresolved]
+# Entries the skill could not auto-detect. Fill in manually, then move to [libraries] or [plugins].
+# Keys here are the same shape as their target section.

@@ -1,6 +1,5 @@
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -19,26 +18,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-// TODO This workarounds issues with incompatibility between Kotest and Gradle. Kotest is now
-//  compiled with Kotlin 2.2.0 and even though Gradle 9.2.0 has embedded Kotlin of version 2.2.0 as well,
-//  it fails tests compilation because it apparently compiles it with Kotlin compiler 2.0.0, which
-//  does not understand compiled libraries with 2.2.0. There was also a warning that language level 1.8
-//  is deprecated and will be removed in future versions of Kotlin. Seems like Gradle has this set to
-//  1.8 internally and maybe the newest compiler can't compile it anymore, so it fallbacks to older
-//  compiler version to compile the code, but then it clashes with Kotest? Increasing language version
-//  to 2.2 fixes the issue, so it looks like this or some similar issue. Try to remove this workaround
-//  with newer versions of Gradle than 9.2.0.
-tasks.withType<KotlinCompile>()
-    // Apply to test compilation tasks only to let the build logic src to be compiled with Gradle's
-    // settings.
-    .matching { it.name.contains("Test") }
-    .configureEach {
-        compilerOptions {
-            languageVersion.set(KotlinVersion.KOTLIN_2_2)
-            apiVersion.set(KotlinVersion.KOTLIN_2_2)
-        }
-    }
-
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
@@ -47,6 +26,7 @@ dependencies {
     compileOnly(files(libs::class.java.superclass.protectionDomain.codeSource.location))
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.detekt.gradlePlugin)
+    compileOnly(libs.gradle.versions.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.mavenPublish.gradlePlugin)
 
@@ -60,6 +40,11 @@ gradlePlugin {
         plugin(
             dependency = libs.plugins.apythia.android.application,
             pluginClassSimpleName = "AndroidApplicationPlugin",
+        )
+
+        plugin(
+            dependency = libs.plugins.apythia.dependency.updates,
+            pluginClassSimpleName = "DependencyUpdatesPlugin",
         )
 
         plugin(

@@ -6,7 +6,6 @@ import io.github.ackeecz.apythia.testing.http.shouldFail
 import io.github.ackeecz.apythia.testing.http.shouldNotFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.JsonObjectBuilder
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -34,7 +33,6 @@ private suspend fun FunSpecContainerScope.propertyTest(
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 private suspend fun FunSpecContainerScope.nullPropertyTests(
     fixture: AssertionDslExtensionsTest.Fixture,
 ) = with(fixture) {

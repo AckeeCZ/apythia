@@ -1,10 +1,12 @@
 plugins {
+    alias(libs.plugins.apythia.dependency.updates)
     alias(libs.plugins.apythia.preflightchecks) apply true
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.kmp.library) apply false
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.gradle.testLogger) apply false
+    alias(libs.plugins.gradle.versions)
     alias(libs.plugins.kotest.multiplatform) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.jvm) apply false
