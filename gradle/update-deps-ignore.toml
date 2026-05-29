@@ -1,0 +1,9 @@
+# gradle/update-deps-ignore.toml
+# Dependencies pinned out of automatic /update-deps runs.
+# Value = reason / tracking ticket / pinned-until-date.
+#
+# To re-enable a dep for /update-deps, remove its entry here (or move it to a comment).
+
+[libraries]
+
+[plugins]

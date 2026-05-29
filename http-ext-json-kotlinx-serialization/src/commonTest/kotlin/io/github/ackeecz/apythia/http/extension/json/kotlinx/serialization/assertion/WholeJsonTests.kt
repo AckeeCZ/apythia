@@ -14,7 +14,6 @@ import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -70,7 +69,6 @@ private suspend fun FunSpecContainerScope.jsonObjectTests(
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 private suspend fun FunSpecContainerScope.commonWholeJsonTestSuite(
     fixture: AssertionDslExtensionsTest.Fixture,
     assertJson: BodyAssertion.(JsonObject, Json) -> Unit,

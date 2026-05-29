@@ -3,8 +3,6 @@ package io.github.ackeecz.apythia.plugin
 import io.github.ackeecz.apythia.util.Constants
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 internal class AndroidApplicationPlugin : Plugin<Project> {
 
@@ -20,9 +18,8 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
 
     private fun Project.configure() {
         pluginManager.apply(libs.plugins.android.application)
-        pluginManager.apply(libs.plugins.kotlin.android)
 
-        androidApp {
+        androidApplication {
 
             defaultConfig {
                 targetSdk = Constants.TARGET_SDK
@@ -34,7 +31,14 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
             buildTypes {
                 release {
                     isMinifyEnabled = true
-                    proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+                    val defaultRules = getDefaultProguardFile("proguard-android-optimize.txt")
+                    val customProguardRules = file("proguard-rules.pro").takeIf { it.exists() }
+                    if (customProguardRules != null) {
+                        proguardFiles(defaultRules, customProguardRules)
+                    } else {
+                        proguardFiles(defaultRules)
+                    }
                 }
             }
 
@@ -47,7 +51,7 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
     }
 
     private fun Project.configureKotlin() {
-        tasks.withType<KotlinCompile>().configureEach {
+        kotlinAndroid {
             compilerOptions {
                 configureAllOptions()
             }

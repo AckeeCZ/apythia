@@ -33,3 +33,6 @@ google-services.json
 
 # Mac OS
 .DS_Store
+
+# Claude
+.claude/plans
