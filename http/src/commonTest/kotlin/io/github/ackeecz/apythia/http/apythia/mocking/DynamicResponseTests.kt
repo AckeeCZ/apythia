@@ -40,7 +40,6 @@ internal suspend fun FunSpecContainerScope.dynamicResponseTests(
     fixture: HttpApythiaTest.Fixture,
 ) = with(fixture) {
     context("dynamic response") {
-
         test("response is built from the request passed to the provider") {
             underTest.mockNextIdEchoingResponse()
 
@@ -91,7 +90,6 @@ internal suspend fun FunSpecContainerScope.dynamicResponseTests(
     }
 
     context("dynamic responses") {
-
         test("records the provider count times") {
             underTest.mockNextIdEchoingResponses(count = 3)
 
@@ -114,7 +112,6 @@ internal suspend fun FunSpecContainerScope.dynamicResponseTests(
     }
 
     context("default dynamic response implementation") {
-
         test("mockNextDynamicResponse fails at mock time with IllegalStateException naming the implementation") {
             val underTest = StaticOnlyHttpApythiaStub()
 
