@@ -169,22 +169,27 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
             }
 
             test("static and dynamic mocks are consumed in mocking order") {
-                underTest.mockNextResponse { statusCode(201) }
-                underTest.mockNextDynamicResponse { statusCode(202) }
-                underTest.mockNextResponse { statusCode(203) }
+                val firstCode = 201
+                val secondCode = 202
+                val thirdCode = 203
+                underTest.mockNextResponse { statusCode(firstCode) }
+                underTest.mockNextDynamicResponse { statusCode(secondCode) }
+                underTest.mockNextResponse { statusCode(thirdCode) }
 
-                remoteDataSource.getMockedResponse().statusCode shouldBe 201
-                remoteDataSource.getMockedResponse().statusCode shouldBe 202
-                remoteDataSource.getMockedResponse().statusCode shouldBe 203
+                remoteDataSource.getMockedResponse().statusCode shouldBe firstCode
+                remoteDataSource.getMockedResponse().statusCode shouldBe secondCode
+                remoteDataSource.getMockedResponse().statusCode shouldBe thirdCode
             }
 
             test("each enqueued dynamic mock answers exactly one request") {
+                val firstCode = 201
+                val secondCode = 202
                 underTest.mockNextDynamicResponses(count = 2) { request ->
                     statusCode(request.queryParameter("code")!!.toInt())
                 }
 
-                remoteDataSource.getMockedResponse(mapOf("code" to "201")).statusCode shouldBe 201
-                remoteDataSource.getMockedResponse(mapOf("code" to "202")).statusCode shouldBe 202
+                remoteDataSource.getMockedResponse(mapOf("code" to "$firstCode")).statusCode shouldBe firstCode
+                remoteDataSource.getMockedResponse(mapOf("code" to "$secondCode")).statusCode shouldBe secondCode
             }
 
             test("concurrent requests receive responses matching their own query parameter") {
