@@ -3,15 +3,17 @@ package io.github.ackeecz.apythia.http.okhttp
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withTimeout
 import mockwebserver3.MockResponse
 import mockwebserver3.MockWebServer
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
+import kotlin.time.Duration.Companion.seconds
 
-private const val AWAIT_TIMEOUT_SECONDS = 5L
+private val AWAIT_TIMEOUT = 5.seconds
 
 private lateinit var server: MockWebServer
 private lateinit var client: OkHttpClient
@@ -43,23 +45,19 @@ internal class ResponseProviderDispatcherTest : FunSpec({
 
     test("passes the recorded request to the factory") {
         underTest.enqueue { request ->
-            MockResponse(code = request.url.queryParameter("code")!!.toInt())
+            MockResponse(code = requireNotNull(request.url.queryParameter("code")).toInt())
         }
 
         sendRequest(query = "?code=418").code shouldBe 418
     }
 
     test("close releases a request that arrived with no enqueued factory") {
-        val callFinished = CountDownLatch(1)
-        thread {
-            runCatching { sendRequest() }
-            callFinished.countDown()
-        }
-        server.takeRequest(AWAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS).shouldNotBeNull()
+        val call = async(Dispatchers.IO) { runCatching { sendRequest() } }
+        server.takeRequest(AWAIT_TIMEOUT.inWholeSeconds, TimeUnit.SECONDS).shouldNotBeNull()
 
         server.close()
 
-        callFinished.await(AWAIT_TIMEOUT_SECONDS, TimeUnit.SECONDS) shouldBe true
+        withTimeout(AWAIT_TIMEOUT) { call.await() }
     }
 })
 
