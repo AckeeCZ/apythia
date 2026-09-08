@@ -1,17 +1,18 @@
 package io.github.ackeecz.apythia.http.apythia
 
-import io.github.ackeecz.apythia.http.HttpApythia
 import io.github.ackeecz.apythia.http.apythia.assertion.methodTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestBodyTests
 import io.github.ackeecz.apythia.http.apythia.assertion.requestHeadersTests
 import io.github.ackeecz.apythia.http.apythia.assertion.urlTests
 import io.github.ackeecz.apythia.http.apythia.mocking.bodyTests
+import io.github.ackeecz.apythia.http.apythia.mocking.dynamicResponseTests
 import io.github.ackeecz.apythia.http.apythia.mocking.headersTests
 import io.github.ackeecz.apythia.http.apythia.mocking.statusCodeTests
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfig
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigMock
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.extension.getDslExtensionConfig
+import io.github.ackeecz.apythia.http.request.ActualRequest
 import io.github.ackeecz.apythia.http.request.dsl.body.BodyAssertion
 import io.github.ackeecz.apythia.http.request.dsl.header.HeadersAssertion
 import io.github.ackeecz.apythia.http.request.dsl.url.QueryAssertion
@@ -63,6 +64,12 @@ internal class HttpApythiaTest : FunSpec({
             }
         }
 
+        fun resolveLastMockedResponse(
+            request: ActualRequest = underTest.actualRequest,
+        ): HttpResponse {
+            return underTest.mockedResponseProviders.last().invoke(request)
+        }
+
         fun requireActualResponse(): HttpResponse {
             return checkNotNull(underTest.actualResponse)
         }
@@ -86,6 +93,15 @@ private fun FunSpec.dslExtensionConfigTests() {
         context("in ${HttpResponseMockBuilder::class.simpleName}") {
             dslExtensionConfigTestSuite(
                 callDslExtensionConfigProvider = { mockNextResponse(it) }
+            )
+        }
+
+        context("in ${HttpResponseMockBuilder::class.simpleName} (dynamic)") {
+            dslExtensionConfigTestSuite(
+                callDslExtensionConfigProvider = { assertConfig ->
+                    mockNextDynamicResponse { assertConfig() }
+                    mockedResponseProviders.last().invoke(actualRequest)
+                }
             )
         }
 
@@ -126,7 +142,7 @@ private fun FunSpec.dslExtensionConfigTests() {
 }
 
 private suspend fun FunSpecContainerScope.dslExtensionConfigTestSuite(
-    callDslExtensionConfigProvider: suspend HttpApythia.(DslExtensionConfigProvider.() -> Unit) -> Unit,
+    callDslExtensionConfigProvider: suspend HttpApythiaMock.(DslExtensionConfigProvider.() -> Unit) -> Unit,
 ) {
     test("set config and retrieve it") {
         val expected = Random.nextInt()
@@ -162,6 +178,7 @@ private fun FunSpec.assertionTests(fixture: HttpApythiaTest.Fixture) {
 private fun FunSpec.mockingTests(fixture: HttpApythiaTest.Fixture) = with(fixture) {
     context("mocking") {
         statusCodeTests(fixture)
+        dynamicResponseTests(fixture)
         headersTests(fixture)
         bodyTests(fixture)
 

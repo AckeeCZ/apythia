@@ -21,8 +21,11 @@ public abstract class io/github/ackeecz/apythia/http/HttpApythia {
 	protected abstract fun forEachMultipartFormDataPart (Lio/github/ackeecz/apythia/http/request/ActualHttpMessage;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun getNextActualRequest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun mockNext200Response ()V
+	public final fun mockNextDynamicResponse (Lkotlin/jvm/functions/Function2;)V
+	public final fun mockNextDynamicResponses (ILkotlin/jvm/functions/Function2;)V
 	protected abstract fun mockNextResponse (Lio/github/ackeecz/apythia/http/response/HttpResponse;)V
 	public final fun mockNextResponse (Lkotlin/jvm/functions/Function1;)V
+	protected fun mockNextResponseProvider (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class io/github/ackeecz/apythia/http/UnsupportedEncodingException : java/lang/RuntimeException {
@@ -60,8 +63,11 @@ public final class io/github/ackeecz/apythia/http/request/ActualRequest {
 	public final fun getBody ()[B
 	public final fun getHeaders ()Ljava/util/Map;
 	public final fun getMethod ()Ljava/lang/String;
+	public final fun getPath ()Ljava/lang/String;
+	public final fun getQueryParameters ()Ljava/util/Map;
 	public final fun getUrlString ()Ljava/lang/String;
 	public fun hashCode ()I
+	public final fun queryParameter (Ljava/lang/String;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 }
 

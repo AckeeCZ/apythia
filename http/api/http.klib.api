@@ -160,8 +160,11 @@ abstract class io.github.ackeecz.apythia.http/HttpApythia { // io.github.ackeecz
     abstract suspend fun forEachMultipartFormDataPart(io.github.ackeecz.apythia.http.request/ActualHttpMessage, kotlin.coroutines/SuspendFunction1<io.github.ackeecz.apythia.http.request.body/ActualPart, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.forEachMultipartFormDataPart|forEachMultipartFormDataPart(io.github.ackeecz.apythia.http.request.ActualHttpMessage;kotlin.coroutines.SuspendFunction1<io.github.ackeecz.apythia.http.request.body.ActualPart,kotlin.Unit>){}[0]
     abstract suspend fun getNextActualRequest(): io.github.ackeecz.apythia.http.request/ActualRequest // io.github.ackeecz.apythia.http/HttpApythia.getNextActualRequest|getNextActualRequest(){}[0]
     final fun mockNext200Response() // io.github.ackeecz.apythia.http/HttpApythia.mockNext200Response|mockNext200Response(){}[0]
+    final fun mockNextDynamicResponse(kotlin/Function2<io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder, io.github.ackeecz.apythia.http.request/ActualRequest, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.mockNextDynamicResponse|mockNextDynamicResponse(kotlin.Function2<io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder,io.github.ackeecz.apythia.http.request.ActualRequest,kotlin.Unit>){}[0]
+    final fun mockNextDynamicResponses(kotlin/Int, kotlin/Function2<io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder, io.github.ackeecz.apythia.http.request/ActualRequest, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.mockNextDynamicResponses|mockNextDynamicResponses(kotlin.Int;kotlin.Function2<io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder,io.github.ackeecz.apythia.http.request.ActualRequest,kotlin.Unit>){}[0]
     final fun mockNextResponse(kotlin/Function1<io.github.ackeecz.apythia.http.response.dsl/HttpResponseMockBuilder, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.mockNextResponse|mockNextResponse(kotlin.Function1<io.github.ackeecz.apythia.http.response.dsl.HttpResponseMockBuilder,kotlin.Unit>){}[0]
     final suspend fun assertNextRequest(kotlin.coroutines/SuspendFunction1<io.github.ackeecz.apythia.http.request.dsl/HttpRequestAssertion, kotlin/Unit>) // io.github.ackeecz.apythia.http/HttpApythia.assertNextRequest|assertNextRequest(kotlin.coroutines.SuspendFunction1<io.github.ackeecz.apythia.http.request.dsl.HttpRequestAssertion,kotlin.Unit>){}[0]
+    open fun mockNextResponseProvider(kotlin/Function1<io.github.ackeecz.apythia.http.request/ActualRequest, io.github.ackeecz.apythia.http.response/HttpResponse>) // io.github.ackeecz.apythia.http/HttpApythia.mockNextResponseProvider|mockNextResponseProvider(kotlin.Function1<io.github.ackeecz.apythia.http.request.ActualRequest,io.github.ackeecz.apythia.http.response.HttpResponse>){}[0]
 }
 
 final class io.github.ackeecz.apythia.http.request.body/ActualPart { // io.github.ackeecz.apythia.http.request.body/ActualPart|null[0]
@@ -205,11 +208,16 @@ final class io.github.ackeecz.apythia.http.request/ActualRequest { // io.github.
         final fun <get-headers>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String>> // io.github.ackeecz.apythia.http.request/ActualRequest.headers.<get-headers>|<get-headers>(){}[0]
     final val method // io.github.ackeecz.apythia.http.request/ActualRequest.method|{}method[0]
         final fun <get-method>(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.method.<get-method>|<get-method>(){}[0]
+    final val path // io.github.ackeecz.apythia.http.request/ActualRequest.path|{}path[0]
+        final fun <get-path>(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.path.<get-path>|<get-path>(){}[0]
+    final val queryParameters // io.github.ackeecz.apythia.http.request/ActualRequest.queryParameters|{}queryParameters[0]
+        final fun <get-queryParameters>(): kotlin.collections/Map<kotlin/String, kotlin.collections/List<kotlin/String?>> // io.github.ackeecz.apythia.http.request/ActualRequest.queryParameters.<get-queryParameters>|<get-queryParameters>(){}[0]
     final val urlString // io.github.ackeecz.apythia.http.request/ActualRequest.urlString|{}urlString[0]
         final fun <get-urlString>(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.urlString.<get-urlString>|<get-urlString>(){}[0]
 
     final fun equals(kotlin/Any?): kotlin/Boolean // io.github.ackeecz.apythia.http.request/ActualRequest.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // io.github.ackeecz.apythia.http.request/ActualRequest.hashCode|hashCode(){}[0]
+    final fun queryParameter(kotlin/String): kotlin/String? // io.github.ackeecz.apythia.http.request/ActualRequest.queryParameter|queryParameter(kotlin.String){}[0]
     final fun toString(): kotlin/String // io.github.ackeecz.apythia.http.request/ActualRequest.toString|toString(){}[0]
 }
 

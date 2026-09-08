@@ -4,6 +4,7 @@ import com.eygraber.uri.Url
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
 import io.github.ackeecz.apythia.http.extension.DslExtensionConfigProvider
 import io.github.ackeecz.apythia.http.request.dsl.HttpRequestDslMarker
+import io.github.ackeecz.apythia.http.util.url.getDecodedQueryParameters
 import io.kotest.assertions.withClue
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -76,15 +77,7 @@ internal class QueryAssertionImpl(
     actualUrl: Url,
 ) : QueryAssertion, DslExtensionConfigProvider by configProvider {
 
-    override val actualQueryParameters = actualUrl.getQueryParameters()
-
-    private fun Url.getQueryParameters(): Map<String, List<String?>> {
-        return getQueryParameterNames().associateWith { name ->
-            getQueryParameters(name).map {
-                it.ifEmpty { null }
-            }
-        }
-    }
+    override val actualQueryParameters = actualUrl.getDecodedQueryParameters()
 
     override fun noValueParameter(name: String) {
         val actualValues = assertCommonProperties(name)
