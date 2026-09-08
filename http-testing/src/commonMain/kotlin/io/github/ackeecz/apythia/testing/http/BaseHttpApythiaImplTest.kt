@@ -6,6 +6,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 /**
  * Base class for testing [HttpApythia] implementations.
@@ -26,6 +29,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
         }
 
         mockingTests()
+        dynamicMockingTests()
         actualRequestTests()
         multipartFormDataTests()
     }
@@ -113,6 +117,100 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
 
                 actual.statusCode shouldBe expectedCode
                 actual.body.shouldBeEmpty()
+            }
+        }
+    }
+
+    private fun dynamicMockingTests() {
+        context("dynamic mocking") {
+            test("build response from a query parameter") {
+                val expected = "abc"
+                underTest.mockNextDynamicResponse { request ->
+                    plainTextBody(request.queryParameter("id")!!)
+                }
+
+                val actual = remoteDataSource.getMockedResponse(queryParams = mapOf("id" to expected))
+
+                actual.body.decodeToString() shouldBe expected
+            }
+
+            test("echo request method and path into response headers") {
+                val expectedPath = "/dynamic/path"
+                underTest.mockNextDynamicResponse { request ->
+                    headers {
+                        header(METHOD_HEADER, request.method)
+                        header(PATH_HEADER, request.path)
+                    }
+                }
+
+                val actual = remoteDataSource.sendPostRequest(url = "${remoteDataSource.baseUrl}dynamic/path")
+
+                actual.singleHeader(METHOD_HEADER)?.lowercase() shouldBe "post"
+                actual.singleHeader(PATH_HEADER) shouldBe expectedPath
+            }
+
+            test("echo a request header and the request body") {
+                val expectedId = "42"
+                val expectedBody = byteArrayOf(1, 2, 3)
+                underTest.mockNextDynamicResponse { request ->
+                    headers {
+                        header(ID_HEADER, request.headers.lowercaseKeys().getValue(ID_HEADER.lowercase()).single())
+                    }
+                    bytesBody(request.body, contentType = null)
+                }
+
+                val actual = remoteDataSource.sendPostRequest(
+                    headers = mapOf(ID_HEADER to expectedId),
+                    body = expectedBody,
+                )
+
+                actual.singleHeader(ID_HEADER) shouldBe expectedId
+                actual.body shouldBe expectedBody
+            }
+
+            test("static and dynamic mocks are consumed in mocking order") {
+                underTest.mockNextResponse { statusCode(201) }
+                underTest.mockNextDynamicResponse { statusCode(202) }
+                underTest.mockNextResponse { statusCode(203) }
+
+                remoteDataSource.getMockedResponse().statusCode shouldBe 201
+                remoteDataSource.getMockedResponse().statusCode shouldBe 202
+                remoteDataSource.getMockedResponse().statusCode shouldBe 203
+            }
+
+            test("each enqueued dynamic mock answers exactly one request") {
+                underTest.mockNextDynamicResponses(count = 2) { request ->
+                    statusCode(request.queryParameter("code")!!.toInt())
+                }
+
+                remoteDataSource.getMockedResponse(mapOf("code" to "201")).statusCode shouldBe 201
+                remoteDataSource.getMockedResponse(mapOf("code" to "202")).statusCode shouldBe 202
+            }
+
+            test("concurrent requests receive responses matching their own query parameter") {
+                val expectedIds = listOf("video-1", "video-2", "video-3")
+                underTest.mockNextDynamicResponses(count = expectedIds.size) { request ->
+                    plainTextBody(request.queryParameter("id")!!)
+                }
+
+                val actual = expectedIds.sendConcurrently { id ->
+                    remoteDataSource.getMockedResponse(mapOf("id" to id))
+                }
+
+                actual.map { it.body.decodeToString() } shouldBe expectedIds
+            }
+
+            test("concurrent requests receive responses matching their own body") {
+                val expectedIds = listOf("video-1", "video-2", "video-3")
+                underTest.mockNextDynamicResponses(count = expectedIds.size) { request ->
+                    bytesBody(request.body, contentType = null)
+                }
+
+                val actual = expectedIds.sendConcurrently { id ->
+                    remoteDataSource.sendPostRequest(body = id.encodeToByteArray())
+                }
+
+                actual.map { it.body.decodeToString() } shouldBe expectedIds
             }
         }
     }
@@ -309,5 +407,22 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
                 }
             }
         }
+    }
+
+    private fun MockedResponse.singleHeader(name: String): String? {
+        return headers.lowercaseKeys()[name.lowercase()]?.single()
+    }
+
+    private suspend fun <T> List<T>.sendConcurrently(
+        send: suspend (T) -> MockedResponse,
+    ): List<MockedResponse> = coroutineScope {
+        map { item -> async { send(item) } }.awaitAll()
+    }
+
+    private companion object {
+
+        private const val METHOD_HEADER = "X-Method"
+        private const val PATH_HEADER = "X-Path"
+        private const val ID_HEADER = "X-Id"
     }
 }

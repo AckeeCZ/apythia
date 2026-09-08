@@ -181,6 +181,28 @@ httpApythia.mockNextResponse {
 }
 ```
 
+#### Dynamic Responses
+
+Responses can also be built from the request they answer. The block runs when the request arrives
+and receives it, so the response is derived from the request data instead of being paired with it by
+mocking order. This makes mocking of concurrent requests order-independent, because each response is
+built from its own request.
+
+```kotlin
+httpApythia.mockNextDynamicResponse { request ->
+    jsonObjectBody {
+        put("id", request.queryParameter("id"))
+    }
+}
+
+// Mocks the same block for each of the concurrently sent requests
+httpApythia.mockNextDynamicResponses(count = ids.size) { request ->
+    jsonObjectBody {
+        put("id", request.queryParameter("id"))
+    }
+}
+```
+
 ### Assertion DSL
 
 ```kotlin
