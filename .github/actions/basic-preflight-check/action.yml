@@ -55,7 +55,7 @@ runs:
     # Binary compatibility check
     - name: Binary compatibility check
       shell: bash
-      run: ./gradlew checkLegacyAbi
+      run: ./gradlew checkKotlinAbi
 
     # Build logic tests
     - name: Build logic tests

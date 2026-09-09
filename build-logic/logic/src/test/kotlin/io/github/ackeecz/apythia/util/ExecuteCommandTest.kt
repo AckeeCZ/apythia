@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.gradle.api.Action
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.process.BaseExecSpec
 import org.gradle.process.CommandLineArgumentProvider
 import org.gradle.process.ExecOperations
@@ -113,6 +114,8 @@ private class ExecSpecMock : ExecSpec {
     }
 
     override fun workingDir(dir: Any?): ProcessForkOptions = throw NotImplementedError()
+
+    override fun getWorkingDirectory(): DirectoryProperty = throw NotImplementedError()
 
     override fun getEnvironment(): MutableMap<String, Any> = throw NotImplementedError()
 

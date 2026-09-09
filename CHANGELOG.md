@@ -19,9 +19,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `ActualRequest.path`, `ActualRequest.queryParameters` and `ActualRequest.queryParameter` accessors
   of the decoded request URL data.
 
+#### Changed
+- Updated build to Kotlin 2.4 and AGP 9.4.
+- Updated `kotest` to 6.2.4.
+
+### http-ext-json-kotlinx-serialization
+#### Changed
+- Updated `kotest` to 6.2.4.
+
 ### http-ktor
 #### Added
 - Support for dynamic responses via `mockNextDynamicResponse`.
+
+#### Changed
+- Updated `ktor` to 3.5.2.
 
 ### http-okhttp
 #### Added
@@ -30,6 +41,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 #### Changed
 - Responses are served by a custom mock web server dispatcher instead of the default queue one.
   Behaviour when no response is mocked is unchanged.
+- Updated `okhttp` to 5.5.0.
 
 ## BOM [1.0.2] - 2026-05-29
 ### http

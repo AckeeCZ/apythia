@@ -41,7 +41,7 @@ Public API dumps live at `<module>/api/` and are committed. Any signature change
 
 Workflow when public API changes:
 
-1. `./gradlew updateLegacyAbi` to regenerate dumps.
+1. `./gradlew updateKotlinAbi` to regenerate dumps.
 2. Commit the dumps with the code change.
 
 If the intent is a public API change, treat the `.api` diff as part of the review. If the dump didn't move, the change wasn't public.

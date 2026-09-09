@@ -19,8 +19,6 @@ import org.gradle.plugin.use.PluginDependency
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 internal val Project.libs get() = the<org.gradle.accessors.dm.LibrariesForLibs>()
@@ -58,14 +56,6 @@ internal fun Project.kotlinMultiplatform(action: KotlinMultiplatformExtension.()
 
 internal fun KotlinMultiplatformExtension.android(action: KotlinMultiplatformAndroidLibraryTarget.() -> Unit) {
     extensions.configure(KotlinMultiplatformAndroidLibraryTarget::class.java, action)
-}
-
-internal fun KotlinMultiplatformExtension.abiValidation(action: AbiValidationMultiplatformExtension.() -> Unit) {
-    extensions.configure(AbiValidationMultiplatformExtension::class, action)
-}
-
-internal fun KotlinJvmProjectExtension.abiValidation(action: AbiValidationExtension.() -> Unit) {
-    extensions.configure(AbiValidationExtension::class, action)
 }
 
 internal fun DependencyHandlerScope.testImplementation(

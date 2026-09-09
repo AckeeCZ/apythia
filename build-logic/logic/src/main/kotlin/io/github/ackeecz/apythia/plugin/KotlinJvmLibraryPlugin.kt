@@ -32,9 +32,7 @@ internal class KotlinJvmLibraryPlugin : Plugin<Project> {
             compilerOptions {
                 configureAllOptions()
             }
-            abiValidation {
-                enabled.set(true)
-            }
+            abiValidation()
         }
     }
 }

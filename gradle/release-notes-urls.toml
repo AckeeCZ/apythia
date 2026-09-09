@@ -4,8 +4,16 @@
 
 [libraries]
 "com.android.tools.build:gradle" = "https://developer.android.com/build/releases/agp-x-x-x-release-notes"
+"com.eygraber:uri-kmp" = "https://github.com/eygraber/uri-kmp/releases"
+"com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin" = "https://github.com/ben-manes/gradle-versions-plugin/releases"
+"com.squareup.okhttp3:logging-interceptor" = "https://github.com/square/okhttp/blob/HEAD/CHANGELOG.md"
+"com.squareup.okhttp3:mockwebserver3" = "https://github.com/square/okhttp/blob/HEAD/CHANGELOG.md"
 "com.squareup.okhttp3:okhttp-bom" = "https://github.com/square/okhttp/blob/HEAD/CHANGELOG.md"
+"com.squareup.retrofit2:retrofit" = "https://github.com/square/retrofit/blob/HEAD/CHANGELOG.md"
 "com.vanniktech:gradle-maven-publish-plugin" = "https://github.com/vanniktech/gradle-maven-publish-plugin/blob/HEAD/CHANGELOG.md"
+"io.github.ackeecz:detekt-config-core" = "https://github.com/AckeeCZ/detekt-config/blob/HEAD/CHANGELOG.md"
+"io.gitlab.arturbosch.detekt:detekt-formatting" = "https://github.com/detekt/detekt/releases"
+"io.gitlab.arturbosch.detekt:detekt-gradle-plugin" = "https://github.com/detekt/detekt/releases"
 "io.kotest:kotest-assertions-core" = "https://github.com/kotest/kotest/releases"
 "io.kotest:kotest-framework-engine" = "https://github.com/kotest/kotest/releases"
 "io.kotest:kotest-runner-junit5" = "https://github.com/kotest/kotest/releases"
@@ -16,15 +24,22 @@
 "org.junit:junit-bom" = "https://github.com/junit-team/junit-framework/releases"
 
 [plugins]
+"com.adarshr.test-logger" = "https://github.com/radarsh/gradle-test-logger-plugin/blob/HEAD/CHANGELOG.md"
 "com.android.application" = "https://developer.android.com/build/releases/agp-x-x-x-release-notes"
 "com.android.kotlin.multiplatform.library" = "https://developer.android.com/build/releases/agp-x-x-x-release-notes"
+"com.github.ben-manes.versions" = "https://github.com/ben-manes/gradle-versions-plugin/releases"
 "com.google.devtools.ksp" = "https://github.com/google/ksp/releases"
 "com.vanniktech.maven.publish" = "https://github.com/vanniktech/gradle-maven-publish-plugin/blob/HEAD/CHANGELOG.md"
+"io.gitlab.arturbosch.detekt" = "https://github.com/detekt/detekt/releases"
 "io.kotest" = "https://github.com/kotest/kotest/releases"
 "org.jetbrains.dokka" = "https://github.com/Kotlin/dokka/releases"
-"org.jetbrains.kotlin.android" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
 "org.jetbrains.kotlin.jvm" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
 "org.jetbrains.kotlin.multiplatform" = "https://github.com/JetBrains/kotlin/blob/HEAD/ChangeLog.md"
+
+# Manual entries for build tooling that is not declared in libs.versions.toml.
+# Not managed by /find-release-notes; do not remove during cleanup.
+[tooling]
+"gradle-wrapper" = "https://gradle.org/releases/"
 
 [unresolved]
 # Entries the skill could not auto-detect. Fill in manually, then move to [libraries] or [plugins].

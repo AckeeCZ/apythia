@@ -37,22 +37,22 @@ jobs:
         uses: ./.github/actions/basic-preflight-check
 
       - name: Verify publishing
-        run: ./gradlew verifyPublishing
+        run: ./gradlew --non-interactive verifyPublishing
 
       - name: Verify BOM version
-        run: ./gradlew verifyBomVersion
+        run: ./gradlew --non-interactive verifyBomVersion
 
       - name: Artifacts tests
         # We need to publish the latest versions to Maven local first before we can run tests
         # on published artifacts
         run: |
-          ./gradlew publishToMavenLocal \
+          ./gradlew --non-interactive publishToMavenLocal \
             -PsigningInMemoryKey=$GPG_KEY \
             -PsigningInMemoryKeyPassword=$GPG_PASSWORD \
             -PmavenCentralUsername=$MAVEN_USERNAME \
             -PmavenCentralPassword=$MAVEN_PASSWORD
           
-          ./gradlew :sample-app:testDebugUnitTest
+          ./gradlew --non-interactive :sample-app:testDebugUnitTest
 
   publish:
     needs: preflight_checks
@@ -73,7 +73,7 @@ jobs:
 
       - name: Publish to Maven Central
         run: |
-          ./gradlew --stacktrace publishAndReleaseToMavenCentral \
+          ./gradlew --non-interactive --stacktrace publishAndReleaseToMavenCentral \
             -PsigningInMemoryKey=$GPG_KEY \
             -PsigningInMemoryKeyPassword=$GPG_PASSWORD \
             -PmavenCentralUsername=$MAVEN_USERNAME \

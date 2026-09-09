@@ -30,14 +30,17 @@ internal class AndroidApplicationPlugin : Plugin<Project> {
 
             buildTypes {
                 release {
-                    isMinifyEnabled = true
+                    optimization {
+                        // Enables code optimization together with optimized resource shrinking
+                        enable = true
 
-                    val defaultRules = getDefaultProguardFile("proguard-android-optimize.txt")
-                    val customProguardRules = file("proguard-rules.pro").takeIf { it.exists() }
-                    if (customProguardRules != null) {
-                        proguardFiles(defaultRules, customProguardRules)
-                    } else {
-                        proguardFiles(defaultRules)
+                        keepRules {
+                            // The default Android keep rules are included automatically, so only
+                            // optional custom rules of the module need to be added here.
+                            file("proguard-rules.pro")
+                                .takeIf { it.exists() }
+                                ?.let { files.add(it) }
+                        }
                     }
                 }
             }
