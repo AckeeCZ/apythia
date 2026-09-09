@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### http
+#### Added
+- `HttpApythia.mockNextDynamicResponse` for mocking a response that is built at the request time from
+  the arriving request, which makes mocking of concurrent requests order-independent.
+- `HttpApythia.mockNextDynamicResponses` for mocking the same dynamic response block multiple times.
+- `HttpApythia.mockNextResponseProvider` implementation hook, which has to be overridden by
+  `HttpApythia` implementations supporting dynamic responses. Its default implementation throws
+  `IllegalStateException`.
+- `ActualRequest.path`, `ActualRequest.queryParameters` and `ActualRequest.queryParameter` accessors
+  of the decoded request URL data.
+
+### http-ktor
+#### Added
+- Support for dynamic responses via `mockNextDynamicResponse`.
+
+### http-okhttp
+#### Added
+- Support for dynamic responses via `mockNextDynamicResponse`.
+
+#### Changed
+- Responses are served by a custom mock web server dispatcher instead of the default queue one.
+  Behaviour when no response is mocked is unchanged.
 
 ## BOM [1.0.2] - 2026-05-29
 ### http

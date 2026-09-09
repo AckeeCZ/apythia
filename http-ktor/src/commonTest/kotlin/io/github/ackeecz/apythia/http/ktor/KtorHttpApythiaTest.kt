@@ -18,6 +18,7 @@ import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsBytes
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headers
@@ -63,24 +64,32 @@ private class KtorRemoteDataSource(engine: MockEngine) : RemoteDataSource {
         }
     }
 
-    override suspend fun getMockedResponse(): MockedResponse {
-        val response = ktorClient.get { url("mocked-response") }
-        return MockedResponse(
-            statusCode = response.status.value,
-            headers = response.headers.toMap(),
-            body = response.bodyAsBytes(),
-        )
+    override suspend fun getMockedResponse(queryParams: Map<String, String>): MockedResponse {
+        val response = ktorClient.get {
+            url("mocked-response")
+            queryParams.forEach { (key, value) -> parameter(key, value) }
+        }
+        return response.toMockedResponse()
     }
 
     override suspend fun sendPostRequest(
         url: String,
         headers: Map<String, String>,
         body: ByteArray,
-    ) {
-        ktorClient.post(url) {
+    ): MockedResponse {
+        val response = ktorClient.post(url) {
             this.headers { appendAll(headers) }
             this.setBody(body)
         }
+        return response.toMockedResponse()
+    }
+
+    private suspend fun HttpResponse.toMockedResponse(): MockedResponse {
+        return MockedResponse(
+            statusCode = status.value,
+            headers = headers.toMap(),
+            body = bodyAsBytes(),
+        )
     }
 
     override suspend fun sendMultipartRequest(

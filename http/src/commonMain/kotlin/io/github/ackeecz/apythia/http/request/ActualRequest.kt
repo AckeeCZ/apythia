@@ -2,6 +2,7 @@ package io.github.ackeecz.apythia.http.request
 
 import com.eygraber.uri.Url
 import io.github.ackeecz.apythia.http.ExperimentalHttpApi
+import io.github.ackeecz.apythia.http.util.url.getDecodedQueryParameters
 
 /**
  * Actual HTTP request that was sent by the HTTP client. This data is used for assertions.
@@ -33,6 +34,28 @@ public class ActualRequest(
             .toString()
             .let(Url::parse)
     }
+
+    /**
+     * Decoded URL path of the request, e.g. "/api/v2/video/detail".
+     */
+    @ExperimentalHttpApi
+    public val path: String get() = url.path.orEmpty()
+
+    /**
+     * Decoded query parameters of the request grouped by a parameter name in order of appearance.
+     * `null` value means that the query parameter has no value, e.g. "name" or "name=". `+` in the
+     * query is decoded to a space.
+     */
+    @ExperimentalHttpApi
+    public val queryParameters: Map<String, List<String?>>
+        get() = url.getDecodedQueryParameters()
+
+    /**
+     * First decoded value of the query parameter with the given [name]. `null` if the parameter is
+     * missing or is present without a value.
+     */
+    @ExperimentalHttpApi
+    public fun queryParameter(name: String): String? = queryParameters[name]?.firstOrNull()
 
     internal val message = ActualHttpMessage(headers = headers, body = body)
 

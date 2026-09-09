@@ -6,6 +6,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 /**
  * Base class for testing [HttpApythia] implementations.
@@ -26,6 +30,7 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
         }
 
         mockingTests()
+        dynamicMockingTests()
         actualRequestTests()
         multipartFormDataTests()
     }
@@ -113,6 +118,113 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
 
                 actual.statusCode shouldBe expectedCode
                 actual.body.shouldBeEmpty()
+            }
+        }
+    }
+
+    private fun dynamicMockingTests() {
+        context("dynamic mocking") {
+            test("build response from a query parameter") {
+                val expected = "abc"
+                underTest.mockNextDynamicResponse { request ->
+                    plainTextBody(requireNotNull(request.queryParameter(ID_QUERY_PARAM)))
+                }
+
+                val actual = remoteDataSource.getMockedResponse(
+                    queryParams = mapOf(ID_QUERY_PARAM to expected),
+                )
+
+                actual.body.decodeToString() shouldBe expected
+            }
+
+            test("echo request method and path into response headers") {
+                underTest.mockNextDynamicResponse { request ->
+                    headers {
+                        header(METHOD_HEADER, request.method)
+                        header(PATH_HEADER, request.path)
+                    }
+                }
+
+                val actual = remoteDataSource.sendPostRequest(
+                    url = "${remoteDataSource.baseUrl}$DYNAMIC_PATH_SEGMENTS",
+                )
+
+                actual.singleHeader(METHOD_HEADER)?.lowercase() shouldBe "post"
+                actual.singleHeader(PATH_HEADER) shouldBe DYNAMIC_PATH
+            }
+
+            test("echo a request header and the request body") {
+                val expectedId = "42"
+                val expectedBody = byteArrayOf(1, 2, 3)
+                underTest.mockNextDynamicResponse { request ->
+                    headers {
+                        header(ID_HEADER, request.headers.lowercaseKeys().getValue(ID_HEADER.lowercase()).single())
+                    }
+                    bytesBody(request.body, contentType = null)
+                }
+
+                val actual = remoteDataSource.sendPostRequest(
+                    headers = mapOf(ID_HEADER to expectedId),
+                    body = expectedBody,
+                )
+
+                actual.singleHeader(ID_HEADER) shouldBe expectedId
+                actual.body shouldBe expectedBody
+            }
+
+            test("static and dynamic mocks are consumed in mocking order") {
+                val firstCode = 201
+                val secondCode = 202
+                val thirdCode = 203
+                underTest.mockNextResponse { statusCode(firstCode) }
+                underTest.mockNextDynamicResponse { statusCode(secondCode) }
+                underTest.mockNextResponse { statusCode(thirdCode) }
+
+                remoteDataSource.getMockedResponse().statusCode shouldBe firstCode
+                remoteDataSource.getMockedResponse().statusCode shouldBe secondCode
+                remoteDataSource.getMockedResponse().statusCode shouldBe thirdCode
+            }
+
+            test("each enqueued dynamic mock answers exactly one request") {
+                val firstCode = 201
+                val secondCode = 202
+                underTest.mockNextDynamicResponses(count = 2) { request ->
+                    statusCode(requireNotNull(request.queryParameter(STATUS_CODE_QUERY_PARAM)).toInt())
+                }
+
+                val firstActual = remoteDataSource.getMockedResponse(
+                    mapOf(STATUS_CODE_QUERY_PARAM to "$firstCode"),
+                )
+                val secondActual = remoteDataSource.getMockedResponse(
+                    mapOf(STATUS_CODE_QUERY_PARAM to "$secondCode"),
+                )
+
+                firstActual.statusCode shouldBe firstCode
+                secondActual.statusCode shouldBe secondCode
+            }
+
+            test("concurrent requests receive responses matching their own query parameter") {
+                underTest.mockNextDynamicResponses(count = CONCURRENT_IDS.size) { request ->
+                    plainTextBody(requireNotNull(request.queryParameter(ID_QUERY_PARAM)))
+                }
+
+                val actual = CONCURRENT_IDS.sendConcurrently { id ->
+                    remoteDataSource.getMockedResponse(mapOf(ID_QUERY_PARAM to id))
+                }
+
+                actual.map { it.body.decodeToString() } shouldBe CONCURRENT_IDS
+            }
+
+            test("concurrent requests receive responses matching their own body") {
+                underTest.mockNextDynamicResponses(count = CONCURRENT_IDS.size) { request ->
+                    bytesBody(request.body, contentType = null)
+                }
+
+                val actual = CONCURRENT_IDS.sendConcurrently { id ->
+                    remoteDataSource.sendPostRequest(body = id.encodeToByteArray())
+                }
+
+                actual.map { it.body.decodeToString() } shouldBe CONCURRENT_IDS
             }
         }
     }
@@ -309,5 +421,35 @@ public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec() {
                 }
             }
         }
+    }
+
+    private fun MockedResponse.singleHeader(name: String): String? {
+        return headers.lowercaseKeys()[name.lowercase()]?.single()
+    }
+
+    /**
+     * Sends all items in parallel on [Dispatchers.Default], which is backed by multiple threads.
+     * The dispatcher is set explicitly, because the test one is typically backed by a single thread
+     * and would not give a real concurrency.
+     */
+    private suspend fun <T> List<T>.sendConcurrently(
+        send: suspend (T) -> MockedResponse,
+    ): List<MockedResponse> = withContext(Dispatchers.Default) {
+        map { item -> async { send(item) } }.awaitAll()
+    }
+
+    private companion object {
+
+        private const val METHOD_HEADER = "X-Method"
+        private const val PATH_HEADER = "X-Path"
+        private const val ID_HEADER = "X-Id"
+
+        private const val ID_QUERY_PARAM = "id"
+        private const val STATUS_CODE_QUERY_PARAM = "code"
+
+        private const val DYNAMIC_PATH_SEGMENTS = "dynamic/path"
+        private const val DYNAMIC_PATH = "/$DYNAMIC_PATH_SEGMENTS"
+
+        private val CONCURRENT_IDS = listOf("video-1", "video-2", "video-3")
     }
 }

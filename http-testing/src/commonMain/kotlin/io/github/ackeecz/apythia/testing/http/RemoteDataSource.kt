@@ -4,13 +4,13 @@ public interface RemoteDataSource {
 
     public val baseUrl: String
 
-    public suspend fun getMockedResponse(): MockedResponse
+    public suspend fun getMockedResponse(queryParams: Map<String, String> = emptyMap()): MockedResponse
 
     public suspend fun sendPostRequest(
         url: String = baseUrl,
         headers: Map<String, String> = emptyMap(),
         body: ByteArray = byteArrayOf(),
-    )
+    ): MockedResponse
 
     public suspend fun testUrlEncoding(
         path: String,

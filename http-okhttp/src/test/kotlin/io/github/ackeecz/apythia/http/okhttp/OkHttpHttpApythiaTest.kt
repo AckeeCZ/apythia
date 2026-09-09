@@ -43,14 +43,17 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
         .build()
         .create(ApiDescription::class.java)
 
-    override suspend fun getMockedResponse(): MockedResponse {
-        val response = apiDescription.getMockedResponse()
+    override suspend fun getMockedResponse(queryParams: Map<String, String>): MockedResponse {
+        return apiDescription.getMockedResponse(queryParams).toMockedResponse()
+    }
+
+    private fun Response<ResponseBody>.toMockedResponse(): MockedResponse {
         return MockedResponse(
-            statusCode = response.code(),
+            statusCode = code(),
             // Content-Length header is automatically added by OkHttp's mock web server, so we need to
             // remove it to preserve mocked headers.
-            headers = response.headers().toMultimap().removeContentLength(),
-            body = response.body()?.bytes() ?: byteArrayOf(),
+            headers = headers().toMultimap().removeContentLength(),
+            body = body()?.bytes() ?: byteArrayOf(),
         )
     }
 
@@ -62,12 +65,12 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
         url: String,
         headers: Map<String, String>,
         body: ByteArray,
-    ) {
-        apiDescription.sendPostRequest(
+    ): MockedResponse {
+        return apiDescription.sendPostRequest(
             url = url,
             headers = headers,
             body = body.toRequestBody("image/jpeg".toMediaType()),
-        )
+        ).toMockedResponse()
     }
 
     override suspend fun sendMultipartRequest(
@@ -119,14 +122,14 @@ private class RetrofitRemoteDataSource(apythia: OkHttpHttpApythia) : RemoteDataS
     private interface ApiDescription {
 
         @GET("mocked-response")
-        suspend fun getMockedResponse(): Response<ResponseBody>
+        suspend fun getMockedResponse(@QueryMap queryParams: Map<String, String>): Response<ResponseBody>
 
         @POST
         suspend fun sendPostRequest(
             @Url url: String,
             @HeaderMap headers: Map<String, String>,
             @Body body: RequestBody,
-        )
+        ): Response<ResponseBody>
 
         @GET
         suspend fun testUrlEncoding(
