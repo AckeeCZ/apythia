@@ -19,7 +19,7 @@ in a serialization-agnostic, client-agnostic way (with first-class Ktor + OkHttp
 :http-ext-json-kotlinx-serialization    — Optional JSON DSL extensions backed by Kotlinx Serialization
 :http-ktor                              — Ktor-backed HttpApythia impl
 :http-okhttp                            — OkHttp-backed HttpApythia impl
-:http-testing                           — Shared test infra: BaseHttpApythiaImplTest, HttpApythiaMock, factories
+:http-testing                           — Shared test infra: BaseHttpApythiaImplTest, HttpApythiaMock, factories; not published
 :sample-app                             — Internal sample showing library usage; not published
 ```
 
