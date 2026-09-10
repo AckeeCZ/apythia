@@ -32,15 +32,6 @@ internal class KmpLibraryPlugin : Plugin<Project> {
                 configureCommonOptions()
             }
 
-            @OptIn(ExperimentalAbiValidation::class)
-            abiValidation {
-                enabled.set(extension.abiValidationEnabled)
-                klib {
-                    enabled.set(true)
-                    keepUnsupportedTargets.set(false)
-                }
-            }
-
             android {
                 compileSdk = Constants.COMPILE_SDK
                 minSdk = Constants.MIN_SDK
@@ -86,6 +77,19 @@ internal class KmpLibraryPlugin : Plugin<Project> {
         }
 
         configureDetekt()
+        configureAbiValidation(extension)
+    }
+
+    // ABI validation can only be enabled by calling the abiValidation DSL, so the extension value
+    // has to be resolved after the project is evaluated.
+    private fun Project.configureAbiValidation(extension: KmpLibraryExtension) = afterEvaluate {
+        if (extension.abiValidationEnabled.get().not()) return@afterEvaluate
+        kotlinMultiplatform {
+            @OptIn(ExperimentalAbiValidation::class)
+            abiValidation {
+                keepLocallyUnsupportedTargets.set(false)
+            }
+        }
     }
 
     private fun Project.createExtension(): KmpLibraryExtension {

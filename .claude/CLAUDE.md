@@ -19,7 +19,7 @@ in a serialization-agnostic, client-agnostic way (with first-class Ktor + OkHttp
 :http-ext-json-kotlinx-serialization    — Optional JSON DSL extensions backed by Kotlinx Serialization
 :http-ktor                              — Ktor-backed HttpApythia impl
 :http-okhttp                            — OkHttp-backed HttpApythia impl
-:http-testing                           — Shared test infra: BaseHttpApythiaImplTest, HttpApythiaMock, factories
+:http-testing                           — Shared test infra: BaseHttpApythiaImplTest, HttpApythiaMock, factories; not published
 :sample-app                             — Internal sample showing library usage; not published
 ```
 
@@ -41,7 +41,7 @@ Public API dumps live at `<module>/api/` and are committed. Any signature change
 
 Workflow when public API changes:
 
-1. `./gradlew updateLegacyAbi` to regenerate dumps.
+1. `./gradlew updateKotlinAbi` to regenerate dumps.
 2. Commit the dumps with the code change.
 
 If the intent is a public API change, treat the `.api` diff as part of the review. If the dump didn't move, the change wasn't public.

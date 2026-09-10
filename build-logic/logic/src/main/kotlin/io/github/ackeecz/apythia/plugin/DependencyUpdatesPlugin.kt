@@ -15,6 +15,9 @@ internal class DependencyUpdatesPlugin : Plugin<Project> {
                     isNonStable(candidate.version) && !isNonStable(currentVersion)
                 }
                 outputFormatter = "json"
+                // Reports also platforms imported through the build's own platform projects, so
+                // version-less modules pinned by a BOM name the coordinate to bump.
+                checkConstraints = true
             }
         }
     }

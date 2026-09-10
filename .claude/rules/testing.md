@@ -58,9 +58,11 @@ Suites are composed from test classes via `context { bodyTestSuite(fixture, ...)
 
 ## `BaseHttpApythiaImplTest` — the contract test
 
-`public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec()` in `:http-testing` is the conformance test every `HttpApythia` impl must pass. It's **public** because external developers integrating their own HTTP client run it against their own impl.
+`public abstract class BaseHttpApythiaImplTest<Sut : HttpApythia> : FunSpec()` in `:http-testing` is the conformance test every `HttpApythia` impl must pass. It's **public** so the other modules in this build can subclass it from their own test source sets — not because it ships to anyone.
 
-Changes here are public API changes — regenerate the `:http-testing` `.api` dump and bump its version when releasing.
+`:http-testing` is **not published**: it applies no `apythia.publishing`, has no entry in `lib.properties`, sets `abiValidationEnabled.set(false)` and has no `api/` directory. It is consumed only via `implementation(projects.httpTesting)` / `testImplementation(projects.httpTesting)` from `:http`, `:http-ktor`, `:http-okhttp` and `:http-ext-json-kotlinx-serialization` test source sets.
+
+So changes here are **not** public API changes: there is no `.api` dump to regenerate and no artifact version to bump. Breaking changes are fine — just update the impls' tests in the same commit.
 
 ## Test doubles
 
@@ -68,13 +70,13 @@ Changes here are public API changes — regenerate the `:http-testing` `.api` du
 - Suffix naming:
   - `*Mock` — controllable double with state (e.g. `HttpApythiaMock`, `DslExtensionConfigMock`).
   - `*Stub` — fixed-response stand-in.
-- Shared doubles live in `:http-testing` (e.g. `HttpApythiaMock` is `public` and exposed to consumers).
+- Shared doubles live in `:http-testing` (e.g. `HttpApythiaMock` is `public` so the impl modules' tests can reach it across the module boundary).
 - One-off doubles live next to the test that uses them.
 
 ## Test class visibility
 
 - Test classes are `internal class FooTest` — keeps them out of the public API.
-- Exception: `BaseHttpApythiaImplTest` and its enabler types (`RemoteDataSource`, factories) are `public` because they're consumer-facing.
+- Exception: `BaseHttpApythiaImplTest` and its enabler types (`RemoteDataSource`, factories) are `public` because they're used from other modules' test source sets. `:http-testing` is unpublished, so this does not put them in any shipped API.
 
 ## KMP test source sets
 
