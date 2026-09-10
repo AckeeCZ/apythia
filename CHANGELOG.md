@@ -7,7 +7,7 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-## BOM [1.1.0] - 2026-09-09
+## BOM [1.1.0] - 2026-09-10
 ### http
 #### Added
 - `HttpApythia.mockNextDynamicResponse` for mocking a response that is built at the request time from
